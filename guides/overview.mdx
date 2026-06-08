@@ -1,17 +1,15 @@
 ---
 title: Feature Overview
-description: Core Vercel features including serverless functions, edge middleware, and analytics.
+description: Key platform features including serverless functions, edge middleware, and observability tools.
 ---
 
 ## Overview
 
-Vercel provides a modern deployment platform that handles frontend applications and APIs with minimal configuration. You deploy code from a Git repository and receive automatic previews, production updates, and global distribution. The platform emphasizes performance through edge computing and static optimization.
-
-Core capabilities include serverless functions for backend logic, edge middleware for request handling, monorepo support for complex codebases, and incremental static regeneration for dynamic content.
+Vercel delivers a streamlined platform for deploying and scaling web applications. You configure projects through a dashboard or CLI, then push code to trigger automatic builds and deployments. Core capabilities include serverless functions for backend logic, edge middleware for request handling, and integrated tools for analytics and monitoring. These features work together to reduce infrastructure overhead while maintaining performance.
 
 ## Serverless Functions
 
-Serverless functions run on demand without server management. You write standard JavaScript or TypeScript files inside an `api` directory and Vercel deploys them automatically.
+Serverless functions let you run backend code without managing servers. You write functions in supported languages and deploy them alongside your frontend. Vercel automatically scales execution based on traffic.
 
 ```javascript
 export default function handler(req, res) {
@@ -19,89 +17,50 @@ export default function handler(req, res) {
 }
 ```
 
-Functions scale automatically and integrate with your frontend routes.
+Use functions for API routes, database queries, or authentication flows.
 
 ## Edge Middleware
 
-Edge middleware executes at the network edge before requests reach your application. Use it for authentication, redirects, or header modifications with low latency.
-
-Create a `middleware.ts` file at the project root:
-
-```typescript
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-
-export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-  return NextResponse.next();
-}
-```
-
-<Callout kind="info">
-Middleware runs on every request, so keep logic lightweight.
-</Callout>
-
-## Monorepo Support
-
-Vercel detects and builds multiple packages within a single repository. Configure workspaces in your package manager and specify build settings per package.
-
-<Columns cols={2}>
-  <Card title="Turborepo" icon="zap" href="#examples">
-    Optimized task running across packages.
-  </Card>
-  <Card title="Nx" icon="settings" href="#examples">
-    Advanced dependency graph management.
-  </Card>
-</Columns>
-
-## Incremental Static Regeneration
-
-Incremental static regeneration updates static pages after deployment without rebuilding the entire site. Set a revalidation interval in your page configuration.
-
-```javascript
-export async function getStaticProps() {
-  const data = await fetchData();
-  return {
-    props: { data },
-    revalidate: 60,
-  };
-}
-```
-
-## Examples
+Edge middleware executes lightweight code at the network edge before requests reach your application. This approach enables fast redirects, header modifications, and A/B testing with minimal latency.
 
 <Tabs>
-  <Tab title="Function" icon="code">
-    <CodeGroup tabs="JavaScript,TypeScript">
-```javascript
-export default (req, res) => {
-  res.json({ ok: true });
-};
-```
-
-```typescript
-export default function handler(
-  req: any,
-  res: any
-) {
-  res.json({ ok: true });
-}
-```
-    </CodeGroup>
+  <Tab title="JavaScript" icon="code">
+    Create a `middleware.js` file at the project root to intercept requests.
   </Tab>
-  <Tab title="Middleware" icon="shield">
-    Add geolocation checks or A/B testing logic.
+  <Tab title="TypeScript" icon="code">
+    Add type definitions for request and response objects when using TypeScript.
   </Tab>
 </Tabs>
 
+Middleware runs close to users worldwide, improving response times for dynamic logic.
+
+## Analytics and Monitoring
+
+Built-in observability tools track deployment performance, function invocations, and user interactions. You view metrics directly in the dashboard without external services.
+
+<Callout kind="info">
+  Enable analytics during project setup to start collecting data immediately.
+</Callout>
+
+## Examples
+
+<Columns cols={2}>
+  <Card title="API Endpoint" icon="terminal" href="#serverless-functions">
+    Deploy a serverless function to handle form submissions.
+  </Card>
+  <Card title="Request Rewrite" icon="settings" href="#edge-middleware">
+    Use middleware to route traffic based on geographic location.
+  </Card>
+</Columns>
+
 ## Best Practices
 
-- Keep function code under the 50 MB limit for fastest cold starts.
-- Use environment variables stored in the dashboard for secrets.
-- Test middleware locally with the Vercel CLI before pushing changes.
+Follow these guidelines to maximize platform benefits.
 
-<Expandable title="Learn more about limits" default-open="false">
-Review the full list of runtime constraints and quotas in the platform documentation.
+<Expandable title="Optimize function cold starts" default-open="false">
+  Keep function dependencies minimal and reuse connections where possible. Test locally with the Vercel CLI before deploying.
+</Expandable>
+
+<Expandable title="Monitor edge usage" default-open="false">
+  Review invocation logs regularly to identify slow middleware paths and adjust logic accordingly.
 </Expandable>

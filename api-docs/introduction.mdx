@@ -1,37 +1,37 @@
 ---
 title: Introduction
-description: Overview of the Vercel API for managing deployments, projects, and team resources.
+description: Using the Vercel REST API to manage projects, deployments, and team resources programmatically.
 ---
 
 <Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416420393-s9t4cno1w99-Image-8.png?q=85&fm=auto&auto=compress%2Cformat" alt="Vercel documentation" width="800" height="400" />
 
 ## Welcome
 
-The Vercel API exposes REST endpoints that let you manage deployments, projects, and team resources. You interact with resources through standard HTTP methods and receive webhook events for real-time notifications.
+The Vercel REST API lets you create and update projects, trigger deployments, and manage team access through HTTP requests. Use it to integrate deployment workflows into existing CI pipelines or custom tooling.
 
 <Columns cols={2}>
-  <Card title="REST Endpoints" icon="code" href="#endpoints">
-    Access all resources via predictable REST paths with JSON request and response bodies.
+  <Card title="Project management" icon="folder" href="#projects">
+    Create, list, and configure projects with the projects endpoint.
   </Card>
-  <Card title="Resource Management" icon="database" href="#resources">
-    Create, read, update, and delete projects, deployments, and environment variables.
+  <Card title="Deployment automation" icon="rocket" href="#deployments">
+    Start builds and retrieve deployment status via the deployments endpoint.
   </Card>
-  <Card title="Deployment Control" icon="rocket" href="#deployments">
-    Trigger deployments, promote to production, and inspect build logs programmatically.
+  <Card title="Team collaboration" icon="users" href="#teams">
+    Invite members and assign roles through the teams endpoint.
   </Card>
-  <Card title="Webhook Events" icon="bell" href="#webhooks">
-    Subscribe to deployment, project, and domain events for automated workflows.
+  <Card title="Resource access" icon="database" href="#resources">
+    Query domains, environment variables, and logs programmatically.
   </Card>
 </Columns>
 
-<Card title="Explore Endpoints" icon="arrow-right" href="/api-docs/endpoints" horizontal>
-  Review the complete list of REST endpoints with request and response schemas.
+<Card title="Projects reference" icon="folder" href="/api-docs/projects" horizontal>
+  View endpoint details for project creation and configuration.
 </Card>
 
-<Card title="Explore Webhooks" icon="arrow-right" href="/api-docs/webhooks" horizontal>
-  Learn how to register and validate webhook subscriptions for your team.
+<Card title="Deployments reference" icon="rocket" href="/api-docs/deployments" horizontal>
+  View endpoint details for build triggers and status checks.
 </Card>
 
 <Callout kind="tip">
-  Authenticate every request with a Bearer token scoped to the correct team.
+  Authenticate every request with a Bearer token from your account settings.
 </Callout>

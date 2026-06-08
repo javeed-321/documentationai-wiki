@@ -1,61 +1,65 @@
 ---
 title: Authentication
-description: Authenticate API requests using Vercel tokens and OAuth flows.
+description: Authenticate API requests with Vercel access tokens and OAuth2 flows.
 ---
 
 ## Overview
 
-Vercel API requests require authentication via either a personal access token or an OAuth access token. All authenticated endpoints accept the token in the Authorization header using the Bearer scheme.
-
-Tokens grant access based on assigned scopes. Requests without a valid token or with insufficient scope return a 401 status.
+Vercel API requests require authentication via personal access tokens or OAuth2 flows. Include the token in the Authorization header for every call. Tokens grant access based on assigned scopes that control which resources and actions are permitted.
 
 ## Authentication Methods
 
 <Tabs>
-  <Tab title="API Tokens" icon="key">
-    Generate a personal access token from your account settings. The token authenticates requests on your behalf and inherits your account permissions.
+<Tab title="Personal Access Tokens" icon="key">
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Set the value to `Bearer` followed by your token.
-    </ParamField>
-  </Tab>
-  <Tab title="OAuth Apps" icon="shield">
-    Register an OAuth application to obtain client credentials. Users authorize your app and receive scoped access tokens.
+Create a personal access token from the account settings page. This token authenticates requests on your behalf.
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Use the access token returned after the authorization code exchange.
-    </ParamField>
-  </Tab>
+<ParamField header="Authorization" param-type="string" required="true">
+  Use the format `Bearer <token>`. Replace `<token>` with your personal access token.
+</ParamField>
+
+</Tab>
+<Tab title="OAuth2" icon="shield">
+
+Register an OAuth application to obtain client credentials. Users authorize your application to receive scoped access tokens.
+
+<ParamField body="client_id" param-type="string" required="true">
+  The client identifier issued when you registered the OAuth application.
+</ParamField>
+
+<ParamField body="client_secret" param-type="string" required="true">
+  The client secret issued when you registered the OAuth application.
+</ParamField>
+
+</Tab>
 </Tabs>
 
 ## Implementation
+
+Use the Authorization header in every request. The examples below demonstrate token usage across languages.
 
 <CodeGroup tabs="cURL,JavaScript,Python">
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" \
   https://api.example.com/v1/deployments
 ```
-
 ```javascript
-const res = await fetch("https://api.example.com/v1/deployments", {
+const response = await fetch('https://api.example.com/v1/deployments', {
   headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: 'Bearer YOUR_TOKEN',
   },
 });
 ```
-
 ```python
 import requests
 
-headers = {"Authorization": f"Bearer {token}"}
-response = requests.get(
-    "https://api.example.com/v1/deployments", headers=headers
-)
+headers = {'Authorization': 'Bearer YOUR_TOKEN'}
+response = requests.get('https://api.example.com/v1/deployments', headers=headers)
 ```
 </CodeGroup>
 
-## Security Best Practices
+## Security Considerations
 
 <Callout kind="alert">
-Never expose tokens in client-side code or commit them to version control. Rotate tokens regularly and revoke unused ones immediately. Limit token scope to the minimum required permissions for each integration.
+  Store tokens securely and rotate them regularly. Never commit tokens to source control or expose them in client-side code. Limit token scopes to the minimum permissions required for your use case.
 </Callout>

@@ -1,39 +1,28 @@
 ---
 title: Changelog
-description: Release notes for Vercel platform updates and new features.
+description: Release notes for new Vercel features, platform updates, and bug fixes.
 ---
 
-<Update label="2024-11-05" description="v2.1.0" tags={["feature", "bugfix"]}>
+<Update label="2024-11-05" description="v4.2.0" tags={["feature"]}>
 
-## New capabilities
-- Added instant preview for edge functions.
-- Introduced one-click rollback for deployments.
-
-## Performance improvements
-- Reduced build times by 35 percent on average.
-- Fixed caching issue that caused stale assets.
+- Platform now supports automatic region failover for deployments
+- CLI updated to v3.5 with new preview deployment commands
+- Edge Runtime v2 released with reduced cold start times
 
 </Update>
 
-<Update label="2024-10-20" description="v2.0.0" tags={["breaking", "feature"]}>
+<Update label="2024-10-20" description="v4.1.5" tags={["bugfix"]}>
 
-## Breaking changes
-- Removed legacy Node 16 runtime support.
-- Updated API endpoints require new authentication headers.
-
-## New capabilities
-- Launched automatic HTTPS certificate renewal.
-- Added support for monorepo workspaces.
+- Fixed static asset caching inconsistencies across edge locations
+- Resolved CLI authentication timeouts during large project builds
+- Edge functions now correctly handle streaming response headers
 
 </Update>
 
-<Update label="2024-09-15" description="v1.9.5" tags={["bugfix", "performance"]}>
+<Update label="2024-09-15" description="v4.1.0" tags={["feature"]}>
 
-## Performance improvements
-- Optimized image optimization pipeline.
-
-## Bug fixes
-- Resolved deployment timeout errors on large projects.
-- Fixed analytics dashboard data aggregation.
+- Added support for three new deployment regions in Asia Pacific
+- Platform releases now include built-in analytics for edge traffic
+- CLI v3.4 introduces environment variable sync from dashboard
 
 </Update>

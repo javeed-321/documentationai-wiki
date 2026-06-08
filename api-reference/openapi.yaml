@@ -5,7 +5,7 @@ info:
   license:
     name: MIT
 servers:
-  - url: https://api.vercel.com/v1
+  - url: http://api.vercel.com/v1
 paths:
   /deployments:
     get:
@@ -14,14 +14,14 @@ paths:
       parameters:
         - name: limit
           in: query
-          description: How many items to return at one time (max 100)
+          description: Maximum number of deployments to return
           required: false
           schema:
             type: integer
             format: int32
       responses:
         200:
-          description: An paged array of deployments
+          description: A paged array of deployments
           headers:
             x-next:
               description: A link to the next page of responses
@@ -52,7 +52,7 @@ paths:
   /deployments/{deploymentId}:
     get:
       summary: Get deployment
-      operationId: getDeploymentById
+      operationId: showDeploymentById
       parameters:
         - name: deploymentId
           in: path
@@ -80,14 +80,14 @@ paths:
       parameters:
         - name: limit
           in: query
-          description: How many items to return at one time (max 100)
+          description: Maximum number of projects to return
           required: false
           schema:
             type: integer
             format: int32
       responses:
         200:
-          description: An paged array of projects
+          description: A paged array of projects
           headers:
             x-next:
               description: A link to the next page of responses
@@ -103,18 +103,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    post:
-      summary: Create project
-      operationId: createProject
-      responses:
-        201:
-          description: Null response
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Deployment:
@@ -123,7 +111,8 @@ components:
         - url
       properties:
         id:
-          type: string
+          type: integer
+          format: int64
         url:
           type: string
         state:
@@ -138,10 +127,11 @@ components:
         - name
       properties:
         id:
-          type: string
+          type: integer
+          format: int64
         name:
           type: string
-        framework:
+        createdAt:
           type: string
     Projects:
       type: array

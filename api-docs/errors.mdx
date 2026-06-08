@@ -1,107 +1,84 @@
 ---
 title: Error Codes
-description: Common API error codes and how to resolve deployment or project issues.
+description: Common API error responses and how to resolve deployment or configuration failures.
 ---
-
-## HTTP Status Meanings
-
-The Vercel API returns standard HTTP status codes. Review the response body for a `code` field that provides the exact error identifier.
-
-<Expandable title="401 Unauthorized" default-open="false">
-
-**Problem**
-
-Requests fail with HTTP 401 and the message `{"error":{"code":"unauthorized","message":"Invalid authentication token"}}`.
-
-**Cause**
-
-The `Authorization` header contains an expired or malformed bearer token.
-
-**Fix**
-
-Regenerate the token from the dashboard and include it exactly as `Authorization: Bearer YOUR_TOKEN`. Test with:
-
-```bash
-curl -H "Authorization: Bearer YOUR_TOKEN" https://api.example.com/v2/deployments
-```
-
-</Expandable>
-
-<Expandable title="404 Not Found" default-open="false">
-
-**Problem**
-
-Requests return HTTP 404 with `{"error":{"code":"not_found","message":"Project not found"}}`.
-
-**Cause**
-
-The project identifier in the path does not exist or belongs to another team.
-
-**Fix**
-
-Verify the project name or ID with the list projects endpoint before retrying the request.
-
-</Expandable>
 
 ## Deployment Failures
 
-Deployment endpoints return 400 or 500 status codes when build or runtime steps fail.
-
-<Expandable title="Build Command Exit" default-open="false">
-
+<Expandable title="Build Command: `npm run build` exited with 1">
 **Problem**
 
-A deployment logs `Build failed with exit code 1` and the API returns code `build_error`.
+Deployment stops with the exact message:
 
-**Cause**
-
-The `build` script defined in `package.json` exits non-zero, often due to missing dependencies or TypeScript errors.
-
-**Fix**
-
-Run the build command locally to reproduce, then inspect the full log via the deployments endpoint:
-
-```bash
-curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://api.example.com/v2/deployments/DEPLOYMENT_ID/builds
+```text
+Build Command: `npm run build` exited with 1
 ```
 
-Update the script or add required environment variables.
-
-</Expandable>
-
-<Expandable title="Invalid Environment Variable" default-open="false">
-
-**Problem**
-
-Deployment fails with `Environment variable "API_KEY" is required but not set`.
-
 **Cause**
 
-A required variable referenced in `vercel.json` or the framework config is absent from the project settings.
+The build script fails because a required dependency is missing from `package.json` or an environment variable referenced in the build is undefined.
 
 **Fix**
 
-Add the variable through the dashboard or the environment variables API before triggering a new deployment.
+Add the missing package with `npm install` and commit the updated lockfile. Set any required variables under Project Settings > Environment Variables, then redeploy with `vercel --prod`.
+</Expandable>
 
+<Expandable title="The vercel.json file is invalid">
+**Problem**
+
+The API returns:
+
+```json
+{"error":{"code":"invalid_config","message":"The vercel.json file is invalid"}}
+```
+
+**Cause**
+
+A syntax error or unsupported key exists in the root `vercel.json` file.
+
+**Fix**
+
+Validate the file with `vercel build` locally. Remove or correct the invalid key, then push the change.
 </Expandable>
 
 ## Authentication Errors
 
-Token and permission issues produce distinct error codes even when HTTP status is 200-level on some endpoints.
-
-<Expandable title="Insufficient Scope" default-open="false">
-
+<Expandable title="Unauthorized: Invalid token">
 **Problem**
 
-Requests receive `{"error":{"code":"forbidden","message":"Token lacks required scope: deployment:write"}}`.
+Requests to `https://api.example.com/v2/deployments` return status 401 with body:
+
+```json
+{"error":{"code":"unauthorized","message":"Invalid token"}}
+```
 
 **Cause**
 
-The access token was created with read-only scopes.
+The `Authorization: Bearer` header contains an expired or revoked Vercel token.
 
 **Fix**
 
-Create a new token that includes the `deployment:write` scope and update any automation scripts using the token.
+Generate a new token at Account Settings > Tokens. Update your CI environment variable `VERCEL_TOKEN` and retry the request.
+</Expandable>
 
+## Rate Limiting
+
+<Expandable title="429 Too Many Requests">
+**Problem**
+
+The response header includes:
+
+```text
+HTTP/2 429
+Retry-After: 60
+X-RateLimit-Remaining: 0
+```
+
+**Cause**
+
+More than 100 requests were sent to the same endpoint within a 60-second window from the same token.
+
+**Fix**
+
+Implement exponential backoff starting at 60 seconds. Cache responses where possible and spread requests across multiple tokens if you require higher limits.
 </Expandable>
