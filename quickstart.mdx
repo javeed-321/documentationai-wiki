@@ -1,0 +1,66 @@
+---
+title: Quickstart
+description: Launch a ShopifyMax store and complete your first fast checkout in minutes.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+You need an example.com account and a product catalog file in CSV format. The platform supports stores with more than 100000 products and delivers checkout in under 3 seconds.
+</Callout>
+
+## Create your store
+
+<Steps>
+  <Step title="Sign up for an account" icon="user-plus">
+    Visit the signup page at example.com and create your store. Choose a unique store name and complete the verification step.
+  </Step>
+  <Step title="Set up your first store" icon="store">
+    After verification, name your store and select your region. ShopifyMax provisions your store instantly.
+  </Step>
+</Steps>
+
+## Import your catalog
+
+Upload your CSV file through the dashboard. The import process handles large catalogs efficiently and validates product data automatically.
+
+## Configure variables
+
+Add your integration tokens in the settings panel. Use the `CART_TOKEN` and `PAYMENT_KEY` variables to enable secure cart handling and payment processing.
+
+<CodeGroup tabs="JavaScript,cURL">
+```javascript
+const response = await fetch('https://api.example.com/checkout', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    cartToken: 'CART_TOKEN',
+    paymentKey: 'PAYMENT_KEY',
+    items: [{ id: 'prod_123', quantity: 1 }]
+  })
+});
+```
+```bash
+curl -X POST https://api.example.com/checkout \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"cartToken":"CART_TOKEN","paymentKey":"PAYMENT_KEY","items":[{"id":"prod_123","quantity":1}]}'
+```
+</CodeGroup>
+
+## Test your first checkout
+
+Run the example above to complete a test purchase. The entire flow finishes in under 3 seconds.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Catalog management" href="#import-your-catalog" icon="package">
+    Learn how to update and sync large product catalogs.
+  </Card>
+  <Card title="Variable reference" href="#configure-variables" icon="settings">
+    Explore all supported configuration variables.
+  </Card>
+</Columns>

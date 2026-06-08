@@ -1,0 +1,69 @@
+---
+title: Error Codes
+description: Common ShopifyMax API errors including checkout failures and variable substitution issues.
+---
+
+## Overview
+
+ShopifyMax returns structured error responses for all failed requests. Every error includes an `error_code`, a human-readable `message`, and optional `details`. All responses use HTTP status codes in the 4xx range for client errors.
+
+## Error Responses
+
+```json
+{
+  "error_code": "CHECKOUT_FAILED",
+  "message": "Checkout processing exceeded 3 seconds",
+  "details": {
+    "request_id": "req_abc123"
+  }
+}
+```
+
+## Common Errors
+
+<Expandable title="Checkout timeout on high-volume carts" default-open="false">
+
+Problem: Request returns `CHECKOUT_FAILED` with message "Checkout processing exceeded 3 seconds".
+
+Cause: Cart contains more than 100000 products or includes unresolved `CART_TOKEN` references during substitution.
+
+Fix: Reduce cart size below 100000 products before calling the checkout endpoint. Ensure `CART_TOKEN` is replaced with a valid value prior to submission.
+
+```bash
+curl -X POST https://api.example.com/v1/checkout \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"cart_token": "ct_live_12345"}'
+```
+
+</Expandable>
+
+<Expandable title="Variable substitution failure" default-open="false">
+
+Problem: Request returns `SUBSTITUTION_ERROR` with message "Failed to substitute PAYMENT_KEY variable".
+
+Cause: The `PAYMENT_KEY` placeholder remains unsubstituted in the request payload.
+
+Fix: Replace all instances of `PAYMENT_KEY` with an active payment key before sending the request.
+
+```json
+{
+  "payment_key": "pk_live_xyz789"
+}
+```
+
+</Expandable>
+
+<Expandable title="Invalid token validation" default-open="false">
+
+Problem: Request returns `TOKEN_INVALID` with message "CART_TOKEN failed validation".
+
+Cause: The provided `CART_TOKEN` does not match an active cart or has expired.
+
+Fix: Generate a fresh `CART_TOKEN` via the cart creation endpoint and retry the request.
+
+```bash
+curl -X POST https://api.example.com/v1/carts \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+</Expandable>

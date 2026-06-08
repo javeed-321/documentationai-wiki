@@ -1,0 +1,83 @@
+---
+title: Quickstart
+description: Make your first authenticated API calls to manage products and trigger fast checkouts.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+Obtain an API key from https://dashboard.example.com/keys. The platform supports catalogs exceeding 100000 products and checkouts completing in under 3 seconds when using `CART_TOKEN` and `PAYMENT_KEY` variables.
+</Callout>
+
+## Set up the client
+
+<Steps>
+  <Step title="Install the package" icon="download">
+    Run the following command in your project directory.
+
+    ```bash
+    npm install shopifymax
+    ```
+  </Step>
+  <Step title="Initialize the client" icon="settings">
+    Create a client instance with your API key.
+
+    ```javascript
+    import { ShopifyMax } from 'shopifymax';
+
+    const client = new ShopifyMax({
+      apiKey: 'YOUR_API_KEY',
+      baseUrl: 'https://api.example.com',
+    });
+    ```
+  </Step>
+</Steps>
+
+## Minimal working example
+
+<CodeGroup tabs="JavaScript,Python">
+```javascript
+import { ShopifyMax } from 'shopifymax';
+
+const client = new ShopifyMax({ apiKey: 'YOUR_API_KEY' });
+
+// Fetch products from catalog
+const products = await client.catalog.list({ limit: 10 });
+console.log(products);
+
+// Initiate checkout
+const checkout = await client.checkout.create({
+  cartToken: 'CART_TOKEN',
+  paymentKey: 'PAYMENT_KEY',
+});
+console.log(checkout.id);
+```
+
+```python
+from shopifymax import ShopifyMax
+
+client = ShopifyMax(api_key='YOUR_API_KEY')
+
+# Fetch products from catalog
+products = client.catalog.list(limit=10)
+print(products)
+
+# Initiate checkout
+checkout = client.checkout.create(
+    cart_token='CART_TOKEN',
+    payment_key='PAYMENT_KEY'
+)
+print(checkout.id)
+```
+</CodeGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Catalog endpoints" href="#catalog" icon="book-open">
+    Explore list, create, and update operations for products.
+  </Card>
+  <Card title="Checkout flow" href="#checkout" icon="credit-card">
+    Review full checkout parameters and response formats.
+  </Card>
+</Columns>

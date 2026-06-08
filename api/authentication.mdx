@@ -1,0 +1,68 @@
+---
+title: Authentication
+description: Secure API requests with CART_TOKEN and PAYMENT_KEY for cart and payment operations.
+---
+
+## Overview
+
+ShopifyMax requires every API request to include either a `CART_TOKEN` or a `PAYMENT_KEY`. These credentials identify the cart session and authorize payment operations. All requests must be made over HTTPS to `https://api.example.com`.
+
+## Token Generation
+
+Generate a `CART_TOKEN` when a customer starts a new cart. Generate a `PAYMENT_KEY` when the cart is ready for checkout.
+
+<ParamField body="cart_id" param-type="string" required="true">
+  Unique identifier of the cart.
+</ParamField>
+
+<ParamField body="expires_in" param-type="integer" required="false">
+  Token lifetime in seconds. Default is 3600.
+</ParamField>
+
+## Authentication Methods
+
+<Tabs>
+  <Tab title="CART_TOKEN" icon="key">
+    Include the token in the `X-Cart-Token` header for cart operations such as adding items or updating quantities.
+  </Tab>
+  <Tab title="PAYMENT_KEY" icon="lock">
+    Include the key in the `Authorization` header for payment operations such as processing charges or refunds.
+  </Tab>
+</Tabs>
+
+## Implementation
+
+Send authenticated requests using the following patterns.
+
+<CodeGroup tabs="JavaScript,Python,cURL">
+```javascript
+const res = await fetch('https://api.example.com/v1/cart', {
+  headers: {
+    'X-Cart-Token': 'CART_TOKEN_VALUE',
+    'Content-Type': 'application/json'
+  }
+});
+```
+```python
+import requests
+
+headers = {
+    'X-Cart-Token': 'CART_TOKEN_VALUE',
+    'Content-Type': 'application/json'
+}
+response = requests.get('https://api.example.com/v1/cart', headers=headers)
+```
+```bash
+curl https://api.example.com/v1/cart \
+  -H "X-Cart-Token: CART_TOKEN_VALUE" \
+  -H "Content-Type: application/json"
+```
+</CodeGroup>
+
+## Key Rotation
+
+Rotate both `CART_TOKEN` and `PAYMENT_KEY` every 24 hours or immediately after any suspected compromise. Use the rotation endpoint to obtain fresh credentials without losing active sessions.
+
+<Callout kind="alert">
+Never hard-code tokens in source control. Store them in environment variables and rotate them on a fixed schedule.
+</Callout>

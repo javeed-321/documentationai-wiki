@@ -1,0 +1,79 @@
+---
+title: Feature Overview
+description: Core ShopifyMax features for managing massive product catalogs and achieving instant checkouts.
+---
+
+## Overview
+
+ShopifyMax delivers reliable performance for large-scale e-commerce operations. You manage catalogs exceeding 100000 products while delivering checkouts in under three seconds. The platform supports custom variables such as `{CART_TOKEN}` and `{PAYMENT_KEY}` to streamline integrations without exposing sensitive data.
+
+## Product Catalog Scaling
+
+Scale your inventory confidently. ShopifyMax indexes products in real time and maintains search speed regardless of catalog size.
+
+<Columns cols={2}>
+  <Card title="Bulk Import" icon="upload" href="#examples">
+    Upload CSV files containing up to 50000 products in a single operation.
+  </Card>
+  <Card title="Dynamic Categories" icon="folder" href="#best-practices">
+    Organize products automatically using rules you define once.
+  </Card>
+</Columns>
+
+## Checkout Optimization
+
+Checkout speed stays under three seconds through optimized payment flows and edge caching.
+
+<Callout kind="info">
+  Enable one-click checkout to reduce average session time by 40 percent.
+</Callout>
+
+## Token Variable Usage
+
+You reference platform variables directly in templates and webhooks. Use `{CART_TOKEN}` to track sessions and `{PAYMENT_KEY}` to authorize transactions securely.
+
+<CodeGroup tabs="Liquid,JavaScript">
+```liquid
+{% if cart.token == '{CART_TOKEN}' %}
+  {{ payment.key }}
+{% endif %}
+```
+
+```javascript
+const checkout = await shopifyMax.createOrder({
+  cartToken: '{CART_TOKEN}',
+  paymentKey: '{PAYMENT_KEY}',
+});
+```
+</CodeGroup>
+
+## Performance Monitoring
+
+Track metrics through the built-in dashboard. You receive alerts when checkout latency approaches the three-second threshold or catalog queries slow.
+
+<Expandable title="View available metrics" default-open="false">
+
+- Average checkout duration
+- Product index update frequency
+- Error rate for variable substitution
+
+</Expandable>
+
+## Examples
+
+Test your configuration with sample payloads on `https://api.example.com`.
+
+<Tabs>
+  <Tab title="Catalog Sync" icon="database">
+    Schedule daily syncs from your ERP system using the REST endpoint.
+  </Tab>
+  <Tab title="Variable Injection" icon="code">
+    Inject `{CART_TOKEN}` at runtime through the JavaScript SDK.
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+- Keep variable names consistent across templates to avoid substitution errors.
+- Monitor the performance dashboard weekly and adjust cache settings as catalog size grows.
+- Test checkout flows in a staging environment before enabling production variables.

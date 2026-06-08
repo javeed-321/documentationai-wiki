@@ -1,0 +1,37 @@
+{
+  "id": "sk-013-mixed-chars",
+  "testName": "E-commerce Platform with mixed chars",
+  "productName": "ShopifyMax",
+  "source": "evals",
+  "difficulty": "edge-case",
+  "useCases": [
+    "product-guides",
+    "api-docs"
+  ],
+  "tags": [
+    "edge-case",
+    "special-characters",
+    "mdx-escaping",
+    "fixture-import"
+  ],
+  "passed": true,
+  "durationMs": 50515,
+  "totalFiles": 11,
+  "validFiles": 11,
+  "failedFiles": [],
+  "totalAttempts": 11,
+  "tokens": 95686,
+  "files": [
+    "introduction.mdx",
+    "quickstart.mdx",
+    "guides/overview.mdx",
+    "api/introduction.mdx",
+    "api/authentication.mdx",
+    "api/quickstart.mdx",
+    "api/errors.mdx",
+    "changelog.mdx",
+    "roadmap.mdx",
+    "api-reference/openapi.yaml",
+    "documentation.json"
+  ]
+}
