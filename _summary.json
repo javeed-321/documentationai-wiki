@@ -1,25 +1,24 @@
 {
-  "id": "sk-hc-01",
-  "testName": "Zendesk - Customer Support (SaaS)",
-  "productName": "Zendesk",
+  "id": "sk-hc-02",
+  "testName": "Shopify - E-commerce",
+  "productName": "Shopify",
   "source": "evals",
-  "difficulty": "simple",
+  "difficulty": "moderate",
   "useCases": [
     "help-center"
   ],
   "tags": [
     "help-center",
-    "support",
-    "saas",
-    "simple"
+    "ecommerce",
+    "moderate"
   ],
   "passed": true,
-  "durationMs": 22948,
+  "durationMs": 41795,
   "totalFiles": 5,
   "validFiles": 5,
   "failedFiles": [],
   "totalAttempts": 5,
-  "tokens": 40536,
+  "tokens": 41879,
   "files": [
     "help-center.mdx",
     "help-center/faq/getting-started.mdx",
