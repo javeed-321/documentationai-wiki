@@ -1,0 +1,58 @@
+---
+title: Quickstart
+description: Deploy your first application to Vercel in minutes using Git integration or CLI.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+You need a GitHub account with a repository containing a supported framework. No additional configuration is required to begin.
+</Callout>
+
+## Connect Your GitHub Account
+
+<Steps>
+  <Step title="Authorize Vercel" icon="github">
+    Sign in to your Vercel dashboard and connect your GitHub account through the integration settings.
+  </Step>
+  <Step title="Select Repository" icon="folder">
+    Choose the repository you want to deploy. Vercel automatically detects the framework and applies the correct preset.
+  </Step>
+  <Step title="Confirm Settings" icon="check-circle">
+    Review the build settings. Framework presets set the correct install and build commands automatically.
+  </Step>
+</Steps>
+
+## Deploy with CLI
+
+Use the CLI for projects that are not yet connected to GitHub.
+
+<CodeGroup tabs="npm,yarn,pnpm">
+```bash
+npm i -g vercel
+vercel
+```
+```bash
+yarn global add vercel
+vercel
+```
+```bash
+pnpm add -g vercel
+vercel
+```
+</CodeGroup>
+
+## Automatic Builds and Production URLs
+
+Once connected, every push to the main branch triggers an automatic build. Vercel generates a unique production URL in the format `https://your-project.example.com`. Preview deployments receive separate URLs for each pull request.
+
+## Next Steps
+
+<Columns cols={2}>
+  <Card title="Framework Presets" href="#framework-presets" icon="settings">
+    Explore how presets configure builds for popular frameworks.
+  </Card>
+  <Card title="Production URLs" href="#production-urls" icon="globe">
+    Learn how custom domains attach to production deployments.
+  </Card>
+</Columns>

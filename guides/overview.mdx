@@ -1,0 +1,107 @@
+---
+title: Feature Overview
+description: Core Vercel features including serverless functions, edge middleware, and analytics.
+---
+
+## Overview
+
+Vercel provides a modern deployment platform that handles frontend applications and APIs with minimal configuration. You deploy code from a Git repository and receive automatic previews, production updates, and global distribution. The platform emphasizes performance through edge computing and static optimization.
+
+Core capabilities include serverless functions for backend logic, edge middleware for request handling, monorepo support for complex codebases, and incremental static regeneration for dynamic content.
+
+## Serverless Functions
+
+Serverless functions run on demand without server management. You write standard JavaScript or TypeScript files inside an `api` directory and Vercel deploys them automatically.
+
+```javascript
+export default function handler(req, res) {
+  res.status(200).json({ message: 'Hello from Vercel' });
+}
+```
+
+Functions scale automatically and integrate with your frontend routes.
+
+## Edge Middleware
+
+Edge middleware executes at the network edge before requests reach your application. Use it for authentication, redirects, or header modifications with low latency.
+
+Create a `middleware.ts` file at the project root:
+
+```typescript
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+export function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+  return NextResponse.next();
+}
+```
+
+<Callout kind="info">
+Middleware runs on every request, so keep logic lightweight.
+</Callout>
+
+## Monorepo Support
+
+Vercel detects and builds multiple packages within a single repository. Configure workspaces in your package manager and specify build settings per package.
+
+<Columns cols={2}>
+  <Card title="Turborepo" icon="zap" href="#examples">
+    Optimized task running across packages.
+  </Card>
+  <Card title="Nx" icon="settings" href="#examples">
+    Advanced dependency graph management.
+  </Card>
+</Columns>
+
+## Incremental Static Regeneration
+
+Incremental static regeneration updates static pages after deployment without rebuilding the entire site. Set a revalidation interval in your page configuration.
+
+```javascript
+export async function getStaticProps() {
+  const data = await fetchData();
+  return {
+    props: { data },
+    revalidate: 60,
+  };
+}
+```
+
+## Examples
+
+<Tabs>
+  <Tab title="Function" icon="code">
+    <CodeGroup tabs="JavaScript,TypeScript">
+```javascript
+export default (req, res) => {
+  res.json({ ok: true });
+};
+```
+
+```typescript
+export default function handler(
+  req: any,
+  res: any
+) {
+  res.json({ ok: true });
+}
+```
+    </CodeGroup>
+  </Tab>
+  <Tab title="Middleware" icon="shield">
+    Add geolocation checks or A/B testing logic.
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+- Keep function code under the 50 MB limit for fastest cold starts.
+- Use environment variables stored in the dashboard for secrets.
+- Test middleware locally with the Vercel CLI before pushing changes.
+
+<Expandable title="Learn more about limits" default-open="false">
+Review the full list of runtime constraints and quotas in the platform documentation.
+</Expandable>

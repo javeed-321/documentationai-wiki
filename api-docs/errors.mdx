@@ -1,0 +1,107 @@
+---
+title: Error Codes
+description: Common API error codes and how to resolve deployment or project issues.
+---
+
+## HTTP Status Meanings
+
+The Vercel API returns standard HTTP status codes. Review the response body for a `code` field that provides the exact error identifier.
+
+<Expandable title="401 Unauthorized" default-open="false">
+
+**Problem**
+
+Requests fail with HTTP 401 and the message `{"error":{"code":"unauthorized","message":"Invalid authentication token"}}`.
+
+**Cause**
+
+The `Authorization` header contains an expired or malformed bearer token.
+
+**Fix**
+
+Regenerate the token from the dashboard and include it exactly as `Authorization: Bearer YOUR_TOKEN`. Test with:
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" https://api.example.com/v2/deployments
+```
+
+</Expandable>
+
+<Expandable title="404 Not Found" default-open="false">
+
+**Problem**
+
+Requests return HTTP 404 with `{"error":{"code":"not_found","message":"Project not found"}}`.
+
+**Cause**
+
+The project identifier in the path does not exist or belongs to another team.
+
+**Fix**
+
+Verify the project name or ID with the list projects endpoint before retrying the request.
+
+</Expandable>
+
+## Deployment Failures
+
+Deployment endpoints return 400 or 500 status codes when build or runtime steps fail.
+
+<Expandable title="Build Command Exit" default-open="false">
+
+**Problem**
+
+A deployment logs `Build failed with exit code 1` and the API returns code `build_error`.
+
+**Cause**
+
+The `build` script defined in `package.json` exits non-zero, often due to missing dependencies or TypeScript errors.
+
+**Fix**
+
+Run the build command locally to reproduce, then inspect the full log via the deployments endpoint:
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  https://api.example.com/v2/deployments/DEPLOYMENT_ID/builds
+```
+
+Update the script or add required environment variables.
+
+</Expandable>
+
+<Expandable title="Invalid Environment Variable" default-open="false">
+
+**Problem**
+
+Deployment fails with `Environment variable "API_KEY" is required but not set`.
+
+**Cause**
+
+A required variable referenced in `vercel.json` or the framework config is absent from the project settings.
+
+**Fix**
+
+Add the variable through the dashboard or the environment variables API before triggering a new deployment.
+
+</Expandable>
+
+## Authentication Errors
+
+Token and permission issues produce distinct error codes even when HTTP status is 200-level on some endpoints.
+
+<Expandable title="Insufficient Scope" default-open="false">
+
+**Problem**
+
+Requests receive `{"error":{"code":"forbidden","message":"Token lacks required scope: deployment:write"}}`.
+
+**Cause**
+
+The access token was created with read-only scopes.
+
+**Fix**
+
+Create a new token that includes the `deployment:write` scope and update any automation scripts using the token.
+
+</Expandable>

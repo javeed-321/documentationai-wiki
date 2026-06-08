@@ -1,0 +1,61 @@
+---
+title: Authentication
+description: Authenticate API requests using Vercel tokens and OAuth flows.
+---
+
+## Overview
+
+Vercel API requests require authentication via either a personal access token or an OAuth access token. All authenticated endpoints accept the token in the Authorization header using the Bearer scheme.
+
+Tokens grant access based on assigned scopes. Requests without a valid token or with insufficient scope return a 401 status.
+
+## Authentication Methods
+
+<Tabs>
+  <Tab title="API Tokens" icon="key">
+    Generate a personal access token from your account settings. The token authenticates requests on your behalf and inherits your account permissions.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Set the value to `Bearer` followed by your token.
+    </ParamField>
+  </Tab>
+  <Tab title="OAuth Apps" icon="shield">
+    Register an OAuth application to obtain client credentials. Users authorize your app and receive scoped access tokens.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Use the access token returned after the authorization code exchange.
+    </ParamField>
+  </Tab>
+</Tabs>
+
+## Implementation
+
+<CodeGroup tabs="cURL,JavaScript,Python">
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  https://api.example.com/v1/deployments
+```
+
+```javascript
+const res = await fetch("https://api.example.com/v1/deployments", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+```
+
+```python
+import requests
+
+headers = {"Authorization": f"Bearer {token}"}
+response = requests.get(
+    "https://api.example.com/v1/deployments", headers=headers
+)
+```
+</CodeGroup>
+
+## Security Best Practices
+
+<Callout kind="alert">
+Never expose tokens in client-side code or commit them to version control. Rotate tokens regularly and revoke unused ones immediately. Limit token scope to the minimum required permissions for each integration.
+</Callout>

@@ -1,0 +1,68 @@
+---
+title: Quickstart
+description: Make your first API call to create a deployment or list projects.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+Obtain a Vercel API token from your account settings before making requests. All API calls require the `Authorization: Bearer` header.
+</Callout>
+
+## Authentication setup
+
+<Steps>
+  <Step title="Create an API token" icon="key">
+    Generate a token with deployment and project scopes. Store it securely and never commit it to source control.
+  </Step>
+  <Step title="Set the token in your environment" icon="terminal">
+    Export the token as an environment variable for use in shell commands.
+  </Step>
+</Steps>
+
+## First API call
+
+Use the following examples to list projects or create a deployment. Both calls return standard JSON responses.
+
+<CodeGroup tabs="List projects,Create deployment">
+```bash
+curl -H "Authorization: Bearer YOUR_API_TOKEN" \
+  https://api.example.com/v1/projects
+```
+```bash
+curl -X POST \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"my-app","gitRepository":{"url":"https://github.com/example/repo"}}' \
+  https://api.example.com/v1/deployments
+```
+</CodeGroup>
+
+Example JSON response for listing projects:
+
+```json
+{
+  "projects": [
+    {
+      "id": "prj_abc123",
+      "name": "my-app",
+      "createdAt": "2024-01-15T10:00:00Z"
+    }
+  ]
+}
+```
+
+## Rate limits
+
+Requests are limited to 100 per minute per token. Exceeding the limit returns HTTP 429 with a `retry-after` header. Monitor the `x-ratelimit-remaining` response header to stay within bounds.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Authentication" icon="lock" href="#authentication-setup">
+    Review token scopes and renewal.
+  </Card>
+  <Card title="Deployments" icon="rocket" href="/api-docs/deployments">
+    Explore full deployment parameters.
+  </Card>
+</Columns>
