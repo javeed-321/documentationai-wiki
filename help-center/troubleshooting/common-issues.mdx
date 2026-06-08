@@ -1,69 +1,48 @@
 ---
 title: Troubleshooting
-description: Fix problems with the Intercom messenger, help center search, or message delivery.
+description: Fix common Zendesk Help Center problems such as search failures, article display errors, and permission issues.
 ---
 
-## Common messenger problems
+## Common Issues
 
-<Expandable title="Messenger does not load on your site" default-open="false">
+If something feels off in your Help Center, start here. Each section walks through a real symptom, why it happens, and the quickest fix.
 
-The messenger fails to appear on your website pages.
+<Expandable title="Search returns no results or outdated articles" default-open="false">
+Problem: Visitors type a query and see "No articles found" even though matching content exists.
 
-**Cause**  
-Your site blocks the Intercom script or the workspace ID is incorrect.
+Cause: The search index has not updated after recent article changes or the index job failed.
 
-**Fix**  
-1. Open your browser console and look for this error:  
-   `Failed to load resource: the server responded with a status of 403`  
-2. Confirm the Intercom script tag contains your exact workspace ID:  
-   ```html
-   <script>
-     window.intercomSettings = { app_id: 'YOUR_WORKSPACE_ID' };
-   </script>
-   ```
-3. Add `https://api.example.com` to your site's allowed script sources if you use a content security policy.
-
+Fix: Go to Guide admin, open Settings, and click Rebuild search index. Wait five minutes, then test the same query again. If the problem continues, check the Activity log for an entry that reads "Search index update failed".
 </Expandable>
 
-<Expandable title="Help center articles do not appear in search" default-open="false">
+<Expandable title="Published article does not appear on the site" default-open="false">
+Problem: You click Publish but the article stays hidden from end users.
 
-Visitors see no results when they search the help center.
+Cause: The article is still in draft status, or its section permission is set to Agents only.
 
-**Cause**  
-Articles are not published or the search index is out of date.
-
-**Fix**  
-1. In Intercom, open each article and check that its status shows Published.  
-2. Click the Reindex button on the Help Center settings page.  
-3. Wait two minutes, then test a search for a known article title.
-
+Fix: Open the article, confirm the status shows Published, then click the section name and set Permissions to Everyone. Save and refresh the Help Center URL.
 </Expandable>
 
-<Expandable title="Chat notifications are not sent to teammates" default-open="false">
+<Expandable title="Users see a permission error when signing in" default-open="false">
+Problem: End users receive the message "You do not have permission to view this page" right after login.
 
-New visitor messages arrive in the inbox but no email or push alerts reach your team.
+Cause: The user role lacks access to the Help Center or the SSO mapping is incorrect.
 
-**Cause**  
-Notification settings are turned off or the teammate email address is unverified.
-
-**Fix**  
-1. Go to Settings → Notifications and confirm Email and Mobile are enabled for the "New conversation" event.  
-2. Ask each teammate to open their profile and verify the email address listed there.  
-3. Send a test message from an incognito window and check the inbox for the notification.
-
+Fix: In Support admin, go to People, find the user, and change Role to End User. Then verify the SSO settings under Channels, Help Center, Authentication and confirm the external ID field matches the value sent by your identity provider.
 </Expandable>
 
-<Expandable title="User identity fails to sync" default-open="false">
+<Expandable title="Custom theme or widget fails to load" default-open="false">
+Problem: The Help Center shows the default theme instead of your branded one, or the contact widget never appears.
 
-User details such as name or email do not update in Intercom after login.
+Cause: The theme file contains a syntax error or the widget script tag is missing from the layout.
 
-**Cause**  
-The `user_id` or `email` value sent to Intercom does not match the value used on first contact.
+Fix: In Guide, open the active theme, click Preview, and fix any red error lines shown in the editor. For the widget, edit the document_head.hbs file and add the script tag exactly as provided in the widget setup screen, then publish the theme.
+</Expandable>
 
-**Fix**  
-1. In your code, ensure you call `Intercom('boot', { user_id: '12345', email: 'user@example.com' });` on every page after login.  
-2. Check the browser console for this message:  
-   `Intercom: user_id mismatch detected`  
-3. Update the value on your site so it exactly matches the original identifier.
+<Expandable title="Articles do not sync from Support to Help Center" default-open="false">
+Problem: New or updated articles created in Support never show up in the Help Center.
 
+Cause: The sync job between Support and Guide is paused or the integration token has expired.
+
+Fix: Go to Admin, Channels, Help Center, Integrations and click Reconnect next to Support. Enter a fresh API token if prompted. Once connected, manually trigger a sync by clicking Sync now and watch the Activity log for a "Sync completed" entry.
 </Expandable>
