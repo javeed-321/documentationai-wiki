@@ -1,92 +1,62 @@
 ---
 title: Troubleshooting
-description: Fix frequent Zendesk Help Center problems such as article visibility, search indexing, and permission errors.
+description: Fix common Slack problems including message delivery failures, sync errors, and login issues.
 ---
 
-## Common Issues
+## Message Delivery Issues
 
-Start here when articles disappear, searches return nothing, or login flows break. Each section shows the exact symptom, the typical cause, and the quickest fix.
+<Expandable title="Message not sending" default-open="false">
 
-<Callout kind="info">
-  Refresh your browser cache and test in an incognito window before changing settings.
-</Callout>
+Your message stays stuck with the status "Sending..." and never reaches the channel.
 
-<Expandable title="Articles not appearing in the Help Center" default-open="false">
+This happens when your connection drops mid-send or Slack hits a temporary rate limit on your workspace.
 
-Articles stay hidden from visitors even after you publish them.
-
-**Cause**  
-The article category or section permission is set to "Agents only" or the article itself has a future publish date.
-
-**Fix**  
-1. Open the article in the Zendesk Admin Center.  
-2. Click Edit, then expand Publishing options.  
-3. Set Visibility to "Everyone" and confirm the publish date is today or earlier.  
-4. Click Save and republish.  
-5. Wait up to five minutes, then check the live site.
+Check your internet connection first. Then try sending a short test message in a direct message to yourself. If it fails, restart the Slack app and sign back in.
 
 </Expandable>
 
-<Expandable title="Search returns no results or wrong articles" default-open="false">
+<Expandable title="Messages appear only after refresh" default-open="false">
 
-Visitors type a clear term and receive an empty list or unrelated content.
+Sent messages vanish until you manually refresh the channel view.
 
-**Cause**  
-Search indexing is paused or the search filter excludes the article's labels.
+A sync delay between your client and Slack servers often causes this, especially on slower networks.
 
-**Fix**  
-1. Go to Guide Admin > Settings > Search.  
-2. Confirm indexing status shows "Up to date." If it shows "Paused," click Resume.  
-3. Edit the missing article and add at least two relevant labels.  
-4. Save, then trigger a manual reindex from the same settings page.  
-5. Test the exact search term again after two minutes.
+Open the channel, then run the keyboard shortcut `Cmd/Ctrl + R` to force a refresh. If the issue repeats, sign out and sign back in from the account menu.
 
 </Expandable>
 
-<Expandable title="Theme looks broken or CSS fails to load" default-open="false">
+## Notification Problems
 
-Custom theme renders with missing styles, overlapping text, or default Zendesk styling.
+<Expandable title="No notifications for new messages" default-open="false">
 
-**Cause**  
-A recent theme update introduced a syntax error in the stylesheet or a required asset is missing.
+You see the red badge on the workspace icon but hear no sound or see no desktop alert.
 
-**Fix**  
-1. In Guide Admin > Customize > Themes, click the current theme.  
-2. Open the CSS file and look for unclosed braces or missing semicolons.  
-3. Replace the file with a clean copy from your last working version.  
-4. Click Preview, then Publish.  
-5. Clear your browser cache and reload the Help Center.
+Slack may have lost permission to show notifications, or your Do Not Disturb schedule is active.
+
+Go to Preferences > Notifications and confirm "Allow notifications" is on. Check your system settings to grant Slack permission to send alerts.
 
 </Expandable>
 
-<Expandable title="SSO login fails with redirect error" default-open="false">
+## Workspace Sync Issues
 
-Users see "Redirect URI mismatch" or are stuck on the login screen after clicking Sign in.
+<Expandable title="Workspace fails to load channels" default-open="false">
 
-**Cause**  
-The SSO redirect URL in Zendesk does not exactly match the URL registered in your identity provider.
+The sidebar shows "Syncing..." for minutes, then displays an error reading "Unable to load channels."
 
-**Fix**  
-1. Copy the full redirect URL shown in Zendesk Admin > Settings > Single sign-on.  
-2. Paste it into your identity provider settings and save.  
-3. In Zendesk, click Test SSO.  
-4. Complete the login flow.  
-5. If the test succeeds, ask a test user to sign in again.
+This usually stems from a corrupted local cache after an interrupted update.
+
+Quit Slack completely. On macOS, delete the folder `~/Library/Application Support/Slack` and reopen the app. It will rebuild the cache on next sign-in.
 
 </Expandable>
 
-<Expandable title="API or webhook returns 401 or 403 errors" default-open="false">
+## Login and SSO Errors
 
-Your integration logs show "401 Unauthorized" or "403 Forbidden" when Zendesk tries to reach your endpoint.
+<Expandable title="SSO login loop" default-open="false">
 
-**Cause**  
-The API token is expired or the webhook URL lacks the correct authentication header.
+You enter your company credentials, get redirected, then land back at the login screen with the message "Authentication failed. Please try again."
 
-**Fix**  
-1. Generate a new API token in Admin Center > Channels > API.  
-2. Update the token in your integration settings.  
-3. For webhooks, add an Authorization header with value `Bearer YOUR_API_TOKEN`.  
-4. Send a test payload from the webhook settings page.  
-5. Confirm the receiving server logs a 200 response.
+The identity provider may have an expired session token or a mismatched redirect URL.
+
+Clear your browser cookies for both Slack and your SSO provider. Then start the login flow again from the desktop app.
 
 </Expandable>

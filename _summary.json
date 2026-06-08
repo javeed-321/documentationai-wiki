@@ -1,29 +1,30 @@
 {
-  "id": "sk-hc-01",
-  "testName": "Zendesk - Customer Support (SaaS)",
-  "productName": "Zendesk",
+  "id": "sk-hc-03",
+  "testName": "Slack - Team Communication",
+  "productName": "Slack",
   "source": "evals",
-  "difficulty": "simple",
+  "difficulty": "moderate",
   "useCases": [
     "help-center"
   ],
   "tags": [
     "help-center",
-    "support",
-    "saas",
-    "simple"
+    "communication",
+    "moderate"
   ],
   "passed": true,
-  "durationMs": 29813,
-  "totalFiles": 5,
-  "validFiles": 5,
+  "durationMs": 34427,
+  "totalFiles": 7,
+  "validFiles": 7,
   "failedFiles": [],
-  "totalAttempts": 5,
-  "tokens": 41321,
+  "totalAttempts": 7,
+  "tokens": 60376,
   "files": [
     "help-center.mdx",
     "help-center/faq/getting-started.mdx",
+    "help-center/faq/messaging.mdx",
     "help-center/troubleshooting/common-issues.mdx",
+    "help-center/troubleshooting/app-connectivity.mdx",
     "help-center/contact.mdx",
     "documentation.json"
   ]
