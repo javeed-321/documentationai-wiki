@@ -1,79 +1,107 @@
 ---
 title: Error Codes
-description: Common Vercel API error codes, their causes, and recommended solutions for deployment and project issues.
+description: Common API error codes and how to resolve deployment or project issues.
 ---
 
-## Authentication Errors
+## HTTP Status Meanings
 
-<Expandable title="401 Unauthorized - Invalid Token" default-open="false">
+The Vercel API returns standard HTTP status codes. Review the response body for a `code` field that provides the exact error identifier.
 
-Problem: Requests return status 401 with message `{"error":"unauthorized","message":"Invalid access token"}`.
+<Expandable title="401 Unauthorized" default-open="false">
 
-Cause: The `Authorization` header contains an expired or malformed bearer token.
+**Problem**
 
-Fix: Generate a new token from the dashboard at `https://dashboard.example.com/account/tokens` and include it exactly as `Authorization: Bearer YOUR_TOKEN`.
+Requests fail with HTTP 401 and the message `{"error":{"code":"unauthorized","message":"Invalid authentication token"}}`.
+
+**Cause**
+
+The `Authorization` header contains an expired or malformed bearer token.
+
+**Fix**
+
+Regenerate the token from the dashboard and include it exactly as `Authorization: Bearer YOUR_TOKEN`. Test with:
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" https://api.example.com/v2/deployments
+```
 
 </Expandable>
 
-<Expandable title="403 Forbidden - Scope Missing" default-open="false">
+<Expandable title="404 Not Found" default-open="false">
 
-Problem: API calls fail with `{"error":"forbidden","message":"Token lacks required scope: deployment:write"}`.
+**Problem**
 
-Cause: The token was created without the deployment write permission.
+Requests return HTTP 404 with `{"error":{"code":"not_found","message":"Project not found"}}`.
 
-Fix: Revoke the current token and create a new one with the `deployment:write` scope enabled.
+**Cause**
+
+The project identifier in the path does not exist or belongs to another team.
+
+**Fix**
+
+Verify the project name or ID with the list projects endpoint before retrying the request.
 
 </Expandable>
 
 ## Deployment Failures
 
-<Expandable title="Build Failed - ENOENT" default-open="false">
+Deployment endpoints return 400 or 500 status codes when build or runtime steps fail.
 
-Problem: Deployment logs show `Error: ENOENT: no such file or directory, open 'vercel.json'`.
+<Expandable title="Build Command Exit" default-open="false">
 
-Cause: The project root lacks a `vercel.json` file or the file path is incorrect in the build context.
+**Problem**
 
-Fix: Add a minimal `vercel.json` at the repository root and push a new commit to trigger rebuild.
+A deployment logs `Build failed with exit code 1` and the API returns code `build_error`.
 
-```json
-{
-  "version": 2,
-  "builds": [{ "src": "api/**/*.js", "use": "@vercel/node" }]
-}
+**Cause**
+
+The `build` script defined in `package.json` exits non-zero, often due to missing dependencies or TypeScript errors.
+
+**Fix**
+
+Run the build command locally to reproduce, then inspect the full log via the deployments endpoint:
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  https://api.example.com/v2/deployments/DEPLOYMENT_ID/builds
 ```
 
-</Expandable>
-
-<Expandable title="Deployment Timeout" default-open="false">
-
-Problem: The deployment status changes to `ERROR` after 15 minutes with message `Build exceeded maximum duration`.
-
-Cause: The build step runs longer than the platform limit due to unoptimized dependencies.
-
-Fix: Reduce build time by pruning unused packages and adding a `vercel.json` `buildCommand` override.
+Update the script or add required environment variables.
 
 </Expandable>
 
-## Rate Limit Responses
+<Expandable title="Invalid Environment Variable" default-open="false">
 
-<Expandable title="429 Too Many Requests" default-open="false">
+**Problem**
 
-Problem: API responses return HTTP 429 and body `{"error":"rate_limit_exceeded","retry_after":60}`.
+Deployment fails with `Environment variable "API_KEY" is required but not set`.
 
-Cause: More than 100 requests per minute were sent from the same token.
+**Cause**
 
-Fix: Implement exponential backoff in client code and respect the `retry_after` value before retrying.
+A required variable referenced in `vercel.json` or the framework config is absent from the project settings.
+
+**Fix**
+
+Add the variable through the dashboard or the environment variables API before triggering a new deployment.
 
 </Expandable>
 
-## Validation Errors
+## Authentication Errors
 
-<Expandable title="422 Unprocessable Entity - Invalid Env" default-open="false">
+Token and permission issues produce distinct error codes even when HTTP status is 200-level on some endpoints.
 
-Problem: Project creation fails with `{"error":"validation_error","field":"env","message":"Environment variable names must be uppercase"}`.
+<Expandable title="Insufficient Scope" default-open="false">
 
-Cause: An environment variable key contains lowercase letters or invalid characters.
+**Problem**
 
-Fix: Rename all environment variables to use only uppercase letters, numbers, and underscores before resubmitting the request.
+Requests receive `{"error":{"code":"forbidden","message":"Token lacks required scope: deployment:write"}}`.
+
+**Cause**
+
+The access token was created with read-only scopes.
+
+**Fix**
+
+Create a new token that includes the `deployment:write` scope and update any automation scripts using the token.
 
 </Expandable>

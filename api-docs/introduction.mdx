@@ -1,37 +1,37 @@
 ---
 title: Introduction
-description: Introduction to the Vercel REST API for managing projects, deployments, and domains programmatically.
+description: Overview of the Vercel API for managing deployments, projects, and team resources.
 ---
 
 <Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416420393-s9t4cno1w99-Image-8.png?q=85&fm=auto&auto=compress%2Cformat" alt="Vercel documentation" width="800" height="400" />
 
 ## Welcome
 
-The Vercel REST API lets you manage projects, deployments, and domains directly from your applications. Use it to automate workflows and integrate Vercel into your existing tools.
+The Vercel API exposes REST endpoints that let you manage deployments, projects, and team resources. You interact with resources through standard HTTP methods and receive webhook events for real-time notifications.
 
 <Columns cols={2}>
-  <Card title="API Capabilities" icon="zap" href="#capabilities">
-    Control projects, deployments, and domains through a unified set of endpoints.
+  <Card title="REST Endpoints" icon="code" href="#endpoints">
+    Access all resources via predictable REST paths with JSON request and response bodies.
   </Card>
-  <Card title="Rate Limits" icon="shield" href="#limits">
-    Requests are limited to 100 per minute per token to ensure stability.
+  <Card title="Resource Management" icon="database" href="#resources">
+    Create, read, update, and delete projects, deployments, and environment variables.
   </Card>
-  <Card title="Response Formats" icon="code" href="#formats">
-    All responses return JSON with consistent error and success structures.
+  <Card title="Deployment Control" icon="rocket" href="#deployments">
+    Trigger deployments, promote to production, and inspect build logs programmatically.
   </Card>
-  <Card title="Versioning" icon="settings" href="#versioning">
-    The current stable version is v2. Include the version in the request path.
+  <Card title="Webhook Events" icon="bell" href="#webhooks">
+    Subscribe to deployment, project, and domain events for automated workflows.
   </Card>
 </Columns>
 
-<Card title="Projects API" icon="book-open" href="/api-docs/projects" horizontal cta="View reference">
-  Create and configure projects programmatically.
+<Card title="Explore Endpoints" icon="arrow-right" href="/api-docs/endpoints" horizontal>
+  Review the complete list of REST endpoints with request and response schemas.
 </Card>
 
-<Card title="Deployments API" icon="rocket" href="/api-docs/deployments" horizontal cta="View reference">
-  Trigger and monitor deployments from your code.
+<Card title="Explore Webhooks" icon="arrow-right" href="/api-docs/webhooks" horizontal>
+  Learn how to register and validate webhook subscriptions for your team.
 </Card>
 
 <Callout kind="tip">
-  Always include your API token in the Authorization header for every request.
+  Authenticate every request with a Bearer token scoped to the correct team.
 </Callout>

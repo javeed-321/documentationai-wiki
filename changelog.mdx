@@ -1,39 +1,39 @@
 ---
 title: Changelog
-description: Release notes for new Vercel features, platform updates, and CLI improvements.
+description: Release notes for Vercel platform updates and new features.
 ---
 
-## Release Notes
+<Update label="2024-11-05" description="v2.1.0" tags={["feature", "bugfix"]}>
 
-<Update label="2024-10-15" description="v34.2.0" tags={["feature", "bugfix"]}>
+## New capabilities
+- Added instant preview for edge functions.
+- Introduced one-click rollback for deployments.
 
-## New Features
-- Added automatic preview URL generation for monorepo projects.
-- Introduced region selection for serverless functions in the dashboard.
-
-## Bug Fixes
-- Resolved CLI login failures on Windows arm64 systems.
-- Fixed edge cache invalidation delays during deployments.
+## Performance improvements
+- Reduced build times by 35 percent on average.
+- Fixed caching issue that caused stale assets.
 
 </Update>
 
-<Update label="2024-09-28" description="v34.1.0" tags={["feature"]}>
+<Update label="2024-10-20" description="v2.0.0" tags={["breaking", "feature"]}>
 
-## New Features
-- Launched support for custom build timeouts up to 45 minutes.
-- Enabled incremental static regeneration for dynamic routes.
+## Breaking changes
+- Removed legacy Node 16 runtime support.
+- Updated API endpoints require new authentication headers.
+
+## New capabilities
+- Launched automatic HTTPS certificate renewal.
+- Added support for monorepo workspaces.
 
 </Update>
 
-<Update label="2024-09-10" description="v34.0.0" tags={["breaking", "feature"]}>
+<Update label="2024-09-15" description="v1.9.5" tags={["bugfix", "performance"]}>
 
-## Breaking Changes
-- Removed legacy Node.js 16 runtime support.
+## Performance improvements
+- Optimized image optimization pipeline.
 
-## New Features
-- Added built-in analytics integration for all projects.
-
-## Deprecations
-- Deprecated the `--prod` flag in favor of environment-specific commands.
+## Bug fixes
+- Resolved deployment timeout errors on large projects.
+- Fixed analytics dashboard data aggregation.
 
 </Update>

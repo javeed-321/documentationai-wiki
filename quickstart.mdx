@@ -1,64 +1,58 @@
 ---
 title: Quickstart
-description: Deploy your first project to Vercel in minutes using Git integration or the CLI.
+description: Deploy your first application to Vercel in minutes using Git integration or CLI.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-  You need a GitHub, GitLab, or Bitbucket account and a project with a supported framework. No credit card is required to start.
+You need a GitHub account with a repository containing a supported framework. No additional configuration is required to begin.
 </Callout>
 
-## Connect your repository
+## Connect Your GitHub Account
 
 <Steps>
-  <Step title="Import project" icon="github">
-    Go to the Vercel dashboard and select Import Git Repository. Choose your repository from the list.
+  <Step title="Authorize Vercel" icon="github">
+    Sign in to your Vercel dashboard and connect your GitHub account through the integration settings.
   </Step>
-  <Step title="Framework detection" icon="settings">
-    Vercel automatically detects your framework and suggests build settings. Review the suggested configuration and adjust if needed.
+  <Step title="Select Repository" icon="folder">
+    Choose the repository you want to deploy. Vercel automatically detects the framework and applies the correct preset.
   </Step>
-  <Step title="First production deployment" icon="rocket">
-    Click Deploy. Vercel builds your project and creates a production deployment at a unique URL.
+  <Step title="Confirm Settings" icon="check-circle">
+    Review the build settings. Framework presets set the correct install and build commands automatically.
   </Step>
 </Steps>
 
-## Deploy with the CLI
+## Deploy with CLI
 
-Install the Vercel CLI and run a deployment from your terminal.
+Use the CLI for projects that are not yet connected to GitHub.
 
-<CodeGroup tabs="npm,pnpm,yarn">
+<CodeGroup tabs="npm,yarn,pnpm">
 ```bash
 npm i -g vercel
+vercel
 ```
-
-```bash
-pnpm add -g vercel
-```
-
 ```bash
 yarn global add vercel
+vercel
+```
+```bash
+pnpm add -g vercel
+vercel
 ```
 </CodeGroup>
 
-After installation, run the deploy command inside your project folder.
+## Automatic Builds and Production URLs
 
-```bash
-vercel
-```
+Once connected, every push to the main branch triggers an automatic build. Vercel generates a unique production URL in the format `https://your-project.example.com`. Preview deployments receive separate URLs for each pull request.
 
-Follow the prompts to link the project and complete your first deployment.
+## Next Steps
 
-## Next steps
-
-<Columns cols={3}>
-  <Card title="Git integration" icon="git-branch" href="#connect-your-repository">
-    Learn how to configure automatic deployments on every push.
+<Columns cols={2}>
+  <Card title="Framework Presets" href="#framework-presets" icon="settings">
+    Explore how presets configure builds for popular frameworks.
   </Card>
-  <Card title="CLI reference" icon="terminal" href="#deploy-with-the-cli">
-    Explore additional commands for preview deployments and environment variables.
-  </Card>
-  <Card title="Deployment guides" icon="book-open" href="#first-production-deployment">
-    Dive deeper into production workflows and custom domains.
+  <Card title="Production URLs" href="#production-urls" icon="globe">
+    Learn how custom domains attach to production deployments.
   </Card>
 </Columns>
