@@ -1,31 +1,29 @@
 {
-  "id": "sk-hc-03",
-  "testName": "Slack - Team Communication",
-  "productName": "Slack",
+  "id": "sk-uc-hc",
+  "testName": "Help Center only — Intercom",
+  "productName": "Intercom",
   "source": "evals",
-  "difficulty": "moderate",
+  "difficulty": "simple",
   "useCases": [
     "help-center"
   ],
   "tags": [
+    "v2-router",
     "help-center",
-    "communication",
-    "moderate"
+    "simple"
   ],
   "passed": true,
-  "durationMs": 34323,
-  "totalFiles": 7,
-  "validFiles": 7,
+  "durationMs": 32679,
+  "totalFiles": 5,
+  "validFiles": 5,
   "failedFiles": [],
-  "totalAttempts": 7,
-  "tokens": 59705,
+  "totalAttempts": 5,
+  "tokens": 42411,
   "files": [
     "help-center.mdx",
     "help-center/faq/getting-started.mdx",
     "help-center/troubleshooting/common-issues.mdx",
     "help-center/contact.mdx",
-    "help-center/guides/channels.mdx",
-    "help-center/guides/messaging.mdx",
     "documentation.json"
   ]
 }

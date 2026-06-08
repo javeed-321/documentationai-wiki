@@ -1,74 +1,64 @@
 ---
 title: Troubleshooting
-description: Resolve problems with Slack connections, notifications, file uploads, and app integrations.
+description: Resolve common problems with your Intercom Help Center configuration and content.
 ---
 
-## Common Issues
+## Common issues
 
-We know how frustrating it feels when Slack stops working the way you expect. The sections below walk through frequent problems with clear causes and steps to fix them.
+We know these problems can block your readers. Each expandable below walks through a specific symptom, its usual cause, and the exact steps to fix it.
 
-<Expandable title="Cannot connect or sign in" default-open="false">
-**Problem**
+<Expandable title="Widget not appearing on your site" default-open="false">
+The Intercom widget fails to load on any page even after you embed the snippet.
 
-You see the error `Unable to connect to Slack. Check your internet connection.` or the login screen loops without success.
+**Cause**  
+The install code is missing from the `<head>` section or the site blocks the Intercom domain.
 
-**Cause**
-
-Your network blocks Slack domains or your session token has expired.
-
-**Fix**
-
-1. Open a browser and visit `https://app.example.com` to confirm internet access.
-2. Sign out completely, then sign back in.
-3. If the issue continues, ask your network admin to allow traffic to `*.slack.com` and `*.example.com`.
+**Fix**  
+1. Open your site HTML and confirm this line sits inside `<head>`:  
+   ```html
+   <script src="https://widget.intercom.io/widget/YOUR_APP_ID"></script>
+   ```
+2. Replace `YOUR_APP_ID` with the ID shown on the Intercom dashboard under Settings → Installation.
+3. Clear your browser cache and reload the page. If the widget still does not appear, add `*.intercom.io` to your content security policy.
 </Expandable>
 
-<Expandable title="Notifications never arrive" default-open="false">
-**Problem**
+<Expandable title="Search returns no results" default-open="false">
+Visitors type a query in the Help Center search bar but receive an empty list and the message "No articles found."
 
-Messages appear in the channel but you receive no desktop, mobile, or email alerts.
+**Cause**  
+Articles exist but are not indexed because they are unpublished or lack search keywords.
 
-**Cause**
-
-Notification settings are turned off or your device blocks Slack from sending alerts.
-
-**Fix**
-
-- Go to **Preferences > Notifications** and enable `All new messages`.
-- On your phone, check that Slack has permission in system settings.
-- Test by sending yourself a direct message from another account.
+**Fix**  
+1. Go to Content → Articles and open each article.
+2. Check that the status shows "Published" and the article is added to a public collection.
+3. Add at least three relevant keywords in the article settings.
+4. Wait up to five minutes, then test the search again on your Help Center at `https://example.com/help`.
 </Expandable>
 
-<Expandable title="Messages fail to send or deliver" default-open="false">
-**Problem**
+<Expandable title="Articles not visible in a collection" default-open="false">
+A collection page shows fewer articles than you expect, or some articles are missing entirely.
 
-You type a message, press enter, and see `Message not sent. Tap to retry.` The message stays stuck.
+**Cause**  
+The articles are not assigned to the collection or the collection itself is set to private.
 
-**Cause**
-
-A temporary server hiccup or a file attachment that exceeds size limits.
-
-**Fix**
-
-- Click the retry button once.
-- Remove any large files and try sending text only.
-- If the error repeats, check your connection speed and restart the app.
+**Fix**  
+1. Edit the collection and confirm its visibility is set to "Public."
+2. On each missing article, click "Add to collection" and select the correct collection.
+3. Save and refresh the collection URL. The article count should update immediately.
 </Expandable>
 
-<Expandable title="Apps or integrations stop working" default-open="false">
-**Problem**
+<Expandable title="Custom styling does not apply" default-open="false">
+Changes to colors, fonts, or layout in the Help Center theme editor have no effect on the live site.
 
-An app shows the error `App failed to respond` or stops posting updates to the channel.
+**Cause**  
+The custom CSS file is not linked or contains a syntax error that prevents loading.
 
-**Cause**
+**Fix**  
+1. In Settings → Appearance, verify the CSS URL points to a valid file on your server.
+2. Open the CSS file and wrap any new rules inside the `.intercom-help-center` selector.
+3. Run a CSS validator on the file to catch missing semicolons or braces.
+4. Clear the Intercom cache from Settings → Advanced and reload your Help Center.
 
-The app's authentication token expired or the workspace admin revoked access.
-
-**Fix**
-
-1. Open the app settings from the channel header.
-2. Click **Reconnect** and follow the OAuth prompts.
-3. Ask a workspace owner to review permissions under **Settings & administration > Manage apps**.
 </Expandable>
 
-If none of these steps solve the problem, reach out to Slack support with the exact error message you see.
+<CollectionList />
