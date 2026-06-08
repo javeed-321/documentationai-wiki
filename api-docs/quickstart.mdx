@@ -1,0 +1,90 @@
+---
+title: Quickstart
+description: Make your first API call to list projects or trigger a deployment using curl or an SDK.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+Obtain a Vercel API token from your account settings. Store the token securely and reference it as `YOUR_API_KEY` in requests.
+</Callout>
+
+## Base URL and headers
+
+All requests use the base URL `https://api.example.com`. Include these headers on every call:
+
+- `Authorization: Bearer YOUR_API_KEY`
+- `Content-Type: application/json`
+
+## Setup
+
+<Steps>
+  <Step title="Set your token" icon="key">
+    Export the token in your shell so examples can reference it.
+
+    ```bash
+    export VERCEL_TOKEN=YOUR_API_KEY
+    ```
+  </Step>
+  <Step title="Test connectivity" icon="terminal">
+    Run a minimal request to confirm authentication works.
+  </Step>
+</Steps>
+
+## First request
+
+Use the following examples to list projects or create a deployment.
+
+<CodeGroup tabs="cURL,JavaScript">
+```bash
+curl -X GET https://api.example.com/v1/projects \
+  -H "Authorization: Bearer $VERCEL_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+```javascript
+const res = await fetch("https://api.example.com/v1/projects", {
+  headers: {
+    Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
+    "Content-Type": "application/json",
+  },
+});
+const data = await res.json();
+console.log(data);
+```
+</CodeGroup>
+
+## Listing projects
+
+Send a GET request to `/v1/projects`. The response contains an array of project objects with `id`, `name`, and `updatedAt` fields.
+
+```bash
+curl -X GET https://api.example.com/v1/projects \
+  -H "Authorization: Bearer $VERCEL_TOKEN"
+```
+
+## Creating a deployment
+
+Send a POST request to `/v1/deployments` with a JSON body that specifies the Git repository and target environment.
+
+```bash
+curl -X POST https://api.example.com/v1/deployments \
+  -H "Authorization: Bearer $VERCEL_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"my-app","gitRepository":"https://github.com/example/my-app"}'
+```
+
+## Handling responses
+
+Successful responses return HTTP 200 with a JSON body. Errors return 4xx or 5xx status codes and include an `error` object with `code` and `message` fields. Always check the status code before parsing the body.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Projects API" href="#listing-projects">
+    Explore all project endpoints.
+  </Card>
+  <Card title="Deployments API" href="#creating-a-deployment">
+    Learn deployment options and webhooks.
+  </Card>
+</Columns>

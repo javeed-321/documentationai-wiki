@@ -1,0 +1,90 @@
+---
+title: Feature Overview
+description: Explore Vercel's core features including preview deployments, domains, and serverless functions.
+---
+
+## Overview
+
+Vercel delivers a modern deployment platform that streamlines how you build, preview, and ship web applications. Every push to your repository triggers automatic deployments, giving you instant feedback without complex setup. The platform handles infrastructure so you can focus on code.
+
+Core capabilities include preview deployments for every branch, custom domains for production sites, serverless functions for backend logic, and built-in analytics for performance insights.
+
+## Preview Deployments
+
+Preview deployments create isolated environments for every pull request and branch. You receive a unique URL to review changes before merging to production.
+
+<Columns cols={2}>
+  <Card title="Instant previews" icon="zap" href="#preview-deployments">
+    Share live previews with stakeholders in seconds.
+  </Card>
+  <Card title="Automatic updates" icon="refresh-cw" href="#preview-deployments">
+    New commits update the preview automatically.
+  </Card>
+</Columns>
+
+## Custom Domains
+
+Connect your own domain to any project. Vercel provisions SSL certificates automatically and routes traffic globally through its edge network.
+
+```bash
+vercel domains add example.com
+```
+
+Use the dashboard to manage multiple domains and subdomains without leaving your workflow.
+
+## Serverless Functions
+
+Serverless functions run backend code at the edge without managing servers. Write functions in your preferred language and deploy them alongside your frontend.
+
+<CodeGroup tabs="JavaScript,TypeScript">
+```javascript
+export default function handler(req, res) {
+  res.status(200).json({ message: 'Hello from Vercel' });
+}
+```
+
+```typescript
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  res.status(200).json({ message: 'Hello from Vercel' });
+}
+```
+</CodeGroup>
+
+## Analytics and Monitoring
+
+Built-in analytics track page views, performance metrics, and errors in real time. No additional configuration is required.
+
+<Callout kind="info">
+  Analytics data appears automatically after your first production deployment.
+</Callout>
+
+## Examples
+
+Deploy a new project from the command line to see these features in action.
+
+<Tabs>
+  <Tab title="New project" icon="plus">
+    ```bash
+    vercel
+    ```
+  </Tab>
+  <Tab title="Existing repo" icon="git-branch">
+    ```bash
+    vercel --prod
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+Follow these recommendations to get the most from Vercel.
+
+<Expandable title="Optimize preview workflows" default-open="false">
+  Enable automatic deletion of old previews to control usage and keep your dashboard clean.
+</Expandable>
+
+<Expandable title="Secure custom domains" default-open="false">
+  Always use HTTPS redirects and review DNS records before pointing production traffic.
+</Expandable>

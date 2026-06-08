@@ -1,37 +1,39 @@
 ---
 title: Changelog
-description: Release notes for Twilio API updates, new features, and breaking changes.
+description: Release notes for new Vercel features, platform updates, and CLI improvements.
 ---
 
-## Recent Updates
+## Release Notes
 
-<Update label="2024-11-05" description="v2024.11" tags={["feature", "deprecation"]}>
+<Update label="2024-10-15" description="v34.2.0" tags={["feature", "bugfix"]}>
 
-## API Version Releases
-
-- Released Voice API v2024.11 with enhanced call recording controls.
-- Added support for real-time transcription in Programmable Voice.
-
-## Deprecation Notices
-
-- Deprecated legacy TwiML `<Dial>` attributes effective January 2025.
-
-</Update>
-
-<Update label="2024-09-20" description="v2024.09" tags={["feature"]}>
-
-## New Product Capabilities
-
-- Introduced SMS delivery receipts for international carriers.
-- Expanded Conversations API with media attachment previews.
-
-</Update>
-
-<Update label="2024-08-10" description="v2024.08" tags={["bugfix"]}>
+## New Features
+- Added automatic preview URL generation for monorepo projects.
+- Introduced region selection for serverless functions in the dashboard.
 
 ## Bug Fixes
+- Resolved CLI login failures on Windows arm64 systems.
+- Fixed edge cache invalidation delays during deployments.
 
-- Resolved authentication timeout issues in Verify API.
-- Fixed webhook retry logic for Messaging services.
+</Update>
+
+<Update label="2024-09-28" description="v34.1.0" tags={["feature"]}>
+
+## New Features
+- Launched support for custom build timeouts up to 45 minutes.
+- Enabled incremental static regeneration for dynamic routes.
+
+</Update>
+
+<Update label="2024-09-10" description="v34.0.0" tags={["breaking", "feature"]}>
+
+## Breaking Changes
+- Removed legacy Node.js 16 runtime support.
+
+## New Features
+- Added built-in analytics integration for all projects.
+
+## Deprecations
+- Deprecated the `--prod` flag in favor of environment-specific commands.
 
 </Update>

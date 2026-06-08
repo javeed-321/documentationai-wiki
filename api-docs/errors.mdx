@@ -1,0 +1,79 @@
+---
+title: Error Codes
+description: Common Vercel API error codes, their causes, and recommended solutions for deployment and project issues.
+---
+
+## Authentication Errors
+
+<Expandable title="401 Unauthorized - Invalid Token" default-open="false">
+
+Problem: Requests return status 401 with message `{"error":"unauthorized","message":"Invalid access token"}`.
+
+Cause: The `Authorization` header contains an expired or malformed bearer token.
+
+Fix: Generate a new token from the dashboard at `https://dashboard.example.com/account/tokens` and include it exactly as `Authorization: Bearer YOUR_TOKEN`.
+
+</Expandable>
+
+<Expandable title="403 Forbidden - Scope Missing" default-open="false">
+
+Problem: API calls fail with `{"error":"forbidden","message":"Token lacks required scope: deployment:write"}`.
+
+Cause: The token was created without the deployment write permission.
+
+Fix: Revoke the current token and create a new one with the `deployment:write` scope enabled.
+
+</Expandable>
+
+## Deployment Failures
+
+<Expandable title="Build Failed - ENOENT" default-open="false">
+
+Problem: Deployment logs show `Error: ENOENT: no such file or directory, open 'vercel.json'`.
+
+Cause: The project root lacks a `vercel.json` file or the file path is incorrect in the build context.
+
+Fix: Add a minimal `vercel.json` at the repository root and push a new commit to trigger rebuild.
+
+```json
+{
+  "version": 2,
+  "builds": [{ "src": "api/**/*.js", "use": "@vercel/node" }]
+}
+```
+
+</Expandable>
+
+<Expandable title="Deployment Timeout" default-open="false">
+
+Problem: The deployment status changes to `ERROR` after 15 minutes with message `Build exceeded maximum duration`.
+
+Cause: The build step runs longer than the platform limit due to unoptimized dependencies.
+
+Fix: Reduce build time by pruning unused packages and adding a `vercel.json` `buildCommand` override.
+
+</Expandable>
+
+## Rate Limit Responses
+
+<Expandable title="429 Too Many Requests" default-open="false">
+
+Problem: API responses return HTTP 429 and body `{"error":"rate_limit_exceeded","retry_after":60}`.
+
+Cause: More than 100 requests per minute were sent from the same token.
+
+Fix: Implement exponential backoff in client code and respect the `retry_after` value before retrying.
+
+</Expandable>
+
+## Validation Errors
+
+<Expandable title="422 Unprocessable Entity - Invalid Env" default-open="false">
+
+Problem: Project creation fails with `{"error":"validation_error","field":"env","message":"Environment variable names must be uppercase"}`.
+
+Cause: An environment variable key contains lowercase letters or invalid characters.
+
+Fix: Rename all environment variables to use only uppercase letters, numbers, and underscores before resubmitting the request.
+
+</Expandable>

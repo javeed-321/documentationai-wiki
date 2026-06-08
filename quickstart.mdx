@@ -1,0 +1,64 @@
+---
+title: Quickstart
+description: Deploy your first project to Vercel in minutes using Git integration or the CLI.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+  You need a GitHub, GitLab, or Bitbucket account and a project with a supported framework. No credit card is required to start.
+</Callout>
+
+## Connect your repository
+
+<Steps>
+  <Step title="Import project" icon="github">
+    Go to the Vercel dashboard and select Import Git Repository. Choose your repository from the list.
+  </Step>
+  <Step title="Framework detection" icon="settings">
+    Vercel automatically detects your framework and suggests build settings. Review the suggested configuration and adjust if needed.
+  </Step>
+  <Step title="First production deployment" icon="rocket">
+    Click Deploy. Vercel builds your project and creates a production deployment at a unique URL.
+  </Step>
+</Steps>
+
+## Deploy with the CLI
+
+Install the Vercel CLI and run a deployment from your terminal.
+
+<CodeGroup tabs="npm,pnpm,yarn">
+```bash
+npm i -g vercel
+```
+
+```bash
+pnpm add -g vercel
+```
+
+```bash
+yarn global add vercel
+```
+</CodeGroup>
+
+After installation, run the deploy command inside your project folder.
+
+```bash
+vercel
+```
+
+Follow the prompts to link the project and complete your first deployment.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Git integration" icon="git-branch" href="#connect-your-repository">
+    Learn how to configure automatic deployments on every push.
+  </Card>
+  <Card title="CLI reference" icon="terminal" href="#deploy-with-the-cli">
+    Explore additional commands for preview deployments and environment variables.
+  </Card>
+  <Card title="Deployment guides" icon="book-open" href="#first-production-deployment">
+    Dive deeper into production workflows and custom domains.
+  </Card>
+</Columns>

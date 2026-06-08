@@ -1,0 +1,37 @@
+---
+title: Introduction
+description: Introduction to the Vercel REST API for managing projects, deployments, and domains programmatically.
+---
+
+<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416420393-s9t4cno1w99-Image-8.png?q=85&fm=auto&auto=compress%2Cformat" alt="Vercel documentation" width="800" height="400" />
+
+## Welcome
+
+The Vercel REST API lets you manage projects, deployments, and domains directly from your applications. Use it to automate workflows and integrate Vercel into your existing tools.
+
+<Columns cols={2}>
+  <Card title="API Capabilities" icon="zap" href="#capabilities">
+    Control projects, deployments, and domains through a unified set of endpoints.
+  </Card>
+  <Card title="Rate Limits" icon="shield" href="#limits">
+    Requests are limited to 100 per minute per token to ensure stability.
+  </Card>
+  <Card title="Response Formats" icon="code" href="#formats">
+    All responses return JSON with consistent error and success structures.
+  </Card>
+  <Card title="Versioning" icon="settings" href="#versioning">
+    The current stable version is v2. Include the version in the request path.
+  </Card>
+</Columns>
+
+<Card title="Projects API" icon="book-open" href="/api-docs/projects" horizontal cta="View reference">
+  Create and configure projects programmatically.
+</Card>
+
+<Card title="Deployments API" icon="rocket" href="/api-docs/deployments" horizontal cta="View reference">
+  Trigger and monitor deployments from your code.
+</Card>
+
+<Callout kind="tip">
+  Always include your API token in the Authorization header for every request.
+</Callout>
