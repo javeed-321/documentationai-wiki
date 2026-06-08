@@ -1,31 +1,29 @@
 {
-  "id": "sk-hc-03",
-  "testName": "Slack - Team Communication",
-  "productName": "Slack",
+  "id": "sk-uc-kb",
+  "testName": "Internal Knowledge Base only — Notion",
+  "productName": "Notion",
   "source": "evals",
-  "difficulty": "moderate",
+  "difficulty": "simple",
   "useCases": [
-    "help-center"
+    "internal-kb"
   ],
   "tags": [
-    "help-center",
-    "communication",
-    "moderate"
+    "v2-router",
+    "internal-kb",
+    "simple"
   ],
   "passed": true,
-  "durationMs": 34427,
-  "totalFiles": 7,
-  "validFiles": 7,
+  "durationMs": 38512,
+  "totalFiles": 5,
+  "validFiles": 5,
   "failedFiles": [],
-  "totalAttempts": 7,
-  "tokens": 60376,
+  "totalAttempts": 5,
+  "tokens": 41530,
   "files": [
-    "help-center.mdx",
-    "help-center/faq/getting-started.mdx",
-    "help-center/faq/messaging.mdx",
-    "help-center/troubleshooting/common-issues.mdx",
-    "help-center/troubleshooting/app-connectivity.mdx",
-    "help-center/contact.mdx",
+    "welcome.mdx",
+    "new-hire-guide.mdx",
+    "processes/template.mdx",
+    "runbooks/template.mdx",
     "documentation.json"
   ]
 }
