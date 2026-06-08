@@ -1,58 +1,56 @@
 ---
 title: Quickstart
-description: Minimal steps to customize this sample starter kit.
+description: Step-by-step guide to launching your first ShopifyMax store and configuring fast checkout.
 ---
-## Overview
 
-<Callout kind="alert" collapsed="false">
-  This site ships with placeholder content. Use this quickstart to replace it with your real product docs.
+## Prerequisites
+
+<Callout kind="info">
+Sign up at `https://dashboard.example.com` and create an API key before you start. You need a store plan that supports more than 100000 products.
 </Callout>
 
-## 1. Update a page
+## Create and Launch Your Store
 
 <Steps>
-  <Step title="Edit introduction" icon="edit" title-type="p">
-    Replace the sample introduction with a concise overview of your product and the key actions you want new users to take first.
-  </Step>
-
-  <Step title="Preview your change" icon="monitor" title-type="p">
-    Use your dashboard board editor to confirm the updated introduction looks and reads as expected.
-  </Step>
+<Step title="Create your store" icon="plus-circle">
+Go to `https://dashboard.example.com/stores` and select Create Store. Name the store and choose your region.
+</Step>
+<Step title="Install a theme" icon="download">
+From the dashboard, browse themes and click Install on a performance-optimized template. The process completes in under two minutes.
+</Step>
+<Step title="Enable fast checkout" icon="zap">
+Toggle Sub-3-Second Checkout in the store settings. ShopifyMax activates edge caching automatically.
+</Step>
 </Steps>
 
-## 2. Add a new page
+## Configure Required Variables
 
-<Steps>
-  <Step title="Add a page" icon="file-text" title-type="p">
-    Create a new `page` by clicking on the + button from the left navigation bar of dashboard. If you are using git, create the .mdx file and add to navigation bar using documentation.json
-  </Step>
-</Steps>
+Add the following keys in the Environment Variables section of your store dashboard.
 
-## Example onboarding flow (replace with yours)
+<CodeGroup tabs="Dashboard,CLI">
+```bash
+shopifymax config set CART_TOKEN your_cart_token_here
+shopifymax config set PAYMENT_KEY your_payment_key_here
+```
+```json
+{
+  "CART_TOKEN": "your_cart_token_here",
+  "PAYMENT_KEY": "your_payment_key_here"
+}
+```
+</CodeGroup>
 
-1. Sign up for an account and verify your email.
+## Verify Your Setup
 
-2. Create your first workspace, project, or environment.
+Open your store URL in an incognito window and add a test product to the cart. Checkout should finish in less than three seconds.
 
-3. Add one integration or data source to connect your existing tools.
+## Next Steps
 
-4. Complete a guided action (for example, run your first job or publish your first resource).
-
-5. Invite a teammate and assign a basic role or permission.
-
-## 3. Connect API Reference (optional)
-
-If you have an API, replace `openapi.yaml` with your real OpenAPI file. If you do not need an API reference, remove that tab either from dashboard or  `documentation.json`.
-
-## Next steps
-
-<Columns cols="2">
-  <Card title="Core Concepts" href="/concepts" icon="layers" horizontal="false">
-    Keep the mental model simple and easy to scan.
-  </Card>
-
-  <Card title="Authentication" href="/authentication" icon="lock" horizontal="false">
-    Add your real auth flows and security notes.
-  </Card>
+<Columns cols={2}>
+<Card title="Theme Customization" href="#theme-customization" icon="palette">
+Adjust layouts and add custom components for your catalog.
+</Card>
+<Card title="Advanced Checkout Rules" href="#advanced-checkout" icon="shield">
+Set product limits and regional payment methods.
+</Card>
 </Columns>
-

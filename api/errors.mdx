@@ -1,0 +1,75 @@
+---
+title: Error Codes
+description: Common ShopifyMax API error codes related to checkout failures, payment processing, and catalog limits.
+---
+
+## Payment and Checkout Errors
+
+Use the following expandable sections to diagnose checkout and payment failures. Each section shows the exact error returned by the ShopifyMax API.
+
+<Expandable title="Checkout declined: CART_TOKEN unresolved" default-open="false">
+
+Problem: The checkout request returns `{"error":"CART_TOKEN unresolved","code":"CHK-401"}`.
+
+Cause: The request body references the `CART_TOKEN` variable but the token was never supplied or has expired.
+
+Fix: Include a valid cart token in the request:
+
+```json
+{
+  "cart_token": "YOUR_CART_TOKEN",
+  "payment_key": "YOUR_PAYMENT_KEY"
+}
+```
+
+</Expandable>
+
+<Expandable title="Payment processing failed: PAYMENT_KEY invalid" default-open="false">
+
+Problem: The API responds with `{"error":"PAYMENT_KEY invalid","code":"PAY-402"}` and aborts the transaction.
+
+Cause: The supplied `PAYMENT_KEY` does not match any active key for the merchant account.
+
+Fix: Verify the key in the ShopifyMax dashboard and resend the request with the correct value:
+
+```bash
+curl -X POST https://api.example.com/checkout \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"payment_key":"YOUR_PAYMENT_KEY"}'
+```
+
+</Expandable>
+
+## Catalog and Rate Limit Errors
+
+<Expandable title="Catalog size exceeded" default-open="false">
+
+Problem: Bulk import fails with `{"error":"Catalog exceeds 100000 products","code":"CAT-503"}`.
+
+Cause: The product feed contains more than the supported limit of 100000 items.
+
+Fix: Split the catalog into multiple feeds under 100000 products each and import sequentially.
+
+</Expandable>
+
+<Expandable title="Rate limit exceeded" default-open="false">
+
+Problem: Requests return HTTP 429 with body `{"error":"Rate limit exceeded","code":"LIM-429"}`.
+
+Cause: More than the allowed number of checkout or catalog requests were sent in the current window.
+
+Fix: Implement exponential backoff and respect the `Retry-After` header returned in the response.
+
+</Expandable>
+
+## Variable Resolution Failures
+
+<Expandable title="Variable resolution failure" default-open="false">
+
+Problem: The API logs `{"error":"Failed to resolve CART_TOKEN or PAYMENT_KEY","code":"VAR-400"}`.
+
+Cause: One or both variables are missing from the request payload or contain malformed values.
+
+Fix: Always provide both variables in every checkout call and validate their format before submission.
+
+</Expandable>

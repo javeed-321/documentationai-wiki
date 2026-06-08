@@ -1,0 +1,87 @@
+---
+title: Quickstart
+description: Quick guide to making your first API calls for product sync and checkout initiation.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+Install Node.js 18 or later. Obtain an API key from the dashboard at https://dashboard.example.com. The platform supports catalogs exceeding 100000 products and checkouts completing in under 3 seconds.
+</Callout>
+
+## Setup
+
+<Steps>
+  <Step title="Install the HTTP client" icon="download">
+    Add a minimal client for API requests.
+  </Step>
+  <Step title="Configure credentials" icon="settings">
+    Set your API key and base URL to https://api.example.com.
+  </Step>
+</Steps>
+
+## First API Calls
+
+Use the following example to sync a large catalog and initiate a checkout. The platform substitutes variables such as `CART_TOKEN` and `PAYMENT_KEY` in requests.
+
+<CodeGroup tabs="cURL,JavaScript">
+```bash
+curl -X POST https://api.example.com/catalog/sync \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "products": [{"id": "p1", "title": "Example Product"}],
+    "count": 100000
+  }'
+
+curl -X POST https://api.example.com/checkout/initiate \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cart_token": "CART_TOKEN",
+    "payment_key": "PAYMENT_KEY"
+  }'
+```
+```javascript
+const syncCatalog = async () => {
+  const res = await fetch('https://api.example.com/catalog/sync', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      products: [{ id: 'p1', title: 'Example Product' }],
+      count: 100000
+    })
+  });
+  return res.json();
+};
+
+const initiateCheckout = async () => {
+  const res = await fetch('https://api.example.com/checkout/initiate', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      cart_token: 'CART_TOKEN',
+      payment_key: 'PAYMENT_KEY'
+    })
+  });
+  return res.json();
+};
+```
+</CodeGroup>
+
+## Next Steps
+
+<Columns cols={2}>
+  <Card title="Catalog Management" href="#catalog-sync">
+    Learn how to update catalogs exceeding 100000 products.
+  </Card>
+  <Card title="Checkout API" href="#checkout">
+    Explore variable substitution for fast checkouts.
+  </Card>
+</Columns>

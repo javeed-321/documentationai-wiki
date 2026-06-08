@@ -1,0 +1,37 @@
+---
+title: Introduction
+description: Introduction to the ShopifyMax API for managing products, carts, and payments at scale.
+---
+
+<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416392648-tsntejft5od-Image-9.png?q=85&fm=auto&auto=compress%2Cformat" alt="ShopifyMax documentation" width="800" height="400" />
+
+## Welcome
+
+The ShopifyMax API manages large product catalogs, carts, and payments. It supports over 100000 products with checkout flows completing in under 3 seconds using CART_TOKEN and PAYMENT_KEY.
+
+<Columns cols={2}>
+  <Card title="Scale" icon="trending-up" href="#scale">
+    Handle catalogs exceeding 100000 products without performance loss.
+  </Card>
+  <Card title="Speed" icon="zap" href="#speed">
+    Complete checkouts in less than 3 seconds.
+  </Card>
+  <Card title="Carts" icon="shopping-cart" href="#carts">
+    Manage sessions reliably with CART_TOKEN.
+  </Card>
+  <Card title="Payments" icon="credit-card" href="#payments">
+    Process transactions securely with PAYMENT_KEY.
+  </Card>
+</Columns>
+
+<Card title="Products endpoint" icon="package" href="/api/products" horizontal>
+  Retrieve and update large product catalogs.
+</Card>
+
+<Card title="Carts endpoint" icon="shopping-cart" href="/api/carts" horizontal>
+  Create and manage carts with token-based flows.
+</Card>
+
+<Callout kind="tip">
+  Include CART_TOKEN and PAYMENT_KEY in every authenticated request header.
+</Callout>

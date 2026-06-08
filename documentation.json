@@ -1,73 +1,82 @@
 {
-  "name": "Starter Kit",
+  "name": "ShopifyMax",
   "colors": {
     "light": {
-      "brand": "#F97316"
+      "brand": "#6426F3",
+      "heading": "#1B1F24",
+      "text": "#1B1F24"
     },
     "dark": {
-      "brand": "#FDBA74"
+      "brand": "#9972F3",
+      "heading": "#FFFFFF",
+      "text": "#E5E7EB"
     }
   },
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
-        "icon": "book",
+        "tab": "Guides",
+        "icon": "book-open",
         "groups": [
           {
-            "group": "Start Here",
+            "group": "Getting started",
             "icon": "rocket",
+            "expandable": false,
             "pages": [
               {
                 "title": "Introduction",
-                "path": "introduction",
-                "icon": "home"
+                "path": "introduction"
               },
               {
                 "title": "Quickstart",
-                "path": "quickstart",
-                "icon": "zap"
-              },
-              {
-                "title": "Components",
-                "path": "components",
-                "icon": "code"
+                "path": "quickstart"
               }
             ]
           },
           {
-            "group": "Components",
-            "icon": "layers",
+            "group": "Guides",
+            "icon": "book-open",
+            "expandable": false,
             "pages": [
               {
-                "title": "Images",
-                "path": "components/images",
-                "icon": "image"
+                "title": "Feature Overview",
+                "path": "guides/overview"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Docs",
+        "icon": "book-open",
+        "groups": [
+          {
+            "group": "Getting started",
+            "icon": "rocket",
+            "expandable": false,
+            "pages": [
+              {
+                "title": "Introduction",
+                "path": "api/introduction"
               },
               {
-                "title": "Cards",
-                "path": "components/cards",
-                "icon": "square"
+                "title": "Quickstart",
+                "path": "api/quickstart"
+              }
+            ]
+          },
+          {
+            "group": "Reference",
+            "icon": "code",
+            "expandable": false,
+            "pages": [
+              {
+                "title": "Authentication",
+                "path": "api/authentication"
               },
               {
-                "title": "Code",
-                "path": "components/code",
-                "icon": "code"
-              },
-              {
-                "title": "Callouts",
-                "path": "components/callouts",
-                "icon": "message-square"
-              },
-              {
-                "title": "Steps",
-                "path": "components/steps",
-                "icon": "list-ordered"
-              },
-              {
-                "title": "Tabs",
-                "path": "components/tabs",
-                "icon": "columns"
+                "title": "Error Codes",
+                "path": "api/errors"
               }
             ]
           }
@@ -78,74 +87,47 @@
         "icon": "code",
         "groups": [
           {
-            "group": "Overview",
-            "icon": "file-text",
-            "pages": [
-              {
-                "title": "Authentication",
-                "path": "authentication",
-                "icon": "lock"
-              }
-            ]
-          },
-          {
-            "group": "Sample Endpoints",
-            "openapi": "openapi.yaml"
-          }
-        ]
-      },
-      {
-        "tab": "Help Center",
-        "icon": "help-circle",
-        "pages": [
-          {
-            "title": "Help Center",
-            "path": "help-center",
-            "icon": "home"
-          },
-          {
-            "group": "FAQs",
-            "icon": "help-circle",
-            "expandable": false,
-            "pages": [
-              {
-                "title": "Documentation Source",
-                "path": "help-center/faq/getting-started"
-              }
-            ]
-          },
-          {
-            "group": "Troubleshooting",
-            "icon": "alert-triangle",
-            "expandable": false,
-            "pages": [
-              {
-                "title": "Page Missing in Sidebar",
-                "path": "help-center/troubleshooting/install-error"
-              }
-            ]
-          },
-          {
-            "group": "Guides",
-            "icon": "book-open",
-            "expandable": false,
-            "pages": [
-              {
-                "title": "Create Your First Page",
-                "path": "help-center/guides/setup-project"
-              }
-            ]
+            "group": "API Reference",
+            "icon": "code",
+            "openapi": "api-reference/openapi.yaml"
           }
         ]
       },
       {
         "tab": "Changelog",
         "icon": "clock",
-        "pages": [
+        "groups": [
           {
-            "title": "Changelog",
-            "path": "changelog",
-            "icon": "history"
+            "group": "Changelog",
+            "icon": "folder",
+            "expandable": false,
+            "pages": [
+              {
+                "title": "Changelog",
+                "path": "changelog",
+                "show-sidebar": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Roadmap",
+        "icon": "map",
+        "groups": [
+          {
+            "group": "Roadmap",
+            "icon": "folder",
+            "expandable": false,
+            "pages": [
+              {
+                "title": "Roadmap",
+                "path": "roadmap",
+                "show-sidebar": false,
+                "show-toc": false,
+                "content-width": "wide"
+              }
+            ]
           }
         ]
       }

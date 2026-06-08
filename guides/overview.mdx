@@ -1,0 +1,80 @@
+---
+title: Feature Overview
+description: Detailed look at ShopifyMax features including high-volume catalog management and optimized payment flows.
+---
+
+## Overview
+
+ShopifyMax delivers reliable performance for stores that scale. You handle catalogs exceeding 100000 products while maintaining checkout times under three seconds. The platform supports the `CART_TOKEN` and `PAYMENT_KEY` variables so you can customize cart behavior and payment routing without custom code.
+
+## Managing Large Product Catalogs
+
+You organize and update catalogs that contain more than 100000 products. ShopifyMax indexes products in real time and provides search, filtering, and bulk edit tools that stay responsive.
+
+<Columns cols={2}>
+  <Card title="Bulk Import" icon="upload" href="#examples">
+    Upload CSV or JSON files with automatic validation.
+  </Card>
+  <Card title="Live Sync" icon="refresh-cw" href="#examples">
+    Connect external systems and keep inventory current.
+  </Card>
+</Columns>
+
+## Optimizing Checkout Speed
+
+Checkout completes in less than three seconds even at peak traffic. The platform preloads payment forms, caches product data, and routes requests through a global edge network.
+
+<Callout kind="tip">
+  Enable edge caching on product pages to reduce latency by an additional 40 percent.
+</Callout>
+
+## Customizing with Variables
+
+You inject the `CART_TOKEN` and `PAYMENT_KEY` variables into checkout flows to control discounts, shipping rules, and payment method selection.
+
+<Tabs>
+  <Tab title="JavaScript" icon="code">
+    ```javascript
+    const cart = await shopifyMax.getCart({
+      token: CART_TOKEN,
+      paymentKey: PAYMENT_KEY,
+    });
+    ```
+  </Tab>
+  <Tab title="cURL" icon="terminal">
+    ```bash
+    curl -X POST https://api.example.com/cart \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{"token":"CART_TOKEN","payment_key":"PAYMENT_KEY"}'
+    ```
+  </Tab>
+</Tabs>
+
+## Examples
+
+<CodeGroup tabs="Node.js,Python">
+```javascript
+import { ShopifyMax } from "shopifymax";
+
+const client = new ShopifyMax({ apiKey: "YOUR_API_KEY" });
+const catalog = await client.catalogs.import("products.json");
+```
+```python
+from shopifymax import Client
+
+client = Client(api_key="YOUR_API_KEY")
+catalog = client.catalogs.import("products.json")
+```
+</CodeGroup>
+
+## Best Practices
+
+- Test variable substitutions in a staging environment before you promote changes.
+- Monitor checkout duration with built-in analytics and set alerts when average time exceeds two seconds.
+- Keep product images under 500 KB to preserve the sub-three-second checkout guarantee.
+
+<Expandable title="Advanced variable usage" default-open="false">
+
+You can combine `CART_TOKEN` with custom metadata to apply region-specific pricing rules. Store the resulting values in your `PAYMENT_KEY` configuration so payment providers receive the correct routing data on every transaction.
+
+</Expandable>
