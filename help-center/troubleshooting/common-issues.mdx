@@ -1,122 +1,74 @@
 ---
 title: Troubleshooting
-description: Solutions for frequent merchant issues including checkout errors, payment declines, and theme problems.
+description: Resolve problems with Slack connections, notifications, file uploads, and app integrations.
 ---
 
-## Payment and Refund Failures
+## Common Issues
 
-<Expandable title="Payment declined with message 'Your payment was declined. Please try another card.'" default-open="false">
+We know how frustrating it feels when Slack stops working the way you expect. The sections below walk through frequent problems with clear causes and steps to fix them.
 
-**Problem**  
-Customers see this exact error during checkout and the order does not complete.
+<Expandable title="Cannot connect or sign in" default-open="false">
+**Problem**
 
-**Cause**  
-The card issuer rejected the transaction, often due to mismatched billing address, insufficient funds, or regional restrictions on the merchant account.
+You see the error `Unable to connect to Slack. Check your internet connection.` or the login screen loops without success.
 
-**Fix**  
-1. Ask the customer to confirm the billing address matches the card exactly.  
-2. Have them try a different payment method.  
-3. In Shopify admin, go to Settings > Payments and verify your payout account is active.  
-4. If the issue persists for many customers, contact Shopify Support with the order number.
+**Cause**
 
+Your network blocks Slack domains or your session token has expired.
+
+**Fix**
+
+1. Open a browser and visit `https://app.example.com` to confirm internet access.
+2. Sign out completely, then sign back in.
+3. If the issue continues, ask your network admin to allow traffic to `*.slack.com` and `*.example.com`.
 </Expandable>
 
-<Expandable title="Refund fails with 'Refund could not be processed at this time'" default-open="false">
+<Expandable title="Notifications never arrive" default-open="false">
+**Problem**
 
-**Problem**  
-You attempt a refund but receive the failure message and the amount stays on the order.
+Messages appear in the channel but you receive no desktop, mobile, or email alerts.
 
-**Cause**  
-The original payment processor has not yet settled the funds or a daily refund limit has been reached.
+**Cause**
 
-**Fix**  
-1. Wait 24 hours after the original transaction and try again.  
-2. Check Settings > Payments for any processor alerts.  
-3. Issue a manual refund through your payment provider dashboard if needed, then mark the order as refunded in Shopify.
+Notification settings are turned off or your device blocks Slack from sending alerts.
 
+**Fix**
+
+- Go to **Preferences > Notifications** and enable `All new messages`.
+- On your phone, check that Slack has permission in system settings.
+- Test by sending yourself a direct message from another account.
 </Expandable>
 
-## Checkout and Cart Issues
+<Expandable title="Messages fail to send or deliver" default-open="false">
+**Problem**
 
-<Expandable title="Cart shows 'Item unavailable' even though the product is in stock" default-open="false">
+You type a message, press enter, and see `Message not sent. Tap to retry.` The message stays stuck.
 
-**Problem**  
-Products appear in the cart but cannot be purchased, blocking checkout.
+**Cause**
 
-**Cause**  
-A recent inventory sync or location change marked the item as unavailable at the selected shipping location.
+A temporary server hiccup or a file attachment that exceeds size limits.
 
-**Fix**  
-1. Open the product in Shopify admin and confirm inventory is tracked at the correct location.  
-2. Clear the customer's browser cache or ask them to try an incognito window.  
-3. Disable any third-party inventory apps temporarily to test.
+**Fix**
 
+- Click the retry button once.
+- Remove any large files and try sending text only.
+- If the error repeats, check your connection speed and restart the app.
 </Expandable>
 
-<Expandable title="Checkout button does nothing or shows a blank screen" default-open="false">
+<Expandable title="Apps or integrations stop working" default-open="false">
+**Problem**
 
-**Problem**  
-Clicking "Check out" produces no response or a blank page.
+An app shows the error `App failed to respond` or stops posting updates to the channel.
 
-**Cause**  
-A script conflict from an installed app or an outdated theme file is preventing the checkout script from loading.
+**Cause**
 
-**Fix**  
-1. In the theme editor, click Actions > Edit code and search for recent app script tags.  
-2. Remove or comment out any custom checkout scripts added in the last week.  
-3. Test checkout in a default theme to isolate the issue.
+The app's authentication token expired or the workspace admin revoked access.
 
+**Fix**
+
+1. Open the app settings from the channel header.
+2. Click **Reconnect** and follow the OAuth prompts.
+3. Ask a workspace owner to review permissions under **Settings & administration > Manage apps**.
 </Expandable>
 
-## App and Integration Conflicts
-
-<Expandable title="App fails to load with 'This app could not be loaded'" default-open="false">
-
-**Problem**  
-An installed app shows the error on the dashboard or product pages.
-
-**Cause**  
-The app's OAuth token has expired or the app is not compatible with your current Shopify plan.
-
-**Fix**  
-1. Go to Settings > Apps and sales channels, then reinstall the app.  
-2. Check the app's status page for any reported outages.  
-3. Contact the app developer with the exact error text and your shop domain.
-
-</Expandable>
-
-## Theme and Mobile Display Problems
-
-<Expandable title="Product images overlap text on mobile devices only" default-open="false">
-
-**Problem**  
-The site looks fine on desktop but images cover text when viewed on phones.
-
-**Cause**  
-A theme CSS rule lacks a responsive breakpoint for smaller viewports.
-
-**Fix**  
-1. In the theme editor, open the code editor and locate the image container class.  
-2. Add or adjust a media query such as `@media screen and (max-width: 768px)`.  
-3. Preview changes on multiple devices before publishing.
-
-</Expandable>
-
-<Expandable title="Navigation menu disappears or collapses incorrectly on mobile" default-open="false">
-
-**Problem**  
-The hamburger menu fails to expand or links are hidden on phones and tablets.
-
-**Cause**  
-JavaScript for the mobile menu is blocked by another script or a custom theme modification.
-
-**Fix**  
-1. Temporarily switch to the default Dawn theme and test the menu.  
-2. Re-add your custom code one section at a time to find the conflict.  
-3. Ensure any custom JavaScript is wrapped in a `DOMContentLoaded` listener.
-
-</Expandable>
-
-<Callout kind="tip">
-If none of these steps resolve your issue, collect the exact error message and steps to reproduce, then reach out to Shopify Support from the Help section in your admin.
-</Callout>
+If none of these steps solve the problem, reach out to Slack support with the exact error message you see.

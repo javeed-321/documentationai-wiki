@@ -1,7 +1,7 @@
 {
-  "id": "sk-hc-02",
-  "testName": "Shopify - E-commerce",
-  "productName": "Shopify",
+  "id": "sk-hc-03",
+  "testName": "Slack - Team Communication",
+  "productName": "Slack",
   "source": "evals",
   "difficulty": "moderate",
   "useCases": [
@@ -9,21 +9,23 @@
   ],
   "tags": [
     "help-center",
-    "ecommerce",
+    "communication",
     "moderate"
   ],
   "passed": true,
-  "durationMs": 41795,
-  "totalFiles": 5,
-  "validFiles": 5,
+  "durationMs": 34323,
+  "totalFiles": 7,
+  "validFiles": 7,
   "failedFiles": [],
-  "totalAttempts": 5,
-  "tokens": 41879,
+  "totalAttempts": 7,
+  "tokens": 59705,
   "files": [
     "help-center.mdx",
     "help-center/faq/getting-started.mdx",
     "help-center/troubleshooting/common-issues.mdx",
     "help-center/contact.mdx",
+    "help-center/guides/channels.mdx",
+    "help-center/guides/messaging.mdx",
     "documentation.json"
   ]
 }
