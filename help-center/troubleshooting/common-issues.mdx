@@ -1,48 +1,48 @@
 ---
 title: Troubleshooting
-description: Fix common Zendesk Help Center problems such as search failures, article display errors, and permission issues.
+description: Resolve frequent Zendesk Help Center problems such as search indexing failures, theme rendering errors, and permission issues.
 ---
 
 ## Common Issues
 
-If something feels off in your Help Center, start here. Each section walks through a real symptom, why it happens, and the quickest fix.
+Use the sections below to identify your symptom, understand the likely cause, and apply the step-by-step fix. Each expandable contains a complete resolution path.
 
-<Expandable title="Search returns no results or outdated articles" default-open="false">
-Problem: Visitors type a query and see "No articles found" even though matching content exists.
+<Expandable title="Broken article links after publishing" default-open="false">
 
-Cause: The search index has not updated after recent article changes or the index job failed.
+Problem: Visitors click an article link and receive a 404 page even though the article appears in the help center.
 
-Fix: Go to Guide admin, open Settings, and click Rebuild search index. Wait five minutes, then test the same query again. If the problem continues, check the Activity log for an entry that reads "Search index update failed".
+Cause: The article slug changed during an edit or the link was created with an outdated ID before the article was republished.
+
+Fix: Open the article in the Zendesk admin interface, copy the current URL from the preview pane, and replace every instance of the old link in other articles or theme files. Then republish the affected pages. Run a site-wide search for the old slug in the content editor to catch any remaining references.
+
 </Expandable>
 
-<Expandable title="Published article does not appear on the site" default-open="false">
-Problem: You click Publish but the article stays hidden from end users.
+<Expandable title="Missing search results for recently published articles" default-open="false">
 
-Cause: The article is still in draft status, or its section permission is set to Agents only.
+Problem: New articles do not appear in help center search even 24 hours after publication.
 
-Fix: Open the article, confirm the status shows Published, then click the section name and set Permissions to Everyone. Save and refresh the Help Center URL.
+Cause: Search indexing has stalled, often shown by the message "Indexing in progress" that never completes in the admin dashboard.
+
+Fix: In Zendesk Admin, go to Help Center then Settings and click Rebuild search index. Wait for the confirmation email, then test the article title in the public search bar. If results still fail to appear, verify the article is set to Published and that no label restrictions block it from the default search scope.
+
 </Expandable>
 
-<Expandable title="Users see a permission error when signing in" default-open="false">
-Problem: End users receive the message "You do not have permission to view this page" right after login.
+<Expandable title="Custom theme CSS not rendering correctly" default-open="false">
 
-Cause: The user role lacks access to the Help Center or the SSO mapping is incorrect.
+Problem: Custom styles appear broken on the live help center while the preview in the theme editor looks correct.
 
-Fix: In Support admin, go to People, find the user, and change Role to End User. Then verify the SSO settings under Channels, Help Center, Authentication and confirm the external ID field matches the value sent by your identity provider.
+Cause: A syntax error in the stylesheet or a missing asset reference prevents the compiled CSS from loading.
+
+Fix: Open the theme editor, switch to the CSS tab, and look for unclosed braces or invalid color values. Replace any `url()` references with full paths that begin with `https://example.com`. Click Preview, then Publish once the live site matches the preview. Clear your browser cache or test in an incognito window to confirm the update.
+
 </Expandable>
 
-<Expandable title="Custom theme or widget fails to load" default-open="false">
-Problem: The Help Center shows the default theme instead of your branded one, or the contact widget never appears.
+<Expandable title="SSO login failures with redirect errors" default-open="false">
 
-Cause: The theme file contains a syntax error or the widget script tag is missing from the layout.
+Problem: Users attempting single sign-on see the message "Unable to authenticate with the identity provider" and are returned to the login screen.
 
-Fix: In Guide, open the active theme, click Preview, and fix any red error lines shown in the editor. For the widget, edit the document_head.hbs file and add the script tag exactly as provided in the widget setup screen, then publish the theme.
-</Expandable>
+Cause: The SSO redirect URI registered in Zendesk does not match the callback URL configured in your identity provider.
 
-<Expandable title="Articles do not sync from Support to Help Center" default-open="false">
-Problem: New or updated articles created in Support never show up in the Help Center.
+Fix: In Zendesk Admin under Settings then Security, copy the exact SSO callback URL listed under your SSO provider. Paste that URL into the allowed redirect list in your identity provider console. Save both sides, then test the login flow again from a fresh browser session.
 
-Cause: The sync job between Support and Guide is paused or the integration token has expired.
-
-Fix: Go to Admin, Channels, Help Center, Integrations and click Reconnect next to Support. Enter a fresh API token if prompted. Once connected, manually trigger a sync by clicking Sync now and watch the Activity log for a "Sync completed" entry.
 </Expandable>
