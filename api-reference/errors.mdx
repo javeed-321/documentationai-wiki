@@ -1,0 +1,76 @@
+---
+title: Error Codes
+description: Common Twilio error codes, their meanings, and how to resolve them.
+---
+
+## HTTP Status Codes
+
+Twilio returns standard HTTP status codes with additional error details in the response body. Inspect the `Code` and `Message` fields for Twilio-specific information.
+
+<Expandable title="401 Unauthorized with invalid credentials">
+Problem: Request returns HTTP 401 and the body contains `{"code": 20003, "message": "Authenticate", "more_info": "https://www.twilio.com/docs/errors/20003"}`.
+
+Cause: The request used an invalid Account SID or Auth Token combination.
+
+Fix: Verify the Account SID and Auth Token from the Twilio Console. Pass them as Basic Auth credentials:
+
+```bash
+curl -X POST https://api.twilio.com/2010-04-01/Accounts/ACxxxxxxxx/Messages.json \
+  -u "ACxxxxxxxx:your_auth_token" \
+  --data-urlencode "To=+15551234567" \
+  --data-urlencode "From=+15559876543" \
+  --data-urlencode "Body=Test"
+```
+</Expandable>
+
+<Expandable title="400 Bad Request for invalid parameters">
+Problem: HTTP 400 response body shows `{"code": 21211, "message": "The 'To' number is not a valid phone number.", "more_info": "https://www.twilio.com/docs/errors/21211"}`.
+
+Cause: The `To` parameter contains a malformed E.164 number.
+
+Fix: Format the number as `+` followed by country code and subscriber number with no spaces or dashes.
+</Expandable>
+
+## Twilio-Specific Error Codes
+
+Twilio uses numeric error codes in the 2xxxx range for API validation failures.
+
+<Expandable title="Error 21608 - SMS not enabled on number">
+Problem: `{"code": 21608, "message": "The number you are attempting to message is not SMS capable."}`.
+
+Cause: The `From` number lacks SMS capabilities or is a landline.
+
+Fix: Purchase or select a Twilio number with SMS enabled in the Console under Phone Numbers.
+</Expandable>
+
+<Expandable title="Error 21217 - Invalid 'From' number">
+Problem: `{"code": 21217, "message": "The 'From' parameter does not contain a valid phone number or alphanumeric sender ID."}`.
+
+Cause: The `From` value is neither a verified Twilio number nor an approved alphanumeric sender ID.
+
+Fix: Use a number purchased from Twilio or register the alphanumeric ID in the Messaging Services section.
+</Expandable>
+
+## Debugging Failed Requests
+
+Inspect the full response body and headers on every non-2xx response.
+
+<Expandable title="No error details returned">
+Problem: Request fails but the response body is empty or contains only a generic message.
+
+Cause: The client library suppressed the error body or the request never reached Twilio.
+
+Fix: Enable request logging and capture the raw HTTP response. Add the `X-Twilio-Webhook-Enabled` header when debugging webhooks and compare against the Twilio error reference using the returned `more_info` URL.
+</Expandable>
+
+## Rate Limiting and Retries
+
+Twilio enforces per-account rate limits on API endpoints.
+
+<Expandable title="HTTP 429 Too Many Requests">
+Problem: Response status 429 with `{"code": 20429, "message": "Too Many Requests"}`.
+
+Cause: The account exceeded the allowed requests per second for the endpoint.
+
+Fix: Implement exponential backoff. Retry after waiting 1s, then 2s, then 4s up to a maximum of five attempts. Use the `Retry-After` response header value when present.
+</Expandable>
