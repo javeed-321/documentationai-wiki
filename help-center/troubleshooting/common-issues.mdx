@@ -1,0 +1,92 @@
+---
+title: Troubleshooting
+description: Fix frequent Zendesk Help Center problems such as article visibility, search indexing, and permission errors.
+---
+
+## Common Issues
+
+Start here when articles disappear, searches return nothing, or login flows break. Each section shows the exact symptom, the typical cause, and the quickest fix.
+
+<Callout kind="info">
+  Refresh your browser cache and test in an incognito window before changing settings.
+</Callout>
+
+<Expandable title="Articles not appearing in the Help Center" default-open="false">
+
+Articles stay hidden from visitors even after you publish them.
+
+**Cause**  
+The article category or section permission is set to "Agents only" or the article itself has a future publish date.
+
+**Fix**  
+1. Open the article in the Zendesk Admin Center.  
+2. Click Edit, then expand Publishing options.  
+3. Set Visibility to "Everyone" and confirm the publish date is today or earlier.  
+4. Click Save and republish.  
+5. Wait up to five minutes, then check the live site.
+
+</Expandable>
+
+<Expandable title="Search returns no results or wrong articles" default-open="false">
+
+Visitors type a clear term and receive an empty list or unrelated content.
+
+**Cause**  
+Search indexing is paused or the search filter excludes the article's labels.
+
+**Fix**  
+1. Go to Guide Admin > Settings > Search.  
+2. Confirm indexing status shows "Up to date." If it shows "Paused," click Resume.  
+3. Edit the missing article and add at least two relevant labels.  
+4. Save, then trigger a manual reindex from the same settings page.  
+5. Test the exact search term again after two minutes.
+
+</Expandable>
+
+<Expandable title="Theme looks broken or CSS fails to load" default-open="false">
+
+Custom theme renders with missing styles, overlapping text, or default Zendesk styling.
+
+**Cause**  
+A recent theme update introduced a syntax error in the stylesheet or a required asset is missing.
+
+**Fix**  
+1. In Guide Admin > Customize > Themes, click the current theme.  
+2. Open the CSS file and look for unclosed braces or missing semicolons.  
+3. Replace the file with a clean copy from your last working version.  
+4. Click Preview, then Publish.  
+5. Clear your browser cache and reload the Help Center.
+
+</Expandable>
+
+<Expandable title="SSO login fails with redirect error" default-open="false">
+
+Users see "Redirect URI mismatch" or are stuck on the login screen after clicking Sign in.
+
+**Cause**  
+The SSO redirect URL in Zendesk does not exactly match the URL registered in your identity provider.
+
+**Fix**  
+1. Copy the full redirect URL shown in Zendesk Admin > Settings > Single sign-on.  
+2. Paste it into your identity provider settings and save.  
+3. In Zendesk, click Test SSO.  
+4. Complete the login flow.  
+5. If the test succeeds, ask a test user to sign in again.
+
+</Expandable>
+
+<Expandable title="API or webhook returns 401 or 403 errors" default-open="false">
+
+Your integration logs show "401 Unauthorized" or "403 Forbidden" when Zendesk tries to reach your endpoint.
+
+**Cause**  
+The API token is expired or the webhook URL lacks the correct authentication header.
+
+**Fix**  
+1. Generate a new API token in Admin Center > Channels > API.  
+2. Update the token in your integration settings.  
+3. For webhooks, add an Authorization header with value `Bearer YOUR_API_TOKEN`.  
+4. Send a test payload from the webhook settings page.  
+5. Confirm the receiving server logs a 200 response.
+
+</Expandable>
