@@ -1,7 +1,7 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: Twilio API
+  title: Twilio
   license:
     name: MIT
 servers:
@@ -38,8 +38,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create message
-      operationId: createMessage
+      summary: Create a message
+      operationId: createMessages
       responses:
         201:
           description: Null response
@@ -73,10 +73,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /calls:
+  /webhooks:
     get:
-      summary: List calls
-      operationId: listCalls
+      summary: List webhooks
+      operationId: listWebhooks
       parameters:
         - name: limit
           in: query
@@ -87,7 +87,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of calls
+          description: An paged array of webhooks
           headers:
             x-next:
               description: A link to the next page of responses
@@ -96,7 +96,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Calls'
+                $ref: '#/components/schemas/Webhooks'
         default:
           description: unexpected error
           content:
@@ -104,8 +104,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create call
-      operationId: createCall
+      summary: Create a webhook
+      operationId: createWebhooks
       responses:
         201:
           description: Null response
@@ -115,15 +115,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /calls/{callId}:
+  /webhooks/{webhookId}:
     get:
-      summary: Get call details
-      operationId: showCallById
+      summary: Get webhook details
+      operationId: showWebhookById
       parameters:
-        - name: callId
+        - name: webhookId
           in: path
           required: true
-          description: The id of the call to retrieve
+          description: The id of the webhook to retrieve
           schema:
             type: string
       responses:
@@ -132,7 +132,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Calls'
+                $ref: '#/components/schemas/Webhooks'
         default:
           description: unexpected error
           content:
@@ -157,7 +157,7 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Message'
-    Call:
+    Webhook:
       required:
         - id
         - name
@@ -169,10 +169,10 @@ components:
           type: string
         tag:
           type: string
-    Calls:
+    Webhooks:
       type: array
       items:
-        $ref: '#/components/schemas/Call'
+        $ref: '#/components/schemas/Webhook'
     Error:
       required:
         - code

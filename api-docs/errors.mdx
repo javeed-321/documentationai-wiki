@@ -1,181 +1,118 @@
 ---
 title: Error Codes
-description: Common Twilio REST API error codes, status callbacks, and recommended fixes for failed requests.
+description: Twilio-specific REST API error codes, HTTP status meanings, and resolution steps for failed requests.
 ---
 
-## Authentication and Permission Errors
+## Common Error Codes
 
-Twilio returns HTTP 401 or 403 responses when credentials are missing or lack required scopes. Check the `WWW-Authenticate` header for the exact reason.
+Twilio returns numeric error codes in the response body when a request fails. Each code maps to a specific validation or delivery issue.
 
-<Expandable title="20003 Authentication Error" default-open="false">
+<Callout kind="info">
+Review the `code` and `message` fields together to identify the exact failure point.
+</Callout>
+
+<ExpandableGroup>
+<Expandable title="Error 21211: Invalid To phone number" default-open="false">
 
 **Problem**
 
-Requests return status 401 with body:
-
-```json
-{
-  "code": 20003,
-  "message": "Authenticate",
-  "more_info": "https://www.twilio.com/docs/errors/20003",
-  "status": 401
-}
-```
+A request to send an SMS or make a voice call fails with code 21211.
 
 **Cause**
 
-The `Authorization` header contains an invalid Account SID and Auth Token pair, or the token has expired.
+The value supplied for the `To` parameter is not a valid E.164-formatted phone number or does not exist in your account's geography permissions.
 
 **Fix**
 
-Replace the credentials in your request. Example using curl:
-
-```bash
-curl -X POST https://api.example.com/2010-04-01/Accounts/ACxxxxxxxx/Messages.json \
-  -u "ACxxxxxxxx:your_auth_token"
-```
-
-Regenerate the Auth Token in the Twilio Console if the current token is revoked.
-
-</Expandable>
-
-<Expandable title="20404 Permission Denied" default-open="false">
-
-**Problem**
-
-Status 403 response:
-
-```json
-{
-  "code": 20404,
-  "message": "The requested resource does not exist",
-  "status": 403
-}
-```
-
-**Cause**
-
-The API key lacks the `voice` or `sms` scope required for the endpoint.
-
-**Fix**
-
-Create a new API key with the correct scopes and update the request:
-
-```bash
-curl -X GET https://api.example.com/2010-04-01/Accounts/ACxxxxxxxx/Calls.json \
-  -u "SKxxxxxxxx:your_api_secret"
-```
-
-</Expandable>
-
-## Rate Limiting and Invalid Parameters
-
-Twilio enforces per-second and daily limits. Exceeding them produces 429 responses. Invalid request bodies produce 400 responses with field-level details.
-
-<Expandable title="20429 Too Many Requests" default-open="false">
-
-**Problem**
-
-```json
-{
-  "code": 20429,
-  "message": "Too Many Requests",
-  "status": 429
-}
-```
-
-**Cause**
-
-More than 100 requests per second to the same endpoint from one IP.
-
-**Fix**
-
-Implement exponential backoff. Example in a retry loop:
-
-```javascript
-const delay = Math.pow(2, attempt) * 100;
-await new Promise(resolve => setTimeout(resolve, delay));
-```
-
-Reduce concurrent connections or request a rate limit increase.
-
-</Expandable>
-
-<Expandable title="21211 Invalid Phone Number" default-open="false">
-
-**Problem**
+Verify the number format and resend.
 
 ```json
 {
   "code": 21211,
-  "message": "The 'To' number is not a valid phone number.",
+  "message": "The 'To' number 415-555-1234 is not a valid phone number.",
   "status": 400
 }
 ```
 
-**Cause**
+Update the request to use the correct format.
 
-The `To` parameter contains a non-E.164 number or an unsupported country code.
-
-**Fix**
-
-Format numbers as `+15551234567` and verify the number is enabled for the destination country in your account settings.
-
+```bash
+curl -X POST https://api.example.com/2010-04-01/Accounts/ACxxx/Messages.json \
+  -d "To=+14155551234" \
+  -d "From=+14155556789" \
+  -d "Body=Hello" \
+  -u "ACxxx:YOUR_API_KEY"
+```
 </Expandable>
 
-## Webhook and Callback Failures
-
-Twilio retries failed status callbacks up to three times. Persistent failures appear in the request inspector with specific error codes.
-
-<Expandable title="11200 HTTP Callback Failure" default-open="false">
+<Expandable title="Error 21606: The From number is not a valid Twilio number" default-open="false">
 
 **Problem**
 
-Webhook logs show:
-
-```
-Error Code: 11200
-Description: HTTP retrieval failure
-```
+Outbound messaging or voice requests return code 21606.
 
 **Cause**
 
-Your server returns a non-2xx status or times out after 15 seconds.
+The `From` parameter references a phone number or messaging service SID that is not owned by the authenticated account or is not enabled for the requested channel.
 
 **Fix**
 
-Ensure the endpoint responds with 200 within five seconds. Add basic authentication validation:
-
-```javascript
-app.post("/status", (req, res) => {
-  if (req.headers.authorization !== "Basic ...") {
-    return res.status(401).send("Unauthorized");
-  }
-  res.status(200).send("OK");
-});
-```
-
-</Expandable>
-
-<Expandable title="21610 SMS Delivery Failure" default-open="false">
-
-**Problem**
-
-Status callback contains:
+Confirm the number belongs to the account and has the required capabilities.
 
 ```json
 {
-  "error_code": 21610,
-  "error_message": "Message cannot be sent to an unverified number."
+  "code": 21606,
+  "message": "The From number +14155556789 is not a valid Twilio number for this account.",
+  "status": 400
 }
 ```
 
-**Cause**
+Replace the `From` value with a verified Twilio number or messaging service SID.
 
-The destination number is not verified in trial accounts.
-
-**Fix**
-
-Verify the number in the Console or upgrade the account to remove verification requirements.
-
+```bash
+curl -X POST https://api.example.com/2010-04-01/Accounts/ACxxx/Messages.json \
+  -d "To=+14155551234" \
+  -d "From=MGxxx" \
+  -d "Body=Hello" \
+  -u "ACxxx:YOUR_API_KEY"
+```
 </Expandable>
+</ExpandableGroup>
+
+## Interpreting 4xx and 5xx Responses
+
+4xx status codes indicate client errors that you can correct by changing the request payload or headers. 5xx codes signal server-side issues; retry the request after a short delay.
+
+- 400 Bad Request: malformed parameters or invalid values.
+- 401 Unauthorized: missing or incorrect API credentials.
+- 429 Too Many Requests: rate limit exceeded.
+- 500 Internal Server Error: temporary Twilio platform issue.
+
+## Request Validation and Debugging
+
+Use the following workflow to validate requests before they reach production.
+
+<Steps>
+<Step title="Validate parameters" icon="check-circle">
+
+Pass every required field and confirm data types match the API reference.
+
+</Step>
+<Step title="Inspect response body" icon="terminal">
+
+Every error response contains `code`, `message`, and `more_info` fields.
+
+```json
+{
+  "code": 21211,
+  "message": "...",
+  "more_info": "https://www.twilio.com/docs/errors/21211"
+}
+```
+</Step>
+<Step title="Check logs" icon="book-open">
+
+Query the Twilio Console logs or the /Notifications endpoint for the request SID.
+
+</Step>
+</Steps>

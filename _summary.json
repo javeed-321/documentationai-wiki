@@ -13,12 +13,12 @@
     "simple"
   ],
   "passed": true,
-  "durationMs": 49250,
+  "durationMs": 37324,
   "totalFiles": 8,
   "validFiles": 8,
   "failedFiles": [],
   "totalAttempts": 8,
-  "tokens": 66099,
+  "tokens": 65364,
   "files": [
     "api-docs/introduction.mdx",
     "api-docs/authentication.mdx",
