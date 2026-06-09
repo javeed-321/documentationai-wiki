@@ -1,64 +1,61 @@
 ---
 title: Authentication
-description: Authenticate requests to Twilio using Account SID/Auth Token or API keys with proper security practices.
+description: Authenticate requests to Twilio APIs using Account SID, Auth Token, and API keys.
 ---
 
 ## Overview
 
-Every request to the Twilio REST API requires authentication. You supply either your Account SID paired with an Auth Token or an API key pair. Twilio validates credentials on each call and returns HTTP 401 for invalid or missing values.
+Every request to the Twilio REST API must include valid credentials. You authenticate using your Account SID paired with either an Auth Token or an API key. Twilio supports HTTP Basic Auth for direct requests and built-in credential handling inside the official helper libraries.
 
-## Authentication Methods
+## Authentication methods
 
 <Tabs>
   <Tab title="Account SID and Auth Token" icon="key">
-    <ParamField header="Authorization" param-type="string" required="true">
-      Base64-encoded string in the format `AccountSID:AuthToken`.
-    </ParamField>
+    Your Account SID and Auth Token are created automatically when you sign up. Use them for all API calls until you generate API keys.
 
-    Your Account SID begins with `AC` and your Auth Token is a 32-character secret. Both appear in the Twilio Console under Account Info.
+    <ParamField header="Authorization" param-type="string" required="true">
+      Base64-encoded string in the format `Basic {base64(AccountSID:AuthToken)}`.
+    </ParamField>
   </Tab>
-  <Tab title="API Keys" icon="key-round">
-    <ParamField header="Authorization" param-type="string" required="true">
-      Base64-encoded string in the format `APIKeySID:APIKeySecret`.
-    </ParamField>
+  <Tab title="API Keys" icon="key">
+    API keys provide scoped access and can be rotated independently of your primary account credentials. Create them in the Twilio Console under API keys.
 
-    API keys provide scoped access and support rotation without changing your main account credentials.
+    <ParamField header="Authorization" param-type="string" required="true">
+      Base64-encoded string in the format `Basic {base64(APIKeySID:APIKeySecret)}`.
+    </ParamField>
   </Tab>
 </Tabs>
 
-## Implementation
+## Implementation examples
 
-Use the following examples to authenticate requests. Replace placeholders with your own values.
+Use the following patterns to authenticate requests. Replace the placeholder values with your own credentials.
 
-<CodeGroup tabs="cURL,Python,JavaScript">
+<CodeGroup tabs="cURL,Python,Node.js">
 ```bash
-curl -X GET https://api.example.com/2010-04-01/Accounts \
-  -u "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:your_auth_token"
+curl -X GET 'https://api.example.com/2010-04-01/Accounts/ACxxxxxxxx.json' \
+  -u 'ACxxxxxxxx:your_auth_token'
 ```
-```python
-import requests
 
-response = requests.get(
-    "https://api.example.com/2010-04-01/Accounts",
-    auth=("ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", "your_auth_token")
-)
-print(response.json())
+```python
+from twilio.rest import Client
+
+client = Client('ACxxxxxxxx', 'your_auth_token')
+account = client.api.accounts('ACxxxxxxxx').fetch()
+print(account.friendly_name)
 ```
+
 ```javascript
-const response = await fetch("https://api.example.com/2010-04-01/Accounts", {
-  headers: {
-    Authorization: "Basic " + btoa("ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:your_auth_token"),
-  },
-});
-const data = await response.json();
-console.log(data);
+const twilio = require('twilio');
+
+const client = twilio('ACxxxxxxxx', 'your_auth_token');
+client.api.accounts('ACxxxxxxxx')
+  .fetch()
+  .then(account => console.log(account.friendly_name));
 ```
 </CodeGroup>
 
-## Security Best Practices
+## Security recommendations
 
 <Callout kind="alert">
-Store credentials outside source code. Use environment variables or a secrets manager. Rotate API keys every 90 days and immediately revoke any key that may have been exposed. Never commit tokens to version control or share them in logs.
+Never commit Account SIDs, Auth Tokens, or API key secrets to source control. Store credentials in environment variables and rotate API keys on a regular schedule. Use API keys with the minimum required permissions for each application.
 </Callout>
-
-Create new keys from the Twilio Console under API Keys & Tokens. Delete old keys only after confirming all services have migrated to the new pair.

@@ -1,118 +1,131 @@
 ---
 title: Error Codes
-description: Twilio-specific REST API error codes, HTTP status meanings, and resolution steps for failed requests.
+description: Common Twilio REST API error codes and how to resolve issues like invalid numbers or auth failures.
 ---
 
 ## Common Error Codes
 
-Twilio returns numeric error codes in the response body when a request fails. Each code maps to a specific validation or delivery issue.
+Twilio returns standard HTTP status codes along with a numeric error code in the response body. Each code maps to a specific failure condition during request validation or delivery.
 
-<Callout kind="info">
-Review the `code` and `message` fields together to identify the exact failure point.
-</Callout>
+## Invalid Number Errors
 
-<ExpandableGroup>
-<Expandable title="Error 21211: Invalid To phone number" default-open="false">
+<Expandable title="21211: Invalid 'To' Phone Number" default-open="false">
 
 **Problem**
 
-A request to send an SMS or make a voice call fails with code 21211.
-
-**Cause**
-
-The value supplied for the `To` parameter is not a valid E.164-formatted phone number or does not exist in your account's geography permissions.
-
-**Fix**
-
-Verify the number format and resend.
+The request fails with HTTP 400 and the body contains:
 
 ```json
 {
   "code": 21211,
-  "message": "The 'To' number 415-555-1234 is not a valid phone number.",
+  "message": "The 'To' number +15551234567 is not a valid phone number.",
   "status": 400
 }
 ```
-
-Update the request to use the correct format.
-
-```bash
-curl -X POST https://api.example.com/2010-04-01/Accounts/ACxxx/Messages.json \
-  -d "To=+14155551234" \
-  -d "From=+14155556789" \
-  -d "Body=Hello" \
-  -u "ACxxx:YOUR_API_KEY"
-```
-</Expandable>
-
-<Expandable title="Error 21606: The From number is not a valid Twilio number" default-open="false">
-
-**Problem**
-
-Outbound messaging or voice requests return code 21606.
 
 **Cause**
 
-The `From` parameter references a phone number or messaging service SID that is not owned by the authenticated account or is not enabled for the requested channel.
+The value supplied in the `To` parameter does not match E.164 format or is not a number that can receive the requested channel.
 
 **Fix**
 
-Confirm the number belongs to the account and has the required capabilities.
-
-```json
-{
-  "code": 21606,
-  "message": "The From number +14155556789 is not a valid Twilio number for this account.",
-  "status": 400
-}
-```
-
-Replace the `From` value with a verified Twilio number or messaging service SID.
+Format the number with a leading `+` and country code. Validate the number before the request:
 
 ```bash
-curl -X POST https://api.example.com/2010-04-01/Accounts/ACxxx/Messages.json \
-  -d "To=+14155551234" \
-  -d "From=MGxxx" \
-  -d "Body=Hello" \
-  -u "ACxxx:YOUR_API_KEY"
+curl -X POST https://api.twilio.com/2010-04-01/Accounts/ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/Messages.json \
+  --data-urlencode "To=+15551234567" \
+  --data-urlencode "From=+15559876543" \
+  --data-urlencode "Body=Test" \
+  -u ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:your_auth_token
 ```
+
 </Expandable>
-</ExpandableGroup>
 
-## Interpreting 4xx and 5xx Responses
+<Expandable title="20003: Authenticate" default-open="false">
 
-4xx status codes indicate client errors that you can correct by changing the request payload or headers. 5xx codes signal server-side issues; retry the request after a short delay.
+**Problem**
 
-- 400 Bad Request: malformed parameters or invalid values.
-- 401 Unauthorized: missing or incorrect API credentials.
-- 429 Too Many Requests: rate limit exceeded.
-- 500 Internal Server Error: temporary Twilio platform issue.
-
-## Request Validation and Debugging
-
-Use the following workflow to validate requests before they reach production.
-
-<Steps>
-<Step title="Validate parameters" icon="check-circle">
-
-Pass every required field and confirm data types match the API reference.
-
-</Step>
-<Step title="Inspect response body" icon="terminal">
-
-Every error response contains `code`, `message`, and `more_info` fields.
+The request returns HTTP 401 with:
 
 ```json
 {
-  "code": 21211,
-  "message": "...",
-  "more_info": "https://www.twilio.com/docs/errors/21211"
+  "code": 20003,
+  "message": "Authenticate",
+  "status": 401
 }
 ```
-</Step>
-<Step title="Check logs" icon="book-open">
 
-Query the Twilio Console logs or the /Notifications endpoint for the request SID.
+**Cause**
 
-</Step>
-</Steps>
+The request did not include a valid Account SID and Auth Token pair in the `Authorization` header.
+
+**Fix**
+
+Use HTTP Basic Auth with your Account SID as the username and Auth Token as the password. Example:
+
+```bash
+curl -X GET https://api.twilio.com/2010-04-01/Accounts/ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.json \
+  -u ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:your_auth_token
+```
+
+Store the token in an environment variable and never commit it to source control.
+
+</Expandable>
+
+## Rate Limiting
+
+<Expandable title="429: Too Many Requests" default-open="false">
+
+**Problem**
+
+Repeated requests return HTTP 429 and the header `X-Rate-Limit-Remaining: 0`.
+
+**Cause**
+
+The account exceeded the allowed request rate for the endpoint.
+
+**Fix**
+
+Implement exponential backoff. Wait at least the number of seconds indicated by the `Retry-After` header before retrying:
+
+```python
+import time
+import requests
+
+def send_with_backoff(url, payload, token):
+    delay = 1
+    while True:
+        resp = requests.post(url, data=payload, auth=token)
+        if resp.status_code != 429:
+            return resp
+        time.sleep(delay)
+        delay = min(delay * 2, 60)
+```
+
+</Expandable>
+
+## Webhook Failures
+
+<Expandable title="Webhook Delivery Failures" default-open="false">
+
+**Problem**
+
+Status callbacks never arrive or Twilio logs show repeated 4xx/5xx responses from your endpoint.
+
+**Cause**
+
+Your webhook URL returns a non-2xx status, times out after 15 seconds, or rejects the request due to TLS or authentication issues.
+
+**Fix**
+
+Ensure the endpoint responds with HTTP 200 within 15 seconds and uses a publicly reachable HTTPS URL. Test the endpoint with:
+
+```bash
+curl -X POST https://your-webhook.example.com/twilio \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "CallSid=CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&CallStatus=completed"
+```
+
+Check the Twilio Console under the specific resource's "Webhooks & Email" logs for the exact failure reason.
+
+</Expandable>

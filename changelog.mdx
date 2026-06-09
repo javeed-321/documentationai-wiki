@@ -1,27 +1,28 @@
 ---
 title: Changelog
-description: Release notes covering new Twilio API endpoints, features, and deprecations across all products.
+description: Release notes for Twilio API updates, new features, and deprecations.
 ---
 
-## Voice
+## Release Notes
 
-<Update label="2024-11-05" description="v2024-11-01" tags={["feature"]}>
+<Update label="2024-10-20" description="v2.4.0" tags={["feature"]}>
 
-- Added the `/Calls/{CallSid}/Transcriptions` endpoint for real-time call transcription.
-- Introduced support for the 2024-11-01 API version with enhanced SIP trunking options.
-
-</Update>
-
-<Update label="2024-09-20" description="v2024-09-01" tags={["feature"]}>
-
-- Launched new communication channel integrations for voice via WhatsApp voice calls.
-- Expanded programmable voice parameters for conference bridging.
+- Added POST `/v2/voice/calls` endpoint for direct call initiation.
+- Updated SDK to version 3.2.1 with improved error handling.
+- Expanded support to new EU regions with adjusted regional pricing.
 
 </Update>
 
-<Update label="2024-08-10" description="v2024-08-01" tags={["breaking"]}>
+<Update label="2024-09-15" description="v2.3.1" tags={["bugfix"]}>
 
-- Removed deprecated TwiML `<Dial>` attributes; migrate to the new `recordingStatusCallback` parameter.
-- Updated API versioning requirements for all Voice endpoints.
+- Fixed billing calculation for multi-region voice calls.
+- Resolved deprecation warnings for legacy `/v1/sms` endpoints.
+
+</Update>
+
+<Update label="2024-08-05" description="v2.3.0" tags={["feature"]}>
+
+- Introduced new pricing tiers for high-volume API usage.
+- Added GET `/v2/voice/regions` endpoint to query available regions.
 
 </Update>

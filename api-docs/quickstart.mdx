@@ -1,86 +1,66 @@
 ---
 title: Quickstart
-description: Send your first SMS or place a voice call using Twilio's REST API in minutes.
+description: Send your first SMS message or make an outbound call with Twilio in minutes.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-Create a free Twilio account and verify your email address before proceeding. You also need at least one phone number purchased from the Twilio console.
+Create a Twilio account and retrieve your Account SID and Auth Token from the console. You also need a phone number capable of sending SMS or making voice calls.
 </Callout>
 
-## Account Setup and Phone Number Purchase
+## Obtain a Twilio phone number
+
+Log in to the console and navigate to the phone numbers section. Search for and purchase a number that supports the required capabilities.
+
+## Send an SMS via REST API
 
 <Steps>
-<Step title="Create credentials" icon="key">
-Log in to the Twilio console and copy your Account SID and Auth Token from the dashboard. Store these values securely.
-</Step>
-<Step title="Buy a number" icon="phone">
-Navigate to Phone Numbers in the console, search for an available number that supports SMS, and complete the purchase.
-</Step>
+  <Step title="Set credentials">
+    Export your Account SID and Auth Token as environment variables.
+  </Step>
+  <Step title="Execute the request">
+    Issue a POST request to the Messages resource.
+  </Step>
 </Steps>
-
-## Send Your First SMS
-
-Use the REST API to send an outbound message. The examples below use your Account SID, Auth Token, and purchased phone number.
 
 <CodeGroup tabs="cURL,Python">
 ```bash
 curl -X POST https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json \
-  --data-urlencode "From=+15551234567" \
-  --data-urlencode "To=+15559876543" \
+  --data-urlencode "From=+15005550006" \
+  --data-urlencode "To=+15005550006" \
   --data-urlencode "Body=Hello from Twilio" \
   -u YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN
 ```
 ```python
-from twilio.rest import Client
-
-client = Client("YOUR_ACCOUNT_SID", "YOUR_AUTH_TOKEN")
-message = client.messages.create(
-    from_="+15551234567",
-    to="+15559876543",
-    body="Hello from Twilio"
+import requests
+response = requests.post(
+    "https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json",
+    auth=("YOUR_ACCOUNT_SID", "YOUR_AUTH_TOKEN"),
+    data={"From": "+15005550006", "To": "+15005550006", "Body": "Hello from Twilio"}
 )
-print(message.sid)
+print(response.json())
 ```
 </CodeGroup>
 
-## Handle Inbound Messages via Webhooks
+## Handle incoming webhooks
 
-Configure a webhook URL in the Twilio console under the phone number settings. Twilio posts form-encoded data to this endpoint when a message arrives.
+Configure your webhook URL in the phone number settings. Your server must respond with valid TwiML.
 
-<Steps>
-<Step title="Set webhook URL" icon="link">
-Enter your publicly accessible endpoint (for example `https://example.com/webhook`) in the Messaging webhook field.
-</Step>
-<Step title="Respond to the request" icon="code">
-Return TwiML in your handler to reply automatically.
-</Step>
-</Steps>
-
-```python
-from flask import Flask, request
-from twilio.twiml.messaging_response import MessagingResponse
-
-app = Flask(__name__)
-
-@app.route("/webhook", methods=["POST"])
-def webhook():
-    resp = MessagingResponse()
-    resp.message("Thanks for your message!")
-    return str(resp)
-
-if __name__ == "__main__":
-    app.run()
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Message>Thanks for contacting us.</Message>
+</Response>
 ```
 
-## Next Steps
+## Next steps
 
 <Columns cols={2}>
-<Card title="Full SMS API reference" href="#sending-an-sms" icon="book-open">
-Explore every parameter and response field.
-</Card>
-<Card title="Voice call quickstart" href="#voice-calls" icon="phone">
-Place your first outbound voice call.
-</Card>
+  <Card title="REST API reference" href="#rest-api" icon="book-open">
+    Explore all available endpoints and parameters.
+  </Card>
+  <Card title="Webhook guide" href="#webhooks" icon="settings">
+    Learn how to validate signatures and respond correctly.
+  </Card>
 </Columns>
