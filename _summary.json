@@ -1,25 +1,24 @@
 {
-  "id": "sk-002",
-  "testName": "Vercel - Deployment Platform",
-  "productName": "Vercel",
+  "id": "sk-007",
+  "testName": "Planetscale - Database",
+  "productName": "PlanetScale",
   "source": "evals",
-  "difficulty": "simple",
+  "difficulty": "moderate",
   "useCases": [
     "api-docs",
     "product-guides"
   ],
   "tags": [
-    "devtools",
-    "deployment",
-    "simple"
+    "database",
+    "moderate"
   ],
   "passed": true,
-  "durationMs": 69197,
+  "durationMs": 32455,
   "totalFiles": 11,
   "validFiles": 11,
   "failedFiles": [],
-  "totalAttempts": 11,
-  "tokens": 93859,
+  "totalAttempts": 12,
+  "tokens": 104095,
   "files": [
     "introduction.mdx",
     "quickstart.mdx",

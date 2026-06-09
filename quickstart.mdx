@@ -1,58 +1,107 @@
 ---
 title: Quickstart
-description: Deploy your first application to Vercel in minutes using Git integration or CLI.
+description: Spin up your first PlanetScale database, connect an application, and perform your first schema change using the dashboard or CLI.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-You need a GitHub account with a repository containing a supported framework. No additional configuration is required to begin.
+  You need a PlanetScale account. Sign up at `https://example.com` if you do not already have one. No credit card is required to start.
 </Callout>
 
-## Connect Your GitHub Account
+## Create your first database
+
+Follow these steps to provision a database in under two minutes.
 
 <Steps>
-  <Step title="Authorize Vercel" icon="github">
-    Sign in to your Vercel dashboard and connect your GitHub account through the integration settings.
+  <Step title="Sign in to the dashboard" icon="log-in">
+    Open the PlanetScale dashboard and select **Create database**.
   </Step>
-  <Step title="Select Repository" icon="folder">
-    Choose the repository you want to deploy. Vercel automatically detects the framework and applies the correct preset.
+  <Step title="Name the database" icon="edit">
+    Enter a name such as `quickstart-db` and choose a region close to your application.
   </Step>
-  <Step title="Confirm Settings" icon="check-circle">
-    Review the build settings. Framework presets set the correct install and build commands automatically.
+  <Step title="Create the database" icon="check-circle">
+    Click **Create**. PlanetScale provisions a production-ready MySQL instance instantly.
   </Step>
 </Steps>
 
-## Deploy with CLI
+## Install the PlanetScale CLI
 
-Use the CLI for projects that are not yet connected to GitHub.
+<Steps>
+  <Step title="Install the CLI" icon="download">
+    Run the installation command for your operating system.
 
-<CodeGroup tabs="npm,yarn,pnpm">
-```bash
-npm i -g vercel
-vercel
+    ```bash
+    brew install pscale
+    ```
+  </Step>
+  <Step title="Authenticate" icon="key">
+    Log in with your PlanetScale credentials.
+
+    ```bash
+    pscale auth login
+    ```
+  </Step>
+</Steps>
+
+## Connect an application
+
+Use the following connection string format with any MySQL client. Replace the placeholders with values from your database settings page.
+
+<CodeGroup tabs="Node.js,Python,Go">
+```javascript
+const mysql = require('mysql2');
+const connection = mysql.createConnection({
+  host: 'aws.connect.psdb.cloud',
+  user: 'your_username',
+  password: 'your_password',
+  database: 'quickstart-db',
+  ssl: { rejectUnauthorized: true }
+});
 ```
-```bash
-yarn global add vercel
-vercel
+```python
+import mysql.connector
+
+connection = mysql.connector.connect(
+    host="aws.connect.psdb.cloud",
+    user="your_username",
+    password="your_password",
+    database="quickstart-db",
+    ssl_ca="/path/to/ca.pem"
+)
 ```
-```bash
-pnpm add -g vercel
-vercel
+```go
+import (
+    "database/sql"
+    _ "github.com/go-sql-driver/mysql"
+)
+
+dsn := "your_username:your_password@tcp(aws.connect.psdb.cloud:3306)/quickstart-db?tls=true"
+db, err := sql.Open("mysql", dsn)
 ```
 </CodeGroup>
 
-## Automatic Builds and Production URLs
+## Branching workflow
 
-Once connected, every push to the main branch triggers an automatic build. Vercel generates a unique production URL in the format `https://your-project.example.com`. Preview deployments receive separate URLs for each pull request.
+PlanetScale uses branches for safe schema changes. Create a development branch, apply changes, then promote them.
 
-## Next Steps
+```bash
+pscale branch create quickstart-db dev
+pscale connect quickstart-db dev
+```
 
-<Columns cols={2}>
-  <Card title="Framework Presets" href="#framework-presets" icon="settings">
-    Explore how presets configure builds for popular frameworks.
+Run your migration on the `dev` branch, then open a deploy request from the dashboard to merge changes into the main branch.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Schema changes" icon="git-branch" href="#branching-workflow">
+    Learn how to perform zero-downtime migrations.
   </Card>
-  <Card title="Production URLs" href="#production-urls" icon="globe">
-    Learn how custom domains attach to production deployments.
+  <Card title="CLI reference" icon="terminal" href="/docs/cli">
+    Explore all available CLI commands.
+  </Card>
+  <Card title="Connectors" icon="plug" href="/docs/connectors">
+    Find language-specific connection guides.
   </Card>
 </Columns>

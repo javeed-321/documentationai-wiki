@@ -1,68 +1,121 @@
 ---
 title: Quickstart
-description: Make your first API call to create a deployment or list projects.
+description: Make your first API call to list databases and create a new branch using curl or the official client libraries.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-Obtain a Vercel API token from your account settings before making requests. All API calls require the `Authorization: Bearer` header.
+Obtain an API token from the dashboard before making requests. All requests require the Authorization header with a Bearer token.
 </Callout>
 
-## Authentication setup
+## Make your first request
+
+Follow these steps to list databases and create a branch.
 
 <Steps>
-  <Step title="Create an API token" icon="key">
-    Generate a token with deployment and project scopes. Store it securely and never commit it to source control.
+  <Step title="Prepare credentials" icon="key">
+    Store your token in an environment variable:
+
+    ```bash
+    export PLANETSCALE_TOKEN="YOUR_API_KEY"
+    ```
   </Step>
-  <Step title="Set the token in your environment" icon="terminal">
-    Export the token as an environment variable for use in shell commands.
+  <Step title="List databases" icon="database">
+    Send a GET request to retrieve available databases.
+
+    <CodeGroup tabs="cURL,JavaScript,Python">
+      ```bash
+      curl -H "Authorization: Bearer $PLANETSCALE_TOKEN" \
+        https://api.example.com/v1/databases
+      ```
+
+      ```javascript
+      const res = await fetch("https://api.example.com/v1/databases", {
+        headers: { Authorization: `Bearer ${process.env.PLANETSCALE_TOKEN}` },
+      });
+      const data = await res.json();
+      console.log(data);
+      ```
+
+      ```python
+      import requests
+      import os
+
+      headers = {"Authorization": f"Bearer {os.environ['PLANETSCALE_TOKEN']}"}
+      response = requests.get("https://api.example.com/v1/databases", headers=headers)
+      print(response.json())
+      ```
+    </CodeGroup>
+  </Step>
+  <Step title="Create a branch" icon="git-branch">
+    Create a new branch from the main branch of a database.
+
+    <CodeGroup tabs="cURL,JavaScript,Python">
+      ```bash
+      curl -X POST \
+        -H "Authorization: Bearer $PLANETSCALE_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"name":"feature-x","parent":"main"}' \
+        https://api.example.com/v1/databases/mydb/branches
+      ```
+
+      ```javascript
+      const res = await fetch(
+        "https://api.example.com/v1/databases/mydb/branches",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.PLANETSCALE_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: "feature-x", parent: "main" }),
+        }
+      );
+      const data = await res.json();
+      console.log(data);
+      ```
+
+      ```python
+      import requests
+      import os
+
+      headers = {
+          "Authorization": f"Bearer {os.environ['PLANETSCALE_TOKEN']}",
+          "Content-Type": "application/json",
+      }
+      payload = {"name": "feature-x", "parent": "main"}
+      response = requests.post(
+          "https://api.example.com/v1/databases/mydb/branches",
+          headers=headers,
+          json=payload,
+      )
+      print(response.json())
+      ```
+    </CodeGroup>
   </Step>
 </Steps>
 
-## First API call
+## Handling responses
 
-Use the following examples to list projects or create a deployment. Both calls return standard JSON responses.
+Successful responses return JSON with a `data` array or object. Errors include an `error` field and appropriate HTTP status codes.
 
-<CodeGroup tabs="List projects,Create deployment">
-```bash
-curl -H "Authorization: Bearer YOUR_API_TOKEN" \
-  https://api.example.com/v1/projects
-```
-```bash
-curl -X POST \
-  -H "Authorization: Bearer YOUR_API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"my-app","gitRepository":{"url":"https://github.com/example/repo"}}' \
-  https://api.example.com/v1/deployments
-```
-</CodeGroup>
+Check the response status before processing:
 
-Example JSON response for listing projects:
-
-```json
-{
-  "projects": [
-    {
-      "id": "prj_abc123",
-      "name": "my-app",
-      "createdAt": "2024-01-15T10:00:00Z"
-    }
-  ]
+```javascript
+if (!res.ok) {
+  const err = await res.json();
+  throw new Error(err.error);
 }
 ```
-
-## Rate limits
-
-Requests are limited to 100 per minute per token. Exceeding the limit returns HTTP 429 with a `retry-after` header. Monitor the `x-ratelimit-remaining` response header to stay within bounds.
 
 ## Next steps
 
 <Columns cols={2}>
-  <Card title="Authentication" icon="lock" href="#authentication-setup">
-    Review token scopes and renewal.
+  <Card title="Authentication" href="#prerequisites" icon="lock">
+    Learn how to manage and rotate API tokens.
   </Card>
-  <Card title="Deployments" icon="rocket" href="/api-docs/deployments">
-    Explore full deployment parameters.
+  <Card title="Branches API" href="#create-a-branch" icon="git-branch">
+    Explore all branch operations including promotion and deletion.
   </Card>
 </Columns>

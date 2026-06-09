@@ -1,107 +1,129 @@
 ---
 title: Error Codes
-description: Common API error codes and how to resolve deployment or project issues.
+description: Common PlanetScale API error responses and how to resolve issues such as branch protection violations or schema conflicts.
 ---
 
-## HTTP Status Meanings
+## HTTP Status Codes
 
-The Vercel API returns standard HTTP status codes. Review the response body for a `code` field that provides the exact error identifier.
+PlanetScale returns standard HTTP status codes. The table below summarizes the most common responses from the API.
 
-<Expandable title="401 Unauthorized" default-open="false">
+| Status | Meaning                  | Typical Cause                     |
+| ------ | ------------------------ | --------------------------------- |
+| 400    | Bad Request              | Invalid parameters or payload     |
+| 401    | Unauthorized             | Missing or invalid API token      |
+| 403    | Forbidden                | Branch protection rule violation  |
+| 409    | Conflict                 | Schema deployment failure         |
+| 429    | Too Many Requests        | Rate limit exceeded               |
+
+Examine the `error` object in the response body for a machine-readable code and human-readable message.
+
+```json
+{
+  "error": {
+    "code": "branch_protected",
+    "message": "Cannot delete branch 'main' because it is protected."
+  }
+}
+```
+
+## Branch Protection Errors
+
+<Expandable title="403 branch_protected when deleting a branch" default-open="false">
 
 **Problem**
 
-Requests fail with HTTP 401 and the message `{"error":{"code":"unauthorized","message":"Invalid authentication token"}}`.
+```
+DELETE /v1/organizations/my-org/databases/prod/branches/main
+403 Forbidden
+{"error":{"code":"branch_protected","message":"Cannot delete branch 'main' because it is protected."}}
+```
 
 **Cause**
 
-The `Authorization` header contains an expired or malformed bearer token.
+The branch has a protection rule that prevents deletion or direct writes.
 
 **Fix**
 
-Regenerate the token from the dashboard and include it exactly as `Authorization: Bearer YOUR_TOKEN`. Test with:
+Remove the protection rule first:
 
 ```bash
-curl -H "Authorization: Bearer YOUR_TOKEN" https://api.example.com/v2/deployments
+curl -X PATCH \
+  https://api.example.com/v1/organizations/my-org/databases/prod/branches/main \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"protected": false}'
+```
+
+Then retry the delete operation.
+
+</Expandable>
+
+<Expandable title="403 branch_protected on direct schema change" default-open="false">
+
+**Problem**
+
+```
+POST /v1/organizations/my-org/databases/prod/branches/main/schema
+403 Forbidden
+{"error":{"code":"branch_protected","message":"Direct schema changes are not allowed on protected branches."}}
+```
+
+**Cause**
+
+The request targets a protected branch such as `main`.
+
+**Fix**
+
+Create a development branch, apply the change there, then open a deploy request.
+
+</Expandable>
+
+## Schema Deployment Failures
+
+<Expandable title="409 schema_conflict during deploy request" default-open="false">
+
+**Problem**
+
+```
+POST /v1/organizations/my-org/databases/prod/deploy-requests/42/deploy
+409 Conflict
+{"error":{"code":"schema_conflict","message":"Deployment blocked: column 'email' already exists on table 'users'."}}
+```
+
+**Cause**
+
+The schema change in the deploy request conflicts with the current state of the production branch.
+
+**Fix**
+
+1. Pull the latest schema from the production branch into your development branch.
+2. Resolve the conflict locally.
+3. Push the corrected schema and update the deploy request.
+
+```bash
+pscale branch create prod fix-conflict --from main
+pscale deploy-request create prod fix-conflict
 ```
 
 </Expandable>
 
-<Expandable title="404 Not Found" default-open="false">
+<Expandable title="409 pending_migrations when deploying" default-open="false">
 
 **Problem**
 
-Requests return HTTP 404 with `{"error":{"code":"not_found","message":"Project not found"}}`.
-
-**Cause**
-
-The project identifier in the path does not exist or belongs to another team.
-
-**Fix**
-
-Verify the project name or ID with the list projects endpoint before retrying the request.
-
-</Expandable>
-
-## Deployment Failures
-
-Deployment endpoints return 400 or 500 status codes when build or runtime steps fail.
-
-<Expandable title="Build Command Exit" default-open="false">
-
-**Problem**
-
-A deployment logs `Build failed with exit code 1` and the API returns code `build_error`.
-
-**Cause**
-
-The `build` script defined in `package.json` exits non-zero, often due to missing dependencies or TypeScript errors.
-
-**Fix**
-
-Run the build command locally to reproduce, then inspect the full log via the deployments endpoint:
-
-```bash
-curl -H "Authorization: Bearer YOUR_TOKEN" \
-  https://api.example.com/v2/deployments/DEPLOYMENT_ID/builds
+```
+{"error":{"code":"pending_migrations","message":"Branch contains unapplied migrations. Apply or discard them before deploying."}}
 ```
 
-Update the script or add required environment variables.
-
-</Expandable>
-
-<Expandable title="Invalid Environment Variable" default-open="false">
-
-**Problem**
-
-Deployment fails with `Environment variable "API_KEY" is required but not set`.
-
 **Cause**
 
-A required variable referenced in `vercel.json` or the framework config is absent from the project settings.
+Unapplied migration files remain on the development branch.
 
 **Fix**
 
-Add the variable through the dashboard or the environment variables API before triggering a new deployment.
+Apply the migrations on the development branch, then retry the deploy request.
 
-</Expandable>
-
-## Authentication Errors
-
-Token and permission issues produce distinct error codes even when HTTP status is 200-level on some endpoints.
-
-<Expandable title="Insufficient Scope" default-open="false">
-
-**Problem**
-
-Requests receive `{"error":{"code":"forbidden","message":"Token lacks required scope: deployment:write"}}`.
-
-**Cause**
-
-The access token was created with read-only scopes.
-
-**Fix**
-
-Create a new token that includes the `deployment:write` scope and update any automation scripts using the token.
+```bash
+pscale shell prod fix-conflict < migrations/20241001120000_add_email.sql
+```
 
 </Expandable>
