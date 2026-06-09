@@ -1,129 +1,181 @@
 ---
 title: Error Codes
-description: Common PlanetScale API error responses and how to resolve issues such as branch protection violations or schema conflicts.
+description: Common Twilio REST API error codes, status callbacks, and recommended fixes for failed requests.
 ---
 
-## HTTP Status Codes
+## Authentication and Permission Errors
 
-PlanetScale returns standard HTTP status codes. The table below summarizes the most common responses from the API.
+Twilio returns HTTP 401 or 403 responses when credentials are missing or lack required scopes. Check the `WWW-Authenticate` header for the exact reason.
 
-| Status | Meaning                  | Typical Cause                     |
-| ------ | ------------------------ | --------------------------------- |
-| 400    | Bad Request              | Invalid parameters or payload     |
-| 401    | Unauthorized             | Missing or invalid API token      |
-| 403    | Forbidden                | Branch protection rule violation  |
-| 409    | Conflict                 | Schema deployment failure         |
-| 429    | Too Many Requests        | Rate limit exceeded               |
+<Expandable title="20003 Authentication Error" default-open="false">
 
-Examine the `error` object in the response body for a machine-readable code and human-readable message.
+**Problem**
+
+Requests return status 401 with body:
 
 ```json
 {
-  "error": {
-    "code": "branch_protected",
-    "message": "Cannot delete branch 'main' because it is protected."
-  }
+  "code": 20003,
+  "message": "Authenticate",
+  "more_info": "https://www.twilio.com/docs/errors/20003",
+  "status": 401
 }
 ```
 
-## Branch Protection Errors
-
-<Expandable title="403 branch_protected when deleting a branch" default-open="false">
-
-**Problem**
-
-```
-DELETE /v1/organizations/my-org/databases/prod/branches/main
-403 Forbidden
-{"error":{"code":"branch_protected","message":"Cannot delete branch 'main' because it is protected."}}
-```
-
 **Cause**
 
-The branch has a protection rule that prevents deletion or direct writes.
+The `Authorization` header contains an invalid Account SID and Auth Token pair, or the token has expired.
 
 **Fix**
 
-Remove the protection rule first:
+Replace the credentials in your request. Example using curl:
 
 ```bash
-curl -X PATCH \
-  https://api.example.com/v1/organizations/my-org/databases/prod/branches/main \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -d '{"protected": false}'
+curl -X POST https://api.example.com/2010-04-01/Accounts/ACxxxxxxxx/Messages.json \
+  -u "ACxxxxxxxx:your_auth_token"
 ```
 
-Then retry the delete operation.
+Regenerate the Auth Token in the Twilio Console if the current token is revoked.
 
 </Expandable>
 
-<Expandable title="403 branch_protected on direct schema change" default-open="false">
+<Expandable title="20404 Permission Denied" default-open="false">
 
 **Problem**
 
-```
-POST /v1/organizations/my-org/databases/prod/branches/main/schema
-403 Forbidden
-{"error":{"code":"branch_protected","message":"Direct schema changes are not allowed on protected branches."}}
+Status 403 response:
+
+```json
+{
+  "code": 20404,
+  "message": "The requested resource does not exist",
+  "status": 403
+}
 ```
 
 **Cause**
 
-The request targets a protected branch such as `main`.
+The API key lacks the `voice` or `sms` scope required for the endpoint.
 
 **Fix**
 
-Create a development branch, apply the change there, then open a deploy request.
-
-</Expandable>
-
-## Schema Deployment Failures
-
-<Expandable title="409 schema_conflict during deploy request" default-open="false">
-
-**Problem**
-
-```
-POST /v1/organizations/my-org/databases/prod/deploy-requests/42/deploy
-409 Conflict
-{"error":{"code":"schema_conflict","message":"Deployment blocked: column 'email' already exists on table 'users'."}}
-```
-
-**Cause**
-
-The schema change in the deploy request conflicts with the current state of the production branch.
-
-**Fix**
-
-1. Pull the latest schema from the production branch into your development branch.
-2. Resolve the conflict locally.
-3. Push the corrected schema and update the deploy request.
+Create a new API key with the correct scopes and update the request:
 
 ```bash
-pscale branch create prod fix-conflict --from main
-pscale deploy-request create prod fix-conflict
+curl -X GET https://api.example.com/2010-04-01/Accounts/ACxxxxxxxx/Calls.json \
+  -u "SKxxxxxxxx:your_api_secret"
 ```
 
 </Expandable>
 
-<Expandable title="409 pending_migrations when deploying" default-open="false">
+## Rate Limiting and Invalid Parameters
+
+Twilio enforces per-second and daily limits. Exceeding them produces 429 responses. Invalid request bodies produce 400 responses with field-level details.
+
+<Expandable title="20429 Too Many Requests" default-open="false">
 
 **Problem**
 
-```
-{"error":{"code":"pending_migrations","message":"Branch contains unapplied migrations. Apply or discard them before deploying."}}
+```json
+{
+  "code": 20429,
+  "message": "Too Many Requests",
+  "status": 429
+}
 ```
 
 **Cause**
 
-Unapplied migration files remain on the development branch.
+More than 100 requests per second to the same endpoint from one IP.
 
 **Fix**
 
-Apply the migrations on the development branch, then retry the deploy request.
+Implement exponential backoff. Example in a retry loop:
 
-```bash
-pscale shell prod fix-conflict < migrations/20241001120000_add_email.sql
+```javascript
+const delay = Math.pow(2, attempt) * 100;
+await new Promise(resolve => setTimeout(resolve, delay));
 ```
+
+Reduce concurrent connections or request a rate limit increase.
+
+</Expandable>
+
+<Expandable title="21211 Invalid Phone Number" default-open="false">
+
+**Problem**
+
+```json
+{
+  "code": 21211,
+  "message": "The 'To' number is not a valid phone number.",
+  "status": 400
+}
+```
+
+**Cause**
+
+The `To` parameter contains a non-E.164 number or an unsupported country code.
+
+**Fix**
+
+Format numbers as `+15551234567` and verify the number is enabled for the destination country in your account settings.
+
+</Expandable>
+
+## Webhook and Callback Failures
+
+Twilio retries failed status callbacks up to three times. Persistent failures appear in the request inspector with specific error codes.
+
+<Expandable title="11200 HTTP Callback Failure" default-open="false">
+
+**Problem**
+
+Webhook logs show:
+
+```
+Error Code: 11200
+Description: HTTP retrieval failure
+```
+
+**Cause**
+
+Your server returns a non-2xx status or times out after 15 seconds.
+
+**Fix**
+
+Ensure the endpoint responds with 200 within five seconds. Add basic authentication validation:
+
+```javascript
+app.post("/status", (req, res) => {
+  if (req.headers.authorization !== "Basic ...") {
+    return res.status(401).send("Unauthorized");
+  }
+  res.status(200).send("OK");
+});
+```
+
+</Expandable>
+
+<Expandable title="21610 SMS Delivery Failure" default-open="false">
+
+**Problem**
+
+Status callback contains:
+
+```json
+{
+  "error_code": 21610,
+  "error_message": "Message cannot be sent to an unverified number."
+}
+```
+
+**Cause**
+
+The destination number is not verified in trial accounts.
+
+**Fix**
+
+Verify the number in the Console or upgrade the account to remove verification requirements.
 
 </Expandable>

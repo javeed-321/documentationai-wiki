@@ -1,28 +1,25 @@
 {
-  "id": "sk-007",
-  "testName": "Planetscale - Database",
-  "productName": "PlanetScale",
+  "id": "sk-uc-api",
+  "testName": "API Documentation only — Twilio",
+  "productName": "Twilio",
   "source": "evals",
-  "difficulty": "moderate",
+  "difficulty": "simple",
   "useCases": [
-    "api-docs",
-    "product-guides"
+    "api-docs"
   ],
   "tags": [
-    "database",
-    "moderate"
+    "v2-router",
+    "api-docs",
+    "simple"
   ],
   "passed": true,
-  "durationMs": 32455,
-  "totalFiles": 11,
-  "validFiles": 11,
+  "durationMs": 49250,
+  "totalFiles": 8,
+  "validFiles": 8,
   "failedFiles": [],
-  "totalAttempts": 12,
-  "tokens": 104095,
+  "totalAttempts": 8,
+  "tokens": 66099,
   "files": [
-    "introduction.mdx",
-    "quickstart.mdx",
-    "guides/overview.mdx",
     "api-docs/introduction.mdx",
     "api-docs/authentication.mdx",
     "api-docs/quickstart.mdx",

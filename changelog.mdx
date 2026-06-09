@@ -1,43 +1,35 @@
 ---
 title: Changelog
-description: Release notes for PlanetScale platform updates, new features, and infrastructure changes.
+description: Release notes for Twilio API updates, new endpoints, and deprecations across all products.
 ---
 
-## Platform Updates
+## Voice API Updates
 
-<Update label="2024-11-05" description="v2.1.0" tags={["feature", "bugfix"]}>
+<Update label="2024-11-05" description="2024.11" tags={["feature"]}>
+## New Endpoints
 
-## Platform
+- Added `POST /v1/Calls/{CallSid}/Recordings` to start on-demand recordings for active calls.
+- Introduced `GET /v1/Conferences/{ConferenceSid}/Participants` with pagination support.
 
-- Enabled automatic branch promotion for production workflows.
-- Improved query routing latency by 25 percent on regional replicas.
+## API Version Changes
 
-## CLI
-
-- Added `pscale connect` support for private connectivity endpoints.
-- Fixed authentication token refresh on expired sessions.
-
+- Voice API now defaults to version `2024.11` for new accounts.
 </Update>
 
-<Update label="2024-10-12" description="v2.0.0" tags={["feature"]}>
+<Update label="2024-09-18" description="2024.09" tags={["bugfix", "breaking"]}>
+## Backward-Incompatible Updates
 
-## Platform
+- Removed deprecated `StatusCallback` parameter from `POST /v1/Calls`. Use `StatusCallbackUrl` instead.
+- Updated error response format for invalid TwiML to return HTTP 400 with structured JSON.
 
-- Launched serverless read replicas with on-demand provisioning.
-- Introduced API v2 endpoints for database creation and deletion.
+## Bug Fixes
 
-## API
-
-- Deprecated legacy v1 schema migration endpoints.
-- Added new metrics endpoint for connection pool statistics.
-
+- Fixed race condition in conference participant mute operations that caused inconsistent state.
 </Update>
 
-<Update label="2024-09-01" description="v1.9.5" tags={["bugfix"]}>
+<Update label="2024-07-22" description="2024.07" tags={["feature"]}>
+## New Feature Rollouts
 
-## Platform
-
-- Resolved replication lag spikes during high write traffic.
-- Fixed backup retention policy enforcement on archived branches.
-
+- Launched real-time transcription for Voice calls via new `TranscriptionSid` resource.
+- Added support for custom SIP headers on outbound calls.
 </Update>

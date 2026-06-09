@@ -1,121 +1,91 @@
 ---
 title: Quickstart
-description: Make your first API call to list databases and create a new branch using curl or the official client libraries.
+description: Send your first SMS message or place an outbound voice call using Twilio's REST API in minutes.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-Obtain an API token from the dashboard before making requests. All requests require the Authorization header with a Bearer token.
+You need a Twilio account and a phone number before making API calls. Sign up at `https://www.twilio.com` if you do not have an account.
 </Callout>
 
-## Make your first request
-
-Follow these steps to list databases and create a branch.
+## Obtain a Twilio phone number
 
 <Steps>
-  <Step title="Prepare credentials" icon="key">
-    Store your token in an environment variable:
-
-    ```bash
-    export PLANETSCALE_TOKEN="YOUR_API_KEY"
-    ```
+  <Step title="Sign in to the Console" icon="log-in">
+    Log in to the Twilio Console and navigate to the Phone Numbers section.
   </Step>
-  <Step title="List databases" icon="database">
-    Send a GET request to retrieve available databases.
-
-    <CodeGroup tabs="cURL,JavaScript,Python">
-      ```bash
-      curl -H "Authorization: Bearer $PLANETSCALE_TOKEN" \
-        https://api.example.com/v1/databases
-      ```
-
-      ```javascript
-      const res = await fetch("https://api.example.com/v1/databases", {
-        headers: { Authorization: `Bearer ${process.env.PLANETSCALE_TOKEN}` },
-      });
-      const data = await res.json();
-      console.log(data);
-      ```
-
-      ```python
-      import requests
-      import os
-
-      headers = {"Authorization": f"Bearer {os.environ['PLANETSCALE_TOKEN']}"}
-      response = requests.get("https://api.example.com/v1/databases", headers=headers)
-      print(response.json())
-      ```
-    </CodeGroup>
+  <Step title="Search and buy a number" icon="search">
+    Search for a number that supports SMS and Voice capabilities. Purchase the number.
   </Step>
-  <Step title="Create a branch" icon="git-branch">
-    Create a new branch from the main branch of a database.
-
-    <CodeGroup tabs="cURL,JavaScript,Python">
-      ```bash
-      curl -X POST \
-        -H "Authorization: Bearer $PLANETSCALE_TOKEN" \
-        -H "Content-Type: application/json" \
-        -d '{"name":"feature-x","parent":"main"}' \
-        https://api.example.com/v1/databases/mydb/branches
-      ```
-
-      ```javascript
-      const res = await fetch(
-        "https://api.example.com/v1/databases/mydb/branches",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.PLANETSCALE_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: "feature-x", parent: "main" }),
-        }
-      );
-      const data = await res.json();
-      console.log(data);
-      ```
-
-      ```python
-      import requests
-      import os
-
-      headers = {
-          "Authorization": f"Bearer {os.environ['PLANETSCALE_TOKEN']}",
-          "Content-Type": "application/json",
-      }
-      payload = {"name": "feature-x", "parent": "main"}
-      response = requests.post(
-          "https://api.example.com/v1/databases/mydb/branches",
-          headers=headers,
-          json=payload,
-      )
-      print(response.json())
-      ```
-    </CodeGroup>
+  <Step title="Note the number and credentials" icon="key">
+    Record the purchased phone number, Account SID, and Auth Token from the Console dashboard.
   </Step>
 </Steps>
 
-## Handling responses
+## Install helper libraries
 
-Successful responses return JSON with a `data` array or object. Errors include an `error` field and appropriate HTTP status codes.
+<Steps>
+  <Step title="Choose a language" icon="code">
+    Select your preferred runtime. The examples below use official Twilio helper libraries.
+  </Step>
+</Steps>
 
-Check the response status before processing:
-
-```javascript
-if (!res.ok) {
-  const err = await res.json();
-  throw new Error(err.error);
-}
+<CodeGroup tabs="Node.js,Python">
+```bash
+npm install twilio
 ```
+
+```bash
+pip install twilio
+```
+</CodeGroup>
+
+## Make your first API call
+
+Use the following code to place an outbound voice call. Replace the placeholder values with your Account SID, Auth Token, and phone numbers.
+
+<CodeGroup tabs="Node.js,Python">
+```javascript
+const twilio = require("twilio");
+
+const accountSid = "YOUR_ACCOUNT_SID";
+const authToken = "YOUR_AUTH_TOKEN";
+const client = twilio(accountSid, authToken);
+
+client.calls
+  .create({
+    to: "+15551234567",
+    from: "+15559876543",
+    url: "https://example.com/voice.xml",
+  })
+  .then((call) => console.log(call.sid));
+```
+
+```python
+from twilio.rest import Client
+
+account_sid = "YOUR_ACCOUNT_SID"
+auth_token = "YOUR_AUTH_TOKEN"
+client = Client(account_sid, auth_token)
+
+call = client.calls.create(
+    to="+15551234567",
+    from_="+15559876543",
+    url="https://example.com/voice.xml"
+)
+
+print(call.sid)
+```
+</CodeGroup>
 
 ## Next steps
 
 <Columns cols={2}>
-  <Card title="Authentication" href="#prerequisites" icon="lock">
-    Learn how to manage and rotate API tokens.
+  <Card title="Send an SMS" icon="message-circle" href="#make-your-first-api-call">
+    Learn how to send your first SMS message.
   </Card>
-  <Card title="Branches API" href="#create-a-branch" icon="git-branch">
-    Explore all branch operations including promotion and deletion.
+  <Card title="Voice API reference" icon="phone" href="#make-your-first-api-call">
+    Explore all available Voice API parameters.
   </Card>
 </Columns>
