@@ -1,0 +1,109 @@
+---
+title: Error Codes
+description: Resolve ShopifyMax API errors related to checkout timeouts, payment variables, and catalog limits.
+---
+
+## Token and Variable Errors
+
+<Expandable title="Invalid CART_TOKEN supplied" default-open="false">
+
+**Problem**
+
+Requests return the literal error:
+
+```
+{"error":"invalid_cart_token","message":"CART_TOKEN must be a 32-character alphanumeric string"}
+```
+
+**Cause**
+
+The token passed in the `X-Cart-Token` header or query parameter contains invalid characters or wrong length.
+
+**Fix**
+
+Regenerate the token with the `/carts` endpoint and ensure it matches exactly:
+
+```bash
+curl -H "X-Cart-Token: abc123def456..." https://api.example.com/v1/checkout
+```
+
+</Expandable>
+
+<Expandable title="Missing or malformed PAYMENT_KEY" default-open="false">
+
+**Problem**
+
+Checkout calls fail with:
+
+```
+{"error":"payment_key_required","message":"PAYMENT_KEY header missing or format invalid"}
+```
+
+**Cause**
+
+The `PAYMENT_KEY` header is omitted or uses an unsupported format for the selected payment method.
+
+**Fix**
+
+Include a valid key obtained from the merchant dashboard:
+
+```javascript
+headers: {
+  "PAYMENT_KEY": "pk_live_xxxxxxxxxxxxxxxx"
+}
+```
+
+</Expandable>
+
+## Checkout Performance Errors
+
+<Expandable title="Checkout timeout after 3 seconds" default-open="false">
+
+**Problem**
+
+The API responds with HTTP 504 and body:
+
+```
+{"error":"checkout_timeout","message":"Processing exceeded 3000ms"}
+```
+
+**Cause**
+
+The request payload includes too many line items or unoptimized product variants, causing the checkout pipeline to exceed the hard 3-second limit.
+
+**Fix**
+
+Split large carts into multiple smaller requests or pre-validate inventory before calling `/checkout`:
+
+```bash
+curl -X POST https://api.example.com/v1/checkout \
+  -d '{"items": [{"id": "p1", "qty": 1}]}'
+```
+
+</Expandable>
+
+## Catalog Query Limits
+
+<Expandable title="Catalog query exceeds product limit" default-open="false">
+
+**Problem**
+
+Queries against `/catalog` return:
+
+```
+{"error":"catalog_limit_exceeded","message":"Maximum 100000 products per query"}
+```
+
+**Cause**
+
+A single request attempts to fetch or filter more than the supported catalog size.
+
+**Fix**
+
+Use pagination with `limit` and `cursor` parameters:
+
+```bash
+curl "https://api.example.com/v1/catalog?limit=1000&cursor=abc123"
+```
+
+</Expandable>

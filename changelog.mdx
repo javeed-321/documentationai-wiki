@@ -1,28 +1,35 @@
 ---
 title: Changelog
-description: Release notes for Twilio API updates, new features, and deprecations.
+description: Release notes for ShopifyMax updates including checkout speed improvements and new variable support.
 ---
 
-## Release Notes
+## Recent releases
 
-<Update label="2024-10-20" description="v2.4.0" tags={["feature"]}>
+<Update label="2024-10-15" description="v2.5.0" tags={["feature"]}>
 
-- Added POST `/v2/voice/calls` endpoint for direct call initiation.
-- Updated SDK to version 3.2.1 with improved error handling.
-- Expanded support to new EU regions with adjusted regional pricing.
+## Checkout and variables
 
-</Update>
-
-<Update label="2024-09-15" description="v2.3.1" tags={["bugfix"]}>
-
-- Fixed billing calculation for multi-region voice calls.
-- Resolved deprecation warnings for legacy `/v1/sms` endpoints.
+- Reduced average checkout time to under 3 seconds.
+- Added support for `CART_TOKEN` and `PAYMENT_KEY` variables during order processing.
+- Improved error handling for variable substitution.
 
 </Update>
 
-<Update label="2024-08-05" description="v2.3.0" tags={["feature"]}>
+<Update label="2024-09-20" description="v2.4.0" tags={["feature"]}>
 
-- Introduced new pricing tiers for high-volume API usage.
-- Added GET `/v2/voice/regions` endpoint to query available regions.
+## Catalog scaling
+
+- Increased supported catalog size to over 100000 products.
+- Optimized database queries for large inventories.
+- Added bulk import validation.
+
+</Update>
+
+<Update label="2024-08-10" description="v2.3.0" tags={["bugfix"]}>
+
+## Performance fixes
+
+- Fixed race condition in concurrent checkout sessions.
+- Resolved memory leak under high product counts.
 
 </Update>

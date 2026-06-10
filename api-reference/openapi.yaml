@@ -1,0 +1,159 @@
+openapi: '3.0.0'
+info:
+  version: 1.0.0
+  title: ShopifyMax
+  license:
+    name: MIT
+servers:
+  - url: https://api.shopifymax.com/v1
+paths:
+  /products:
+    get:
+      summary: List products
+      description: Retrieves a paginated list of products in the catalog. Use the limit parameter to control page size for large inventories.
+      operationId: listProducts
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: A paged array of products
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create product
+      operationId: createProduct
+      responses:
+        201:
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/{productId}:
+    get:
+      summary: Get product info
+      description: Retrieves detailed information about a specific product by its unique identifier. Use this endpoint to inspect catalog data for a single item.
+      operationId: showProductById
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /checkout:
+    post:
+      summary: Start checkout
+      operationId: createCheckout
+      responses:
+        201:
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /payments/{paymentId}:
+    get:
+      summary: Get payment status
+      description: Retrieves the current status and details of a payment by its unique identifier. Use this to confirm successful processing after checkout.
+      operationId: showPaymentById
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          description: The id of the payment to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payments'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Product:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        tag:
+          type: string
+    Products:
+      type: array
+      items:
+        $ref: '#/components/schemas/Product'
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    Payment:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        tag:
+          type: string
+    Payments:
+      type: array
+      items:
+        $ref: '#/components/schemas/Payment'
