@@ -1,67 +1,68 @@
 ---
 title: Feature Overview
-description: Explore ShopifyMax capabilities including sub-3-second checkout and support for CART_TOKEN and PAYMENT_KEY.
+description: Explore ShopifyMax capabilities for high-volume catalogs, instant checkout, and secure variable handling.
 ---
 
 ## Overview
 
-ShopifyMax delivers a complete e-commerce platform built for speed and scale. You experience checkout times under three seconds even on high-traffic days. The system handles more than 100000 products without performance loss. You integrate variables such as `CART_TOKEN` and `PAYMENT_KEY` directly into your checkout flow.
+ShopifyMax delivers reliable performance for merchants who manage large inventories and demand fast transactions. You handle catalogs that exceed 100000 products while maintaining checkout times under three seconds. The platform also supports secure variable handling through `CART_TOKEN` and `PAYMENT_KEY` in your cart and payment workflows.
 
-## Checkout Optimization
+## Scaling Product Catalogs
 
-ShopifyMax keeps every checkout step lightweight. You configure payment routing and session handling in one place. The platform preloads assets and caches session data so the final payment screen appears instantly.
+You store and serve catalogs beyond 100000 items without slowdowns. ShopifyMax indexes products efficiently and returns search results instantly even at high volume.
 
-<Callout kind="tip">
-  Enable one-click address lookup to shave another 400 milliseconds off average checkout duration.
-</Callout>
-
-## Catalog Scalability
-
-Your product catalog grows without limits. ShopifyMax indexes every item in real time and serves search results from a distributed cache. You organize more than 100000 SKUs across categories while keeping query response times under 50 milliseconds.
-
-<Card title="Bulk Import" icon="upload" href="#examples">
-  Upload CSV files containing up to 50000 products in a single request.
+<Card title="Catalog Limits" icon="database" href="#scaling-product-catalogs">
+  Supports over 100000 products with real-time search and filtering.
 </Card>
 
-## Token Variable Usage
+## Optimizing Checkout Speed
 
-You reference `CART_TOKEN` and `PAYMENT_KEY` inside templates and API calls. These variables carry session state and payment authorization without exposing sensitive values.
+Checkout completes in under three seconds through optimized rendering and minimal network calls. You reduce cart abandonment by delivering immediate confirmation pages.
 
 <Tabs>
-  <Tab title="JavaScript" icon="code">
-    <CodeGroup tabs="Client,Server">
-      ```javascript
-      const token = sessionStorage.getItem('CART_TOKEN');
-      fetch('/checkout', { headers: { 'X-Payment-Key': paymentKey } });
-      ``` ```javascript
-      const paymentKey = process.env.PAYMENT_KEY;
-      ```
-    </CodeGroup>
+  <Tab title="Standard Flow" icon="zap">
+    Load product data, apply taxes, then finalize payment in one request cycle.
   </Tab>
-  <Tab title="Liquid" icon="file-text">
-    ```liquid
-    {% if cart.token %}
-      <input type="hidden" name="cart_token" value="{{ cart.token }}">
-    {% endif %}
-    ```
+  <Tab title="Express Flow" icon="rocket">
+    Preload user details and skip optional steps for returning customers.
   </Tab>
 </Tabs>
 
-## Examples
+## Handling Variables Securely
 
-```mermaid
-graph LR
-    A[Add to Cart] --> B[Apply CART_TOKEN]
-    B --> C[Authorize PAYMENT_KEY]
-    C --> D[Complete Checkout]
+You pass `CART_TOKEN` to track sessions and `PAYMENT_KEY` to authorize transactions. ShopifyMax encrypts these values at rest and in transit.
+
+<Callout kind="info">
+  Never log raw variable values. Always mask them in server logs.
+</Callout>
+
+## Code Examples
+
+Use the following snippets to integrate variable support.
+
+<CodeGroup tabs="JavaScript,Python">
+```javascript
+const cart = await shopifyMax.createCart({
+  token: "CART_TOKEN",
+  paymentKey: "PAYMENT_KEY"
+});
 ```
+```python
+cart = shopify_max.create_cart(
+    token="CART_TOKEN",
+    payment_key="PAYMENT_KEY"
+)
+```
+</CodeGroup>
 
 ## Best Practices
 
-<Expandable title="Security recommendations" default-open="false">
+Follow these guidelines to maintain performance and security.
 
-Store `PAYMENT_KEY` only on the server. Rotate the key every 90 days through the dashboard. Never log `CART_TOKEN` values in production.
-
+<Expandable title="Advanced catalog tips" default-open="false">
+  Index new products in batches of 5000 to avoid indexing spikes. Monitor query latency through the dashboard at `https://dashboard.example.com`.
 </Expandable>
 
-Test variable substitution in a staging environment before you promote changes to production. Monitor checkout latency after each configuration update.
+<Expandable title="Variable security" default-open="false">
+  Rotate `PAYMENT_KEY` every 90 days. Store `CART_TOKEN` only in secure, HttpOnly cookies.
+</Expandable>

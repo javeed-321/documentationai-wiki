@@ -1,71 +1,72 @@
 ---
 title: Quickstart
-description: Set up ShopifyMax and launch your first high-speed checkout experience.
+description: Get a ShopifyMax store running in minutes with checkout optimization and variable setup for carts and payments.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-You need an active ShopifyMax account and an API key before proceeding. Checkout completes in under three seconds and supports stores with more than 100000 products.
+Before you begin, create a ShopifyMax account at `https://example.com` and note your store domain. You need Node.js 18 or later installed.
 </Callout>
 
-## Store Setup
+## Initial Store Configuration
+
+Follow these steps to launch your store with optimized checkout.
 
 <Steps>
-  <Step title="Create your store" icon="plus-circle">
-    Log in to the dashboard and select Create Store. Enter your store name and select the high-speed checkout template.
+  <Step title="Create the store" icon="plus">
+    Log in to the dashboard and select Create Store. Name it and choose your product catalog size.
   </Step>
-  <Step title="Configure domain" icon="globe">
-    Add your custom domain in the settings panel. ShopifyMax automatically provisions a secure certificate.
-  </Step>
-  <Step title="Connect catalog" icon="database">
-    Import your product catalog. The platform indexes more than 100000 products in under two minutes.
+  <Step title="Set performance options" icon="zap">
+    Enable sub-three-second checkout in the Performance tab. ShopifyMax automatically handles catalogs exceeding 100000 products.
   </Step>
 </Steps>
 
-## Variable Integration
+## Enable CART_TOKEN and PAYMENT_KEY
 
-Connect your checkout flow to the required variables for cart and payment handling.
+Configure the required variables for cart and payment flows.
 
-<CodeGroup tabs="JavaScript,Python">
+<Steps>
+  <Step title="Add CART_TOKEN" icon="key">
+    Navigate to Settings then Variables. Create a new entry named `CART_TOKEN` and paste your generated token value.
+  </Step>
+  <Step title="Add PAYMENT_KEY" icon="lock">
+    In the same section, add `PAYMENT_KEY` with your payment provider key. Save and publish the configuration.
+  </Step>
+</Steps>
+
+## Minimal Working Example
+
+Use this configuration to verify your setup.
+
+<CodeGroup tabs="JavaScript,CLI">
 ```javascript
-const checkout = new ShopifyMax.Checkout({
+import { ShopifyMax } from 'shopifymax';
+
+const client = new ShopifyMax({
+  store: 'your-store.example.com',
   cartToken: process.env.CART_TOKEN,
   paymentKey: process.env.PAYMENT_KEY,
 });
 
-checkout.launch();
+await client.checkout.create({ productId: 'demo-product' });
 ```
-```python
-import shopifymax
-
-client = shopifymax.Client(
-    cart_token=os.environ["CART_TOKEN"],
-    payment_key=os.environ["PAYMENT_KEY"],
-)
-
-client.launch_checkout()
+```bash
+npm install -g shopifymax-cli
+shopifymax init my-store
+shopifymax deploy --env production
 ```
 </CodeGroup>
 
-## Initial Deployment
-
-<Steps>
-  <Step title="Test checkout" icon="play">
-    Run the test command to verify checkout completes in under three seconds.
-  </Step>
-  <Step title="Go live" icon="rocket">
-    Toggle the store to live mode. Your first high-speed checkout experience is now active.
-  </Step>
-</Steps>
-
 ## Next Steps
 
+Explore additional configuration options with these resources.
+
 <Columns cols={2}>
-  <Card title="Store Setup" href="#store-setup" icon="store">
-    Review advanced store configuration options.
+  <Card title="Store Settings" icon="settings" href="#store-settings">
+    Fine-tune catalog limits and checkout speed.
   </Card>
-  <Card title="Variable Integration" href="#variable-integration" icon="code">
-    Explore additional supported variables and security settings.
+  <Card title="Variable Reference" icon="book-open" href="#variables">
+    Learn every supported cart and payment variable.
   </Card>
 </Columns>

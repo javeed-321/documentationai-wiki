@@ -1,33 +1,32 @@
 ---
 title: Roadmap
-description: Planned enhancements for ShopifyMax including expanded token support.
+description: Upcoming ShopifyMax developments focused on even faster checkouts and expanded e-commerce variables.
 ---
 <Board>
   <BoardColumn title="Backlog">
-    <BoardCard title="Sub-second checkout rendering" description="Reduce average checkout time below one second for all device types." />
-    <BoardCard title="Multi-region edge caching" description="Deploy additional cache nodes to cut latency for global shoppers." />
-    <BoardCard title="Advanced variable scripting" description="Allow custom scripts that reference cart token and payment key variables at runtime." />
-    <BoardCard title="Product bundle engine" description="Support dynamic bundling for stores exceeding one hundred thousand items." />
-    <BoardCard title="Real-time inventory sync" description="Stream inventory changes instantly across all connected sales channels." />
+    <BoardCard title="Million-product catalog" description="Enable handling of over one million products in a single store." />
+    <BoardCard title="Variable expansion API" description="Introduce support for additional e-commerce variables." />
+    <BoardCard title="Zero-latency checkout" description="Achieve checkout times under one second globally." />
+    <BoardCard title="Advanced variable scripting" description="Allow custom scripts using payment and cart variables for dynamic pricing." />
+    <BoardCard title="Multi-region catalog sync" description="Support synchronized catalogs exceeding 100000 products across regions." />
   </BoardColumn>
   <BoardColumn title="Next Up">
-    <BoardCard title="Checkout A/B testing" description="Enable merchants to run split tests on checkout flows without code changes." />
-    <BoardCard title="Payment key rotation" description="Automate rotation policies for payment key variables used in checkout." />
-    <BoardCard title="Horizontal scaling layer" description="Add automatic pod scaling to handle traffic spikes beyond current limits." />
-    <BoardCard title="Webhook variable expansion" description="Expose cart token values inside all outgoing webhook payloads." />
-    <BoardCard title="Database sharding rollout" description="Partition product catalogs for merchants managing over one hundred thousand SKUs." />
+    <BoardCard title="Checkout under 2 seconds" description="Optimize to consistently deliver checkouts in less than two seconds." />
+    <BoardCard title="New variable integration" description="Add ORDER_TOKEN variable for enhanced order processing." />
+    <BoardCard title="Expanded catalog support" description="Increase maximum catalog size to 250000 products." />
+    <BoardCard title="Payment variable analytics" description="Add analytics dashboard for payment variable usage." />
   </BoardColumn>
   <BoardColumn title="In Progress">
-    <BoardCard title="Streamlined payment flows" description="Cut checkout steps by pre-filling fields using stored cart token data." />
-    <BoardCard title="Variable validation layer" description="Add server-side checks for payment key variables before order submission." />
-    <BoardCard title="Load balancer upgrades" description="Replace existing balancers with versions that support higher concurrent sessions." />
-    <BoardCard title="Token scope expansion" description="Extend cart token support to abandoned-cart recovery emails." />
+    <BoardCard title="Sub-3-second checkout" description="Finalize optimizations targeting checkout completion under three seconds." />
+    <BoardCard title="PAYMENT_KEY enhancements" description="Extend PAYMENT_KEY variable with additional authentication options." />
+    <BoardCard title="Catalog scaling module" description="Develop infrastructure for catalogs larger than 100000 products." />
+    <BoardCard title="Variable integration testing" description="Conduct tests for new payment variable integrations." />
+    <BoardCard title="Performance monitoring" description="Build tools to track checkout performance metrics in real time." />
   </BoardColumn>
   <BoardColumn title="Done">
-    <BoardCard title="Mobile checkout acceleration" description="Achieve sub-three-second checkout completion on all major mobile browsers." />
-    <BoardCard title="Core variable integration" description="Ship official support for cart token and payment key variables in checkout." />
-    <BoardCard title="One hundred thousand product benchmark" description="Validate stable performance for catalogs containing over one hundred thousand products." />
-    <BoardCard title="Initial edge network launch" description="Roll out first set of edge nodes to reduce global checkout latency." />
-    <BoardCard title="Security audit completion" description="Pass independent review of all variable handling and token storage practices." />
+    <BoardCard title="Initial catalog support" description="Successfully implemented handling for stores with over 100000 products." />
+    <BoardCard title="CART_TOKEN support" description="Added core support for cart token variable in checkout." />
+    <BoardCard title="Checkout speed milestone" description="Reduced average checkout time to under three seconds." />
+    <BoardCard title="PAYMENT_KEY integration" description="Completed integration of payment key variable across payment gateways." />
   </BoardColumn>
 </Board>

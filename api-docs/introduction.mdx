@@ -1,37 +1,36 @@
 ---
 title: Introduction
-description: Overview of the ShopifyMax API for building fast e-commerce integrations.
+description: Overview of the ShopifyMax API for managing products, carts, and payments at scale.
 ---
 
 <Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416392648-tsntejft5od-Image-9.png?q=85&fm=auto&auto=compress%2Cformat" alt="ShopifyMax documentation" width="800" height="400" />
 
 ## Welcome
 
-The ShopifyMax API exposes endpoints for checkout operations under three seconds and catalog access for more than one hundred thousand products. It accepts `CART_TOKEN` and `PAYMENT_KEY` variables on every request.
+The ShopifyMax API provides endpoints for catalogs exceeding 100000 products and checkout flows completing in under 3 seconds. It supports variable substitution using `CART_TOKEN` and `PAYMENT_KEY` in request payloads.
 
 <Columns cols={2}>
-  <Card title="API Endpoints" icon="terminal">
-    Direct access to checkout, catalog, and authentication endpoints.
-  </Card>
-  <Card title="Checkout Performance" icon="zap">
-    Process orders in under three seconds with built-in rate limiting.
-  </Card>
-  <Card title="Catalog Access" icon="database">
-    Retrieve and update catalogs exceeding one hundred thousand products.
-  </Card>
-  <Card title="Variable Handling" icon="code">
-    Pass `CART_TOKEN` and `PAYMENT_KEY` in request headers.
-  </Card>
+<Card title="Large catalogs" icon="database">
+Endpoint support for catalogs exceeding 100000 products with indexed queries.
+</Card>
+<Card title="Checkout speed" icon="zap">
+Checkout completion under 3 seconds via optimized payment paths.
+</Card>
+<Card title="Token substitution" icon="key">
+Replace `CART_TOKEN` and `PAYMENT_KEY` at runtime in requests.
+</Card>
+<Card title="Payment handling" icon="credit-card">
+Direct integration for payment processing at scale.
+</Card>
 </Columns>
 
-<Card title="Explore Endpoints" icon="arrow-right" href="/api-docs/endpoints" horizontal>
-  Review all available API paths and request formats.
+<Card title="Catalog endpoints" icon="book-open" href="/api-docs/catalog" horizontal>
+View product and inventory endpoints for large catalogs.
 </Card>
-
-<Card title="Explore Variables" icon="arrow-right" href="/api-docs/variables" horizontal>
-  Learn how to supply `CART_TOKEN` and `PAYMENT_KEY` correctly.
+<Card title="Variable usage" icon="settings" href="/api-docs/variables" horizontal>
+Learn substitution patterns for `CART_TOKEN` and `PAYMENT_KEY`.
 </Card>
 
 <Callout kind="tip">
-  Always validate `PAYMENT_KEY` before submitting checkout requests.
+Review the variable substitution section before sending production requests.
 </Callout>
