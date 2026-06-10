@@ -1,225 +1,147 @@
 ---
 title: Quickstart
-description: Get up and running with Stripe by creating an account and accepting your first payment.
+description: Deploy your first application to Vercel from a Git repository in minutes.
 ---
 
 ## Quickstart
 
-Set up Stripe, create your first payment intent, and confirm it with a test card. This starter path assumes you are evaluating Stripe for the first time and want a fast, working result.
-
-Stripe gives you the building blocks to accept payments, manage billing, and grow into more advanced revenue models later. In this guide, you focus on the minimum path to success: account setup, API keys, installation, a payment intent, and a test payment.
+Vercel helps you go from Git push to a live app with minimal setup. In this quickstart, you connect a repository, verify preview deployments, ship a production build, and point a custom domain at your project.
 
 <Callout kind="info">
-Use your Stripe test mode keys while you build. Test mode lets you validate your integration safely before you accept real payments.
+
+Before you start, make sure you have:
+
+- A Vercel account
+- A Git repository with an application you want to deploy
+- Permission to connect that repository to Vercel
+- A domain name if you want to set up a custom domain
+
 </Callout>
 
-### What you will do
+## Connect your Git repository
 
-You will complete four small steps:
-
-- Create a Stripe account and find your API keys.
-- Install a Stripe library in your app.
-- Create a payment intent on your server.
-- Confirm the payment with a test card.
-
-### Before you start
-
-Make sure you have:
-
-- A Stripe account.
-- A server environment where you can keep secret keys private.
-- A client app or simple frontend that can send the payment details.
-- Access to Stripe test mode.
-
-## Set up your account and keys
-
-Start in the Stripe Dashboard and switch to test mode. From there, copy your publishable key for the client and your secret key for the server. Keep the secret key out of browser code and version control.
-
-If you are just exploring, you can use the dashboard links to move between account creation, sign in, and guided setup. Once your account is ready, you can reuse the same test-mode keys while you build the rest of the flow.
+The fastest way to deploy on Vercel is to import a Git repository. Once you connect your repo, Vercel watches for pushes and creates deployments automatically.
 
 <Steps>
-  <Step title="Create or open your account" icon="users">
-    Go to the Stripe Dashboard and sign in or create a new account.
+  <Step title="Import the repository" icon="github">
+    Sign in to Vercel, create a new project, and select the Git repository you want to deploy.
 
-    Use the account you plan to keep for development so your test data stays in one place.
-
+    If Vercel detects your framework, it suggests the right build settings for you.
   </Step>
-  <Step title="Find your test keys" icon="key">
-    Open the Developers area in the dashboard and copy:
+  <Step title="Review the build settings" icon="settings">
+    Confirm the build command, output directory, and environment variables.
 
-    - Your publishable key for client-side use.
-    - Your secret key for server-side use.
-
-    Store the secret key as an environment variable, not in your frontend bundle.
-
+    Use the defaults when they match your app, then save the project settings.
   </Step>
-  <Step title="Prepare your environment" icon="settings">
-    Add the key values to your local environment and restart your app so the values load correctly.
+  <Step title="Deploy the first build" icon="rocket">
+    Trigger your first deployment from the imported repository.
 
-    Keep test mode enabled until you are ready to move to live payments.
-
+    Vercel runs the build, uploads the output, and gives you a preview URL as soon as the deployment finishes.
   </Step>
 </Steps>
 
-## Install Stripe libraries
+## Add a minimal app
 
-Install the Stripe library that matches your server language. The library helps you create payment intents securely from your backend.
+You can start with a tiny application that proves the deployment flow works end to end. Use the example below, commit it to your repository, and push it to create your first preview deployment.
 
-<CodeGroup tabs="JavaScript,Python,cURL">
+<CodeGroup tabs="TypeScript,JavaScript">
+  ```typescript
+export default function Home() {
+  return (
+    <main>
+      <h1>Hello from Vercel</h1>
+      <p>Your app is deployed from a Git repository.</p>
+    </main>
+  );
+}
+  ```
+
   ```javascript
-  import Stripe from "stripe";
-
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-  export async function createPaymentIntent() {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: 2000,
-      currency: "usd",
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
-
-    return paymentIntent.client_secret;
-  }
-  ```
-
-  ```python
-  import os
-  import stripe
-
-  stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
-
-  def create_payment_intent():
-      payment_intent = stripe.PaymentIntent.create(
-          amount=2000,
-          currency="usd",
-          automatic_payment_methods={"enabled": True},
-      )
-      return payment_intent.client_secret
-  ```
-
-  ```bash
-  curl https://api.example.com/create-payment-intent \
-    -H "Content-Type: application/json" \
-    -d '{"amount":2000,"currency":"usd"}'
+export default function Home() {
+  return (
+    <main>
+      <h1>Hello from Vercel</h1>
+      <p>Your app is deployed from a Git repository.</p>
+    </main>
+  );
+}
   ```
 </CodeGroup>
 
-Stripe libraries handle the API calls for you and keep your integration predictable as you grow. For this quickstart, you only need enough code to create one payment intent and return its client secret to the browser.
+After you push the commit, Vercel creates a new preview deployment for that branch. Preview deployments give you a live URL for every change, so your team can review updates before you merge.
 
-## Create your first payment intent
+## Understand preview and production deployments
 
-A payment intent tells Stripe how much to charge and in which currency. Your server creates it, then your client uses the returned client secret to complete the payment.
+Vercel separates preview work from production releases. That separation helps you test safely and ship with confidence.
 
-Here is a minimal server route that creates a payment intent for a twenty-dollar charge in U.S. dollars.
+<Tabs>
+  <Tab title="Preview deployment" icon="play-circle">
+    Use preview deployments to review changes from branches and pull requests.
 
-<CodeGroup tabs="Node.js,Python">
-  ```javascript
-  import express from "express";
-  import Stripe from "stripe";
+    They are ideal for design review, QA, and stakeholder feedback because every push gets its own URL.
+  </Tab>
+  <Tab title="Production deployment" icon="check-circle">
+    Use production deployments for the version of your app that you want users to see.
 
-  const app = express();
-  app.use(express.json());
+    When you merge to your production branch, Vercel builds and deploys the latest code automatically.
+  </Tab>
+</Tabs>
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+### What happens on each push
 
-  app.post("/create-payment-intent", async (req, res) => {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: 2000,
-      currency: "usd",
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
+Vercel listens for repository changes and runs the right deployment flow for the branch you update.
 
-    res.json({
-      clientSecret: paymentIntent.client_secret,
-    });
-  });
+```mermaid
+graph LR
+    A[Push to Git] --> B[Build on Vercel]
+    B --> C[Preview or Production URL]
+```
 
-  app.listen(3000);
-  ```
+Preview deployments help you catch issues early. Production deployments give you a stable release path without manual release steps.
 
-  ```python
-  from flask import Flask, jsonify
-  import os
-  import stripe
+## Point a custom domain
 
-  app = Flask(__name__)
-  stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
-
-  @app.post("/create-payment-intent")
-  def create_payment_intent():
-      payment_intent = stripe.PaymentIntent.create(
-          amount=2000,
-          currency="usd",
-          automatic_payment_methods={"enabled": True},
-      )
-
-      return jsonify(clientSecret=payment_intent.client_secret)
-
-  app.run(port=3000)
-  ```
-</CodeGroup>
-
-When you create the intent, you define the amount and currency on the server. Stripe returns a client secret that your frontend uses to complete the payment without exposing your secret key.
-
-## Test with a card
-
-Use Stripe test cards to confirm the end-to-end flow. A successful test shows that your server, client, and Stripe account are connected correctly.
+After your app is live, connect a custom domain so people can access it through your own brand.
 
 <Steps>
-  <Step title="Send the client secret to your frontend" icon="arrow-right">
-    Call your server route from the browser and store the returned client secret.
-
-    Use that value to confirm the payment on the client.
-
+  <Step title="Open domain settings" icon="globe">
+    Go to your project settings in Vercel and open the domains section.
   </Step>
-  <Step title="Enter a test card" icon="credit-card">
-    Use a Stripe test card number such as `4242 4242 4242 4242`.
-
-    Enter any future expiration date, any three-digit CVC, and any postal code.
-
+  <Step title="Add your domain" icon="plus">
+    Enter the domain name you own and follow the verification steps.
   </Step>
-  <Step title="Confirm the payment" icon="check-circle">
-    Confirm the payment and wait for the success response.
-
-    If the payment succeeds, you have completed your first Stripe transaction in test mode.
-
+  <Step title="Update DNS" icon="external-link">
+    Add the DNS records that Vercel provides so your domain routes to the deployment.
+  </Step>
+  <Step title="Confirm the connection" icon="check-circle">
+    Wait for DNS to propagate, then load the domain in your browser to confirm it serves your app.
   </Step>
 </Steps>
 
-### Common test result
+## Go deeper
 
-If the payment succeeds, you should see a completed payment in the dashboard test data view. If it fails, verify that:
-
-- Your secret key is the test mode secret key.
-- Your server creates the payment intent before the client confirms it.
-- The amount is a valid integer value in the smallest currency unit.
-
-## Next steps
-
-You now have the smallest useful Stripe integration: an account, keys, a payment intent, and a tested payment flow. From here, you can expand into subscriptions, saved payment methods, fraud protection, or marketplace payments.
+Once your first deployment works, explore the parts of Vercel that help you scale from a simple quickstart to a full production workflow.
 
 <Columns cols={3}>
-  <Card title="Payments" icon="credit-card" href="https://stripe.com/payments" target="_blank" cta="Learn more">
-    Accept online and in-person payments with a single platform.
+  <Card title="AI Cloud" icon="zap" href="https://vercel.com/ai">
+    Explore the AI Cloud capabilities that sit alongside the core platform.
   </Card>
-  <Card title="Billing" icon="file-text" href="https://stripe.com/billing" target="_blank" cta="Learn more">
-    Build recurring billing, invoices, and usage-based pricing.
+  <Card title="Security" icon="shield" href="https://vercel.com/security">
+    Learn how Vercel protects applications with platform security and web application firewall features.
   </Card>
-  <Card title="Developers" icon="code" href="https://stripe.com/docs" target="_blank" cta="Open docs">
-    Explore implementation details, APIs, and deeper integration patterns.
+  <Card title="Docs" icon="book-open" href="https://vercel.com/docs">
+    Read the Vercel documentation for deeper setup and deployment guidance.
   </Card>
 </Columns>
 
-<Expandable title="What should you build next?" default-open="false">
-  After your first successful payment, try one of these paths:
+<Expandable title="What should you do after the first deployment?" default-open="false">
 
-  - Add webhook handling so your backend can react to payment status changes.
-  - Build a subscription flow for recurring revenue.
-  - Support additional payment methods for more customers.
-  - Move from test mode to live mode when you are ready to accept real payments.
+After your first successful deployment, add environment variables, connect a custom domain, and verify that preview deployments match production behavior.
+
+If your app grows, you can then explore observability, workflow orchestration, and edge delivery features.
 
 </Expandable>
+
+## Next steps
+
+Your quickstart is complete when you can push code, see a preview deployment, and route a custom domain to production. From here, keep iterating in Git and let Vercel handle the deployment pipeline.

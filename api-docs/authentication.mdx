@@ -1,193 +1,238 @@
 ---
 title: Authentication
-description: Secure your Stripe API requests using secret keys, publishable keys, and webhook signatures.
+description: Authenticate API requests using tokens, OAuth, or team-based access controls.
 ---
 
 ## Overview
 
-Stripe uses multiple authentication mechanisms depending on what you are building. Server-side API requests use secret keys. Browser and mobile code uses publishable keys for client-side tokenization and SDK initialization. Webhooks use a signature header so you can verify that Stripe sent the event.
+Use Vercel authentication to authorize API requests from scripts, services, and user-facing applications. The platform supports personal access tokens, OAuth apps, and team-based access controls so you can choose the right model for automation, delegated access, or organization-wide usage.
 
-Use the Dashboard to create, rotate, and restrict keys. Keep secret keys on your server only. Never expose a secret key in client-side code, mobile bundles, or logs.
+For most developer workflows, you send a bearer token in the `Authorization` header. For end-user integrations, you typically use OAuth and request only the scopes you need. For team-scoped automation, make sure the token or OAuth grant is tied to the correct team before you call an API endpoint.
 
-### Common authentication concepts
-
-- **Secret key**: A server-side credential that can access authenticated API endpoints.
-- **Publishable key**: A client-side credential that identifies your account and is safe to use in public code.
-- **Restricted key**: A secret key with limited permissions.
-- **Webhook signature**: A cryptographic signature in the `Stripe-Signature` header that lets you validate webhook requests.
-
-<Callout kind="info">
-Use test mode while you build. Test keys and live keys are separate, and each environment has its own credentials.
-</Callout>
+<Columns cols={3}>
+  <Card title="Personal access tokens" icon="lock" href="#personal-access-tokens">
+    Use a token for scripts, CI jobs, and private automation.
+  </Card>
+  <Card title="OAuth apps" icon="users" href="#oauth-apps">
+    Use OAuth when a user consents to a limited set of permissions.
+  </Card>
+  <Card title="Scope management" icon="shield" href="#scope-management">
+    Restrict access to only the resources your integration needs.
+  </Card>
+</Columns>
 
 ## Authentication methods
 
-Use the method that matches where your code runs and what the request needs to do.
+Choose the method that matches how your integration runs and who owns the access.
 
 <Tabs>
-  <Tab title="Secret key" icon="lock">
-    Use a secret key from your backend to create charges, manage customers, and read sensitive account data.
+  <Tab title="Personal access tokens" icon="lock">
+    Personal access tokens are best for private automation and server-to-server calls. You create the token in your Vercel account, then send it as a bearer token with each request.
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Send your secret key as a Bearer token in the `Authorization` header when your integration expects header-based authentication.
-    </ParamField>
+    Use a personal access token when:
 
-    <ParamField body="api_key" param-type="string" required="true">
-      Store your secret key in server-side configuration, not in request bodies or client code.
-    </ParamField>
+    - You own the automation and do not need end-user consent.
+    - You run scheduled jobs, local scripts, or CI pipelines.
+    - You need a simple header-based credential flow.
+
+    A token usually inherits the permissions of the account or team that created it, so keep the scope as narrow as possible.
   </Tab>
+  <Tab title="OAuth apps" icon="users">
+    OAuth apps are best when you build an integration that acts on behalf of a user. The user grants access to specific resources during the authorization flow, and your app receives a token tied to that grant.
 
-  <Tab title="Publishable key" icon="code">
-    Use a publishable key in browser or mobile code to initialize client-side Stripe functionality.
+    Use OAuth when:
 
-    <ParamField body="publishable_key" param-type="string" required="true">
-      Use the publishable key in client-side initialization only. It is safe to expose publicly.
-    </ParamField>
+    - You need delegated access from a user.
+    - You want users to connect their Vercel account without sharing a long-lived secret.
+    - You need revocable access with explicit consent.
+
+    Always request only the scopes your app needs, and verify the team or account context before you make changes.
   </Tab>
+  <Tab title="Team access controls" icon="shield">
+    Team-based access controls help you limit what an integration can do inside an organization. When a request targets team resources, confirm that the token or OAuth grant belongs to that team.
 
-  <Tab title="Restricted key" icon="shield">
-    Use a restricted key when a service needs only a narrow slice of API access.
+    Use team-based controls when:
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Send the restricted secret key from trusted server code and scope it to the minimum permissions required.
-    </ParamField>
-  </Tab>
+    - You automate work across a specific team.
+    - You need to separate production and staging access.
+    - You want to reduce accidental cross-team changes.
 
-  <Tab title="Webhook signature" icon="check-circle">
-    Use the `Stripe-Signature` header to verify webhook events before you process them.
-
-    <ParamField header="Stripe-Signature" param-type="string" required="true">
-      Verify the signature against your webhook endpoint secret before you trust the event payload.
-    </ParamField>
+    If your integration supports multiple teams, make the team identifier explicit in your configuration and validate it before each request.
   </Tab>
 </Tabs>
 
-## Implement API authentication
+## Personal access tokens
 
-Most Stripe API requests use a secret key from your server. Load the key from environment variables, send it only over HTTPS, and rotate it if you suspect exposure.
+A personal access token is a long-lived secret that identifies an authorized user or team context. Send it in the `Authorization` header as a bearer token.
 
-<Steps>
-  <Step title="Create or retrieve a key" icon="key">
-    Open the Dashboard and create the key you need for test mode or live mode. Use a restricted key if the integration only needs limited access.
+<ParamField header="Authorization" param-type="string" required="true">
+  Bearer token used to authenticate the request.
+</ParamField>
 
-    ```bash
-    export STRIPE_SECRET_KEY="YOUR_SECRET_KEY"
-    ```
-  </Step>
+<ParamField header="x-vercel-team-id" param-type="string" required="false">
+  Optional team identifier when the request must target a specific team context.
+</ParamField>
 
-  <Step title="Send the key from your server" icon="terminal">
-    Use the secret key in server-side requests only. Do not embed it in frontend code.
+Use this pattern for scripts and server-side jobs:
 
-    <CodeGroup tabs="JavaScript,Python,cURL">
-      ```javascript
-      const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
-      async function createCustomer() {
-        const customer = await stripe.customers.create({
-          email: "jenny.rosen@example.com",
-        });
-
-        return customer;
-      }
-      ```
-      ```python
-      import os
-      import stripe
-
-      stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
-
-      customer = stripe.Customer.create(
-          email="jenny.rosen@example.com"
-      )
-      ```
-      ```bash
-      curl https://api.example.com/v1/customers \
-        -u "$STRIPE_SECRET_KEY:"
-      ```
-    </CodeGroup>
-  </Step>
-
-  <Step title="Verify webhook events" icon="shield">
-    Compare the incoming signature against your endpoint secret before you process the payload.
-
-    ```javascript
-    const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-    function verifyWebhook(rawBody, signature) {
-      return stripe.webhooks.constructEvent(rawBody, signature, endpointSecret);
-    }
-    ```
-  </Step>
-</Steps>
-
-### Webhook verification checklist
-
-- Read the raw request body before parsing JSON.
-- Use the endpoint secret that matches the webhook endpoint.
-- Reject requests when signature verification fails.
-- Process each event idempotently so retries do not create duplicate side effects.
-
-## Secure your integration
-
-<Callout kind="alert">
-Never ship your secret key to the browser, store it in a public repository, or log it in plaintext. If a key is exposed, rotate it immediately and update every environment that uses it.
-</Callout>
-
-### Dashboard key management
-
-Use the Dashboard to manage your credentials over the full lifecycle:
-
-- Create separate keys for test mode and live mode.
-- Rotate keys periodically and after any suspected exposure.
-- Remove unused restricted keys.
-- Review webhook endpoint secrets when you recreate endpoints.
-
-### Restricted keys and OAuth
-
-Restricted keys help you limit access for internal services and automation. OAuth is useful when a connected account grants access to its data and capabilities. In both cases, scope access to the minimum required permissions and revoke credentials you no longer need.
-
-### PCI compliance considerations
-
-Use Stripe-hosted payment UIs and tokenization flows when possible so sensitive card data does not pass through your systems. If your application handles card data directly, your compliance obligations increase. Keep these rules in mind:
-
-- Do not store raw card numbers, CVCs, or magnetic stripe data.
-- Use client-side tokenization for payment details whenever possible.
-- Limit access to keys that can read payment data.
-- Separate test and live credentials in every environment.
-
-## Reference examples
-
-The following examples show the three most common authentication patterns together.
-
-<CodeGroup tabs="Node.js,Python,cURL">
-  ```javascript
-  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
-  async function listCustomers() {
-    return await stripe.customers.list({ limit: 3 });
-  }
-
-  listCustomers();
-  ```
-  ```python
-  import os
-  import stripe
-
-  stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
-
-  customers = stripe.Customer.list(limit=3)
-  ```
+<CodeGroup tabs="cURL,JavaScript,Python">
   ```bash
-  curl https://api.example.com/v1/customers?limit=3 \
-    -u "$STRIPE_SECRET_KEY:"
+  curl -X GET "https://api.example.com/v1/projects" \
+    -H "Authorization: Bearer YOUR_PERSONAL_ACCESS_TOKEN"
+  ```
+
+  ```javascript
+  const response = await fetch("https://api.example.com/v1/projects", {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer YOUR_PERSONAL_ACCESS_TOKEN",
+    },
+  });
+
+  const data = await response.json();
+  ```
+
+  ```python
+  import requests
+
+  response = requests.get(
+      "https://api.example.com/v1/projects",
+      headers={
+          "Authorization": "Bearer YOUR_PERSONAL_ACCESS_TOKEN",
+      },
+  )
+
+  data = response.json()
   ```
 </CodeGroup>
 
-## Related setup notes
+## OAuth apps
 
-- Keep your publishable key in client-side initialization only.
-- Keep your secret key in server-side environment variables.
-- Verify every webhook before you trust the payload.
-- Use restricted keys for narrow internal workflows.
-- Rotate credentials on a schedule and after any incident.
+OAuth lets a user authorize your integration without exposing their password or sharing a static token. Your app redirects the user to Vercel for consent, receives an authorization code, and exchanges that code for an access token.
+
+<Tabs>
+  <Tab title="Authorization code" icon="arrow-right">
+    Use the authorization code flow for browser-based and server-rendered applications.
+
+    1. Redirect the user to the authorization endpoint.
+    2. Receive the authorization code on your callback URL.
+    3. Exchange the code for an access token.
+    4. Use the token to call Vercel APIs on the user’s behalf.
+
+    Keep the client secret on the server. Do not expose it in client-side code.
+  </Tab>
+  <Tab title="Access token" icon="lock">
+    Use the access token in the same way as a personal access token, but treat the token as a user-granted credential with limited permissions.
+
+    The token should map to the scopes approved during consent. If the user revokes access, stop using the token and force a fresh authorization flow.
+  </Tab>
+  <Tab title="Refresh token" icon="refresh-cw">
+    If your OAuth app uses refresh tokens, store them securely and rotate them according to your app’s policy.
+
+    Refresh tokens are sensitive credentials. Keep them out of logs, client bundles, and browser storage.
+  </Tab>
+</Tabs>
+
+## Scope management
+
+Scopes limit what a token or OAuth grant can access. You should request the minimum scopes required for the task and reject requests that need broader access than the user approved.
+
+Use scopes to separate common integration tasks:
+
+| Task | Suggested scope behavior |
+| --- | --- |
+| Read project metadata | Read-only scope |
+| Create or update deployments | Write scope only when needed |
+| Manage team settings | Team-admin scope with explicit approval |
+| Access production resources | Production-specific scope or team restriction |
+
+For API handlers, validate scope before you execute the operation. If the token does not include the required permission, return `403 Forbidden` and explain which capability is missing.
+
+## Implementation
+
+The examples below show a standard bearer token flow, a delegated OAuth flow, and a server-side verification check.
+
+<CodeGroup tabs="TypeScript,Go,Ruby">
+  ```typescript
+  const token = process.env.VERCEL_TOKEN;
+
+  if (!token) {
+    throw new Error("Missing VERCEL_TOKEN");
+  }
+
+  const response = await fetch("https://api.example.com/v1/projects", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`);
+  }
+
+  const projects = await response.json();
+  ```
+
+  ```go
+  package main
+
+  import (
+    "fmt"
+    "net/http"
+    "os"
+  )
+
+  func main() {
+    token := os.Getenv("VERCEL_TOKEN")
+    if token == "" {
+      panic("Missing VERCEL_TOKEN")
+    }
+
+    req, _ := http.NewRequest("GET", "https://api.example.com/v1/projects", nil)
+    req.Header.Set("Authorization", "Bearer "+token)
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+      panic(err)
+    }
+    defer resp.Body.Close()
+
+    fmt.Println(resp.StatusCode)
+  }
+  ```
+
+  ```ruby
+  require "net/http"
+  require "uri"
+
+  token = ENV["VERCEL_TOKEN"]
+  raise "Missing VERCEL_TOKEN" if token.nil? || token.empty?
+
+  uri = URI("https://api.example.com/v1/projects")
+  request = Net::HTTP::Get.new(uri)
+  request["Authorization"] = "Bearer #{token}"
+
+  response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+    http.request(request)
+  end
+
+  puts response.code
+  ```
+</CodeGroup>
+
+## Security tips
+
+<Callout kind="alert">
+  Treat access tokens and OAuth secrets as sensitive credentials. Store them in server-side secrets management, rotate them regularly, and never commit them to source control. If a token leaks, revoke it immediately and issue a replacement.
+</Callout>
+
+Use these baseline controls for every integration:
+
+- Prefer short-lived credentials when your workflow supports them.
+- Scope tokens to the smallest possible set of permissions.
+- Separate personal, staging, and production access.
+- Log authentication failures without printing secrets.
+- Validate the team context before you perform write operations.
+
+If you need a token for local development, use a dedicated development credential and keep it out of shared configuration files.

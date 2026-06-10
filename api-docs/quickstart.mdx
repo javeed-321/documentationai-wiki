@@ -1,267 +1,198 @@
 ---
 title: Quickstart
-description: Make your first API call to create a customer and charge a test card.
+description: Make your first API call to list deployments or trigger a new build.
 ---
 
 ## Quickstart
 
-Use this quickstart to create a customer, attach a test payment method, confirm a `PaymentIntent`, handle Strong Customer Authentication, and receive webhook events. You will work against Stripe test mode, so you can safely run the flow end to end without charging a real card.
+Use this quickstart to make your first Vercel API call in under five minutes. You will set up a token, install the SDK, and send a request that either lists deployments or starts a new build.
 
 <Callout kind="info">
-
-Before you start, you need a Stripe account, a secret key, and access to the Stripe Dashboard. Use test keys only while following this guide.
-
+You need a Vercel API token before you can call the API. Store it as `VERCEL_TOKEN` in your environment, and never commit it to source control.
 </Callout>
 
 ### What you will build
 
-In less than five minutes, you will complete a minimal payment flow:
+You will learn two common request patterns:
 
-1. Create a customer.
-2. Create a `PaymentIntent`.
-3. Attach a test payment method.
-4. Confirm the payment.
-5. Listen for `payment_intent.succeeded` and related webhook events.
+- List deployments for a project
+- Trigger a new deployment from a build source
 
-### Prerequisites
+You will also see the response shape you can expect from the API so you can plug it into your own tooling right away.
 
-- A Stripe account in test mode
-- Your test secret key
-- A reachable webhook endpoint for local development
-- A way to send `POST` requests to the Stripe API
+## Prerequisites
 
-## Set up your environment
+Before you start, make sure you have:
 
-Start by creating a project directory and storing your secret key as an environment variable. Keep the key out of source control and never put it in client-side code.
+- A Vercel account
+- An API token with access to deployments
+- Node.js installed if you want to use the SDK
+- `curl` installed if you want to test the API from the command line
+
+## Set up access
 
 <Steps>
-  <Step title="Create a workspace" icon="folder">
-    Create a directory for your quickstart and move into it.
+  <Step title="Create an API token" icon="lock">
+    Open your Vercel account settings, create a token, and copy it to a safe place.
 
-    ```bash
-    mkdir stripe-quickstart
-    cd stripe-quickstart
-    ```
+    Use the token value as `VERCEL_TOKEN` in your shell environment.
+
   </Step>
-
-  <Step title="Set your secret key" icon="lock">
-    Export your test secret key as an environment variable.
+  <Step title="Set the environment variable" icon="settings">
+    Export the token so your local tools can read it.
 
     ```bash
-    export STRIPE_SECRET_KEY="sk_test_YOUR_TEST_SECRET_KEY"
+    export VERCEL_TOKEN="YOUR_API_TOKEN"
     ```
+
   </Step>
+  <Step title="Choose a project identifier" icon="database">
+    Pick the project ID or name you want to query or deploy.
 
-  <Step title="Verify API access" icon="check-circle">
-    Confirm that you can make authenticated requests to the Stripe API.
+    If you are not sure which one to use, start with the project you already manage in Vercel.
 
-    ```bash
-    curl https://api.stripe.com/v1/customers \
-      -u "$STRIPE_SECRET_KEY:"
-    ```
   </Step>
 </Steps>
 
-## Create a customer and payment intent
+## Make your first request
 
-The example below creates a customer, creates a `PaymentIntent`, and confirms it with a test card. Use `automatic_payment_methods` so Stripe can handle compatible payment methods for you in test mode.
+Use the API endpoint to list deployments for a project. The same authentication pattern works for other deployment actions.
 
-<CodeGroup tabs="cURL,JavaScript,Python">
+<CodeGroup tabs="cURL,JavaScript">
   ```bash
-  curl https://api.stripe.com/v1/customers \
-    -u "$STRIPE_SECRET_KEY:" \
-    -d name="Quickstart Customer"
+  curl -s https://api.example.com/v1/deployments \
+    -H "Authorization: Bearer $VERCEL_TOKEN" \
+    -H "Content-Type: application/json"
   ```
 
   ```javascript
-  const customerResponse = await fetch("https://api.stripe.com/v1/customers", {
-    method: "POST",
+  const token = process.env.VERCEL_TOKEN;
+
+  const response = await fetch("https://api.example.com/v1/deployments", {
     headers: {
-      Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`,
-      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-    body: new URLSearchParams({
-      name: "Quickstart Customer",
-    }),
   });
 
-  const customer = await customerResponse.json();
-
-  const paymentIntentResponse = await fetch("https://api.stripe.com/v1/payment_intents", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      amount: "2000",
-      currency: "usd",
-      customer: customer.id,
-      "automatic_payment_methods[enabled]": "true",
-      confirm: "true",
-      "payment_method_data[type]": "card",
-      "payment_method_data[card][number]": "4242424242424242",
-      "payment_method_data[card][exp_month]": "12",
-      "payment_method_data[card][exp_year]": "2030",
-      "payment_method_data[card][cvc]": "123",
-    }),
-  });
-
-  const paymentIntent = await paymentIntentResponse.json();
-  console.log(paymentIntent);
-  ```
-
-  ```python
-  import os
-  import requests
-
-  customer_response = requests.post(
-      "https://api.stripe.com/v1/customers",
-      auth=(os.environ["STRIPE_SECRET_KEY"], ""),
-      data={"name": "Quickstart Customer"},
-  )
-  customer = customer_response.json()
-
-  payment_intent_response = requests.post(
-      "https://api.stripe.com/v1/payment_intents",
-      auth=(os.environ["STRIPE_SECRET_KEY"], ""),
-      data={
-          "amount": "2000",
-          "currency": "usd",
-          "customer": customer["id"],
-          "automatic_payment_methods[enabled]": "true",
-          "confirm": "true",
-          "payment_method_data[type]": "card",
-          "payment_method_data[card][number]": "4242424242424242",
-          "payment_method_data[card][exp_month]": "12",
-          "payment_method_data[card][exp_year]": "2030",
-          "payment_method_data[card][cvc]": "123",
-      },
-  )
-  payment_intent = payment_intent_response.json()
-  print(payment_intent)
+  const data = await response.json();
+  console.log(data);
   ```
 </CodeGroup>
 
-<Callout kind="tip">
+The response is JSON. For a successful call, you typically get a list of deployment objects with identifiers, names, states, and URLs.
 
-If the `PaymentIntent` returns `requires_action`, Stripe is asking you to complete customer authentication. Use the `next_action` details from the response to continue the payment flow.
-
-</Callout>
-
-## Handle Strong Customer Authentication
-
-Some cards require Strong Customer Authentication, also known as SCA or 3D Secure. In that case, your `PaymentIntent` does not succeed immediately. Instead, the response includes a status such as `requires_action` or `requires_confirmation`.
-
-### Test card behavior
-
-Use Stripe test cards to simulate different outcomes:
-
-| Test card | Behavior |
-| --- | --- |
-| `4242 4242 4242 4242` | Successful payment |
-| `4000 0025 0000 3155` | Requires authentication |
-| `4000 0000 0000 9995` | Declined payment |
-
-When your integration receives a `requires_action` status, direct the customer through the authentication step shown by Stripe, then confirm the `PaymentIntent` again if needed.
-
-### Inspect the response
-
-After confirmation, look at the `status` field:
-
-- `succeeded` means the payment is complete.
-- `requires_action` means the customer must complete authentication.
-- `requires_payment_method` means the payment method failed and you should try again.
-
-## Attach a payment method to a customer
-
-When you want to save a card for later reuse, attach the payment method to the customer and set it as the default for invoices or future payments.
-
-<Steps>
-  <Step title="Create or reuse a payment method" icon="credit-card">
-    Use a test card to create a reusable payment method.
-
-    ```bash
-    curl https://api.stripe.com/v1/payment_methods \
-      -u "$STRIPE_SECRET_KEY:" \
-      -d type="card" \
-      -d "card[number]=4242424242424242" \
-      -d "card[exp_month]=12" \
-      -d "card[exp_year]=2030" \
-      -d "card[cvc]=123"
-    ```
-  </Step>
-
-  <Step title="Attach it to the customer" icon="users">
-    Attach the payment method to the customer returned earlier.
-
-    ```bash
-    curl https://api.stripe.com/v1/payment_methods/pm_YOUR_PAYMENT_METHOD_ID/attach \
-      -u "$STRIPE_SECRET_KEY:" \
-      -d customer="cus_YOUR_CUSTOMER_ID"
-    ```
-  </Step>
-
-  <Step title="Set the default payment method" icon="settings">
-    Make the saved card the default for future billing.
-
-    ```bash
-    curl https://api.stripe.com/v1/customers/cus_YOUR_CUSTOMER_ID \
-      -u "$STRIPE_SECRET_KEY:" \
-      -d "invoice_settings[default_payment_method]=pm_YOUR_PAYMENT_METHOD_ID"
-    ```
-  </Step>
-</Steps>
-
-## Receive webhook events
-
-Webhooks let you reliably react to payment state changes. Always verify the event signature before you trust the payload. For this quickstart, listen for at least `payment_intent.succeeded`, `payment_intent.payment_failed`, and `payment_intent.requires_action`.
-
-```mermaid
-sequenceDiagram
-    Client->>Stripe: Create PaymentIntent
-    Stripe->>Client: Return status
-    Stripe->>Webhook: Send event
-    Webhook->>Client: Update order state
+```json
+{
+  "deployments": [
+    {
+      "id": "dpl_123",
+      "name": "my-app",
+      "state": "READY",
+      "url": "https://my-app.example.com"
+    }
+  ]
+}
 ```
 
-### Minimal webhook handler
+## Trigger a build
 
-Use a dedicated endpoint to receive Stripe events and branch on the event type.
+If you want to create a new deployment instead of listing existing ones, send a request to the build endpoint with the project reference.
 
-```bash
-curl https://api.stripe.com/v1/webhook_endpoints \
-  -u "$STRIPE_SECRET_KEY:" \
-  -d url="https://example.com/webhooks/stripe" \
-  -d "enabled_events[]=payment_intent.succeeded" \
-  -d "enabled_events[]=payment_intent.payment_failed" \
-  -d "enabled_events[]=payment_intent.requires_action"
+<CodeGroup tabs="cURL,JavaScript">
+  ```bash
+  curl -s https://api.example.com/v1/deployments \
+    -X POST \
+    -H "Authorization: Bearer $VERCEL_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "projectId": "prj_123",
+      "target": "production"
+    }'
+  ```
+
+  ```javascript
+  const token = process.env.VERCEL_TOKEN;
+
+  const response = await fetch("https://api.example.com/v1/deployments", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      projectId: "prj_123",
+      target: "production",
+    }),
+  });
+
+  const data = await response.json();
+  console.log(data);
+  ```
+</CodeGroup>
+
+A successful trigger returns a deployment record and a status that tells you the build has started.
+
+```json
+{
+  "deployment": {
+    "id": "dpl_456",
+    "state": "BUILDING",
+    "url": "https://my-app-git-main.example.com"
+  }
+}
 ```
 
-### Event handling rules
+## Response formats
 
-- Mark the order as paid only after `payment_intent.succeeded`.
-- Keep the order pending if you receive `payment_intent.requires_action`.
-- Retry payment or prompt for a new card if you receive `payment_intent.payment_failed`.
+Use these fields to recognize the most common response shapes.
 
-## Next steps
+| Scenario | Status | Shape |
+| --- | --- | --- |
+| List deployments | `200 OK` | `{ deployments: Deployment[] }` |
+| Trigger build | `201 Created` | `{ deployment: Deployment }` |
+| Invalid token | `401 Unauthorized` | `{ error: string }` |
+| Missing project | `404 Not Found` | `{ error: string }` |
 
-Use these pages to extend the quickstart into a production flow.
+### Deployment object
+
+A deployment object usually includes the following fields:
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `id` | string | Unique deployment identifier |
+| `name` | string | Project name |
+| `state` | string | Current lifecycle state |
+| `url` | string | Public deployment URL |
+
+## Go deeper
 
 <Columns cols={3}>
-  <Card title="PaymentIntents" icon="zap" href="#create-a-customer-and-payment-intent">
-    Learn the core payment object and its lifecycle.
+  <Card title="AI Gateway" icon="arrow-right" href="https://vercel.com/ai-gateway" target="_blank" cta="Open">
+    Route model requests through one endpoint.
   </Card>
-  <Card title="Webhooks" icon="cloud" href="#receive-webhook-events">
-    Handle asynchronous payment updates safely.
+  <Card title="Fluid Compute" icon="rocket" href="https://vercel.com/fluid" target="_blank" cta="Open">
+    Run serverless workloads with the right resources automatically.
   </Card>
-  <Card title="Billing" icon="database" href="#attach-a-payment-method-to-a-customer">
-    Save payment methods and support recurring charges.
+  <Card title="Workflow" icon="settings" href="https://vercel.com/workflows" target="_blank" cta="Open">
+    Orchestrate long-running tasks at scale.
   </Card>
 </Columns>
 
-<Expandable title="What to do after this quickstart" default-open="false">
+<Expandable title="When should you use the SDK?" default-open="false">
+  Use the SDK when you want typed helpers, shared request logic, and easier integration in a TypeScript codebase.
 
-After you have a successful test payment, add idempotency keys, persist the `PaymentIntent` ID in your database, and verify webhook signatures in your server code. Then expand the flow to handle refunds, subscriptions, and payment failures.
+  Use raw `fetch` or `curl` when you want to inspect requests directly or verify the API contract first.
 
 </Expandable>
+
+## Next steps
+
+After you complete this quickstart, you can:
+
+- List deployments in your own project dashboard
+- Trigger deployments from CI
+- Parse JSON responses into your own status checks
+- Add retry logic for transient failures
+
+If you are building a larger integration, keep the same authentication header and response handling patterns shown here.

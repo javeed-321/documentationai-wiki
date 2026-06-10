@@ -1,83 +1,115 @@
 ---
 title: Changelog
-description: Latest updates and changes to the Stripe platform and APIs.
+description: Latest product updates, new features, and platform improvements.
 ---
 
 ## Changelog
 
-Review the latest Stripe platform and API updates below. Entries are listed newest first.
+Release notes for Vercel. Newest updates appear first.
 
 <Callout kind="info">
-Use this page as a starter kit. Replace sample entries with your own release notes before publishing.
+
+This page is a starter template. Replace the sample entries with your published release history.
+
 </Callout>
 
-<Update label="2026-06-01" description="v2026.06" tags={["feature", "bugfix"]}>
+<Update label="2026-06-10" description="v1.24.0" tags={["feature"]}>
 
-## New features
+## AI Cloud
 
-- Added support for a new payment method in select regions.
-- Expanded availability for local payment acceptance in additional markets.
-- Rolled out Dashboard improvements for subscription management workflows.
+- Added faster model routing in the AI Gateway for supported requests.
+- Expanded sandboxed code execution with improved isolation defaults.
+- Improved Vercel Agent integration for stack-aware task handling.
 
-## Bug fixes
+## Edge Network
 
-- Resolved an issue that could delay payment method display updates in the Dashboard.
-- Fixed inconsistent API response formatting for certain billing objects.
+- Rolled out lower-latency routing for dynamic traffic in more regions.
+- Improved cache behavior for static assets on the global edge CDN.
 
-## Deprecations
+## Security
 
-- Deprecated an older Dashboard export option. Migrate to the current export flow before removal.
-
-</Update>
-
-<Update label="2026-04-18" description="v2026.04" tags={["feature"]}>
-
-## API version updates
-
-- Introduced refinements to payment intent confirmation behavior.
-- Added clearer validation messages for request payloads with missing required fields.
-- Updated endpoint documentation for billing and Connect resources.
-
-## Dashboard updates
-
-- Improved navigation for revenue and reporting views.
-- Added faster filtering for disputes and payout records.
+- Tightened bot protection controls for high-traffic routes.
+- Improved WAF rule evaluation for common application patterns.
 
 </Update>
 
-<Update label="2026-02-27" description="v2026.02" tags={["bugfix"]}>
+<Update label="2026-05-20" description="v1.23.0" tags={["feature", "bugfix"]}>
 
-## Fixes
+## Core Platform
 
-- Fixed a case where some connected account settings did not save on the first attempt.
-- Resolved a currency display issue for multi-currency price tables.
-- Corrected a rare timeout during invoice preview generation.
+- Improved Fluid Compute resource allocation for bursty workloads.
+- Reduced deployment wait time after a single Git push.
+- Fixed an issue that could delay preview availability on some projects.
 
-## Notices
+## Observability
 
-- Continue using the current API version unless you have tested newer behavior in staging.
-- Review any webhook handlers that depend on older billing response fields.
+- Improved trace sampling consistency for long-running requests.
+- Fixed missing labels in selected deployment traces.
+
+## Workflow
+
+- Improved status reporting for orchestration runs.
+- Fixed a retry edge case for interrupted tasks.
 
 </Update>
 
-## What to expect
+<Update label="2026-04-18" description="v1.22.0" tags={["feature"]}>
 
-Stripe release notes typically include new payment methods and regions, API version changes, Dashboard updates, and deprecation notices. Check this page regularly if your integration depends on specific request or response behavior.
+## Security
 
-### How to read entries
+- Added broader DDoS protection coverage for public applications.
+- Expanded BotID verification handling for login and signup flows.
+- Improved Web Application Firewall rule management.
 
-- `feature` tags mark additions, improvements, and expanded availability.
-- `bugfix` tags mark corrections to existing behavior.
-- Dates use ISO format so you can track changes chronologically.
+## AI Cloud
 
-<Expandable title="Release note checklist" default-open="false">
+- Added more consistent access patterns for the AI Gateway.
+- Improved sandbox startup time for repeated execution requests.
 
-Before you publish an update, confirm that you have:
+## Content Delivery
 
-- Named the affected product area clearly.
-- Included the release date.
-- Described the change in one sentence when possible.
-- Marked deprecations early enough for migration.
-- Tested any integration that depends on the changed behavior.
+- Improved edge caching for frequently requested content.
+- Added more reliable invalidation handling for updated assets.
+
+</Update>
+
+## What to track
+
+Use each update to capture changes that affect deployment speed, edge delivery, AI features, and security controls.
+
+### Recommended entry format
+
+- Date first.
+- Version second.
+- Feature and bug fix tags.
+- Short bullets with specific outcomes.
+
+### Release areas to include
+
+| Area | What to note |
+| --- | --- |
+| AI Cloud | AI Gateway, sandboxed execution, Vercel Agent |
+| Edge network | CDN behavior, cache changes, routing updates |
+| Security | DDoS protection, WAF, BotID |
+| Platform | CI/CD, Fluid Compute, observability, workflows |
+
+<Expandable title="Editing checklist" default-open="false">
+
+Before you publish an entry, confirm that you:
+
+- Use the newest update first.
+- Keep each bullet factual and concise.
+- Avoid marketing language.
+- Mention only Vercel features and services.
+- Keep the date in ISO format.
 
 </Expandable>
+
+## Example release flow
+
+```mermaid
+graph LR
+    A[Git push] --> B[Build and deploy]
+    B --> C[Edge delivery]
+    C --> D[Security checks]
+```
