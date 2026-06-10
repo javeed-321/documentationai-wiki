@@ -1,17 +1,16 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: ShopifyMax
+  title: Vercel API
   license:
     name: MIT
 servers:
-  - url: https://api.shopifymax.com/v1
+  - url: https://api.vercel.com/v1
 paths:
-  /products:
+  /deployments:
     get:
-      summary: List products
-      description: Retrieves a paginated list of products in the catalog. Use the limit parameter to control page size for large inventories.
-      operationId: listProducts
+      summary: List deployments
+      operationId: listDeployments
       parameters:
         - name: limit
           in: query
@@ -22,7 +21,7 @@ paths:
             format: int32
       responses:
         200:
-          description: A paged array of products
+          description: An paged array of deployments
           headers:
             x-next:
               description: A link to the next page of responses
@@ -31,7 +30,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Products'
+                $ref: '#/components/schemas/Deployments'
         default:
           description: unexpected error
           content:
@@ -39,8 +38,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create product
-      operationId: createProduct
+      summary: Create deployment
+      operationId: createDeployment
       responses:
         201:
           description: Null response
@@ -50,16 +49,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /products/{productId}:
+  /deployments/{deploymentId}:
     get:
-      summary: Get product info
-      description: Retrieves detailed information about a specific product by its unique identifier. Use this endpoint to inspect catalog data for a single item.
-      operationId: showProductById
+      summary: Get deployment
+      operationId: showDeploymentById
       parameters:
-        - name: productId
+        - name: deploymentId
           in: path
           required: true
-          description: The id of the product to retrieve
+          description: The id of the deployment to retrieve
           schema:
             type: string
       responses:
@@ -68,36 +66,52 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Products'
+                $ref: '#/components/schemas/Deployments'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /checkout:
-    post:
-      summary: Start checkout
-      operationId: createCheckout
-      responses:
-        201:
-          description: Null response
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /payments/{paymentId}:
+  /projects:
     get:
-      summary: Get payment status
-      description: Retrieves the current status and details of a payment by its unique identifier. Use this to confirm successful processing after checkout.
-      operationId: showPaymentById
+      summary: List projects
+      operationId: listProjects
       parameters:
-        - name: paymentId
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: An paged array of projects
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projects'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /projects/{projectId}:
+    get:
+      summary: Get project
+      operationId: showProjectById
+      parameters:
+        - name: projectId
           in: path
           required: true
-          description: The id of the payment to retrieve
+          description: The id of the project to retrieve
           schema:
             type: string
       responses:
@@ -106,7 +120,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Payments'
+                $ref: '#/components/schemas/Projects'
         default:
           description: unexpected error
           content:
@@ -115,7 +129,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Product:
+    Deployment:
       required:
         - id
         - name
@@ -127,10 +141,26 @@ components:
           type: string
         tag:
           type: string
-    Products:
+    Deployments:
       type: array
       items:
-        $ref: '#/components/schemas/Product'
+        $ref: '#/components/schemas/Deployment'
+    Project:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        tag:
+          type: string
+    Projects:
+      type: array
+      items:
+        $ref: '#/components/schemas/Project'
     Error:
       required:
         - code
@@ -141,19 +171,3 @@ components:
           format: int32
         message:
           type: string
-    Payment:
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        tag:
-          type: string
-    Payments:
-      type: array
-      items:
-        $ref: '#/components/schemas/Payment'

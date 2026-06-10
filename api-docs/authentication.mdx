@@ -1,73 +1,59 @@
 ---
 title: Authentication
-description: Secure your ShopifyMax API requests using keys and tokens for cart and payment operations.
+description: Authenticate API requests with Vercel access tokens and OAuth2 flows.
 ---
 
 ## Overview
 
-ShopifyMax requires authentication on every API request to protect cart and payment operations. Requests must include a valid API key in the header along with either a `CART_TOKEN` or `PAYMENT_KEY` depending on the endpoint.
+Vercel API requests require authentication via access tokens. You send the token in the Authorization header for every request. Two primary methods exist: personal access tokens for individual use and OAuth2 for applications.
 
-All endpoints accept only HTTPS traffic. Requests without proper credentials return a 401 status immediately.
-
-## Authentication methods
+## Authentication Methods
 
 <Tabs>
-  <Tab title="API key" icon="key">
-    Every request requires the `X-API-Key` header. This key identifies your store and grants basic access.
+  <Tab title="Personal Access Tokens" icon="key">
+    Generate a personal access token from your account settings. This token grants access scoped to your permissions.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Use the format `Bearer YOUR_TOKEN` where YOUR_TOKEN is the personal access token value.
+    </ParamField>
   </Tab>
-  <Tab title="CART_TOKEN" icon="shopping-cart">
-    Use `CART_TOKEN` for cart-related endpoints. Pass the token in the `Authorization` header as a bearer value.
-  </Tab>
-  <Tab title="PAYMENT_KEY" icon="credit-card">
-    Payment operations require `PAYMENT_KEY`. Include it as a query parameter or header for checkout flows under three seconds.
+  <Tab title="OAuth2" icon="lock">
+    Register an OAuth application to obtain client credentials. Users authorize your app to receive scoped tokens.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Use the format `Bearer OAUTH_ACCESS_TOKEN` after completing the OAuth2 flow.
+    </ParamField>
   </Tab>
 </Tabs>
 
 ## Implementation
 
-<ParamField header="X-API-Key" param-type="string" required="true">
-  Your store API key obtained from the dashboard.
-</ParamField>
-
-<ParamField header="Authorization" param-type="string" required="false">
-  Bearer token containing the `CART_TOKEN` value.
-</ParamField>
-
-<ParamField query="payment_key" param-type="string" required="false">
-  The `PAYMENT_KEY` value required for payment endpoints.
-</ParamField>
-
-Use the following examples to authenticate requests in different languages.
+Send authenticated requests using the token in the header. The examples below demonstrate usage across languages.
 
 <CodeGroup tabs="JavaScript,Python,cURL">
 ```javascript
-const response = await fetch('https://api.example.com/v1/cart', {
+const response = await fetch('https://api.example.com/v1/deployments', {
   headers: {
-    'X-API-Key': 'YOUR_API_KEY',
-    'Authorization': 'Bearer YOUR_CART_TOKEN'
-  }
+    Authorization: 'Bearer YOUR_TOKEN',
+  },
 });
 ```
-
 ```python
 import requests
 
-headers = {
-    'X-API-Key': 'YOUR_API_KEY',
-    'Authorization': 'Bearer YOUR_CART_TOKEN'
-}
-response = requests.get('https://api.example.com/v1/cart', headers=headers)
+response = requests.get(
+    'https://api.example.com/v1/deployments',
+    headers={'Authorization': 'Bearer YOUR_TOKEN'}
+)
 ```
-
 ```bash
-curl -H "X-API-Key: YOUR_API_KEY" \
-     -H "Authorization: Bearer YOUR_CART_TOKEN" \
-     https://api.example.com/v1/cart
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  https://api.example.com/v1/deployments
 ```
 </CodeGroup>
 
-## Security recommendations
+## Security Considerations
 
 <Callout kind="alert">
-Store API keys and tokens in environment variables. Never commit them to source control. Rotate keys immediately if you suspect exposure, especially on stores handling more than 100000 products.
+Rotate tokens regularly and revoke unused ones immediately. Store tokens only in secure environments and never commit them to source control. Limit scopes to the minimum permissions required for each token.
 </Callout>

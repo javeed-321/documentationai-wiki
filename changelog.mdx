@@ -1,35 +1,42 @@
 ---
 title: Changelog
-description: Release notes for ShopifyMax updates including checkout speed improvements and new variable support.
+description: Release notes for Vercel platform updates, new features, and infrastructure changes.
 ---
 
-## Recent releases
+## Platform Releases
 
-<Update label="2024-10-15" description="v2.5.0" tags={["feature"]}>
+<Update label="2024-11-05" description="v2.3.0" tags={["feature", "bugfix"]}>
 
-## Checkout and variables
+## New Features
 
-- Reduced average checkout time to under 3 seconds.
-- Added support for `CART_TOKEN` and `PAYMENT_KEY` variables during order processing.
-- Improved error handling for variable substitution.
+- Added edge function cold start metrics in the dashboard.
+- Introduced support for custom domains with automatic SSL renewal.
 
-</Update>
+## Bug Fixes
 
-<Update label="2024-09-20" description="v2.4.0" tags={["feature"]}>
-
-## Catalog scaling
-
-- Increased supported catalog size to over 100000 products.
-- Optimized database queries for large inventories.
-- Added bulk import validation.
+- Resolved CLI deployment timeout on large monorepos.
+- Fixed API rate limit headers returning incorrect values.
 
 </Update>
 
-<Update label="2024-08-10" description="v2.3.0" tags={["bugfix"]}>
+<Update label="2024-10-20" description="v2.2.1" tags={["bugfix"]}>
 
-## Performance fixes
+## Bug Fixes
 
-- Fixed race condition in concurrent checkout sessions.
-- Resolved memory leak under high product counts.
+- Corrected preview deployment URL generation for projects with hyphens.
+- Patched memory leak in the build pipeline for Next.js applications.
+
+</Update>
+
+<Update label="2024-09-15" description="v2.2.0" tags={["feature", "deprecation"]}>
+
+## New Features
+
+- Launched the new Projects API v2 endpoint for bulk operations.
+- Added CLI command for direct environment variable imports.
+
+## Deprecations
+
+- Deprecated the legacy `/v1/deployments` endpoint. Migrate to v2 by January 2025.
 
 </Update>

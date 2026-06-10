@@ -1,68 +1,71 @@
 ---
 title: Feature Overview
-description: Explore ShopifyMax capabilities for high-volume catalogs, instant checkout, and secure variable handling.
+description: Key features including preview deployments, serverless functions, and edge middleware.
 ---
 
 ## Overview
 
-ShopifyMax delivers reliable performance for merchants who manage large inventories and demand fast transactions. You handle catalogs that exceed 100000 products while maintaining checkout times under three seconds. The platform also supports secure variable handling through `CART_TOKEN` and `PAYMENT_KEY` in your cart and payment workflows.
+Vercel provides a modern deployment platform that simplifies shipping web applications. You connect your Git repository, and the platform handles builds, previews, and production releases automatically. Core capabilities include instant preview deployments for every pull request, serverless functions for backend logic, and edge middleware for request-level customization. Analytics and monitoring tools give you visibility into performance and usage.
 
-## Scaling Product Catalogs
+## Preview Deployments
 
-You store and serve catalogs beyond 100000 items without slowdowns. ShopifyMax indexes products efficiently and returns search results instantly even at high volume.
+Every code change triggers an isolated preview environment. You review changes in a live URL before merging, which reduces risk in production.
 
-<Card title="Catalog Limits" icon="database" href="#scaling-product-catalogs">
-  Supports over 100000 products with real-time search and filtering.
+<Card title="Instant Previews" icon="zap" href="#examples">
+  Share working previews with teammates or stakeholders without manual setup.
 </Card>
 
-## Optimizing Checkout Speed
+## Serverless Functions
 
-Checkout completes in under three seconds through optimized rendering and minimal network calls. You reduce cart abandonment by delivering immediate confirmation pages.
+Write API routes as functions that scale automatically. No server management is required, and cold starts remain minimal on the global network.
+
+<Callout kind="info">
+  Functions run close to users for low latency on every request.
+</Callout>
+
+## Edge Middleware
+
+Intercept requests at the edge to rewrite paths, add headers, or run authentication checks before content reaches the origin.
 
 <Tabs>
-  <Tab title="Standard Flow" icon="zap">
-    Load product data, apply taxes, then finalize payment in one request cycle.
+  <Tab title="JavaScript" icon="code">
+    Add middleware logic directly in your project.
   </Tab>
-  <Tab title="Express Flow" icon="rocket">
-    Preload user details and skip optional steps for returning customers.
+  <Tab title="TypeScript" icon="code">
+    Use full type safety for request handling.
   </Tab>
 </Tabs>
 
-## Handling Variables Securely
+## Analytics and Monitoring
 
-You pass `CART_TOKEN` to track sessions and `PAYMENT_KEY` to authorize transactions. ShopifyMax encrypts these values at rest and in transit.
+Track real-time metrics such as page views, Core Web Vitals, and error rates. Dashboards surface trends so you can optimize quickly.
 
-<Callout kind="info">
-  Never log raw variable values. Always mask them in server logs.
-</Callout>
+## Examples
 
-## Code Examples
-
-Use the following snippets to integrate variable support.
-
-<CodeGroup tabs="JavaScript,Python">
-```javascript
-const cart = await shopifyMax.createCart({
-  token: "CART_TOKEN",
-  paymentKey: "PAYMENT_KEY"
-});
+<CodeGroup tabs="vercel.json,api/hello.js">
+```json
+{
+  "functions": {
+    "api/*.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
+}
 ```
-```python
-cart = shopify_max.create_cart(
-    token="CART_TOKEN",
-    payment_key="PAYMENT_KEY"
-)
+```javascript
+export default function handler(req, res) {
+  res.status(200).json({ message: 'Hello from Vercel' });
+}
 ```
 </CodeGroup>
 
 ## Best Practices
 
-Follow these guidelines to maintain performance and security.
+- Keep preview deployments short-lived by merging or closing pull requests promptly.
+- Place shared logic in reusable utilities rather than duplicating code across functions.
+- Use middleware sparingly to avoid added latency on every request.
 
-<Expandable title="Advanced catalog tips" default-open="false">
-  Index new products in batches of 5000 to avoid indexing spikes. Monitor query latency through the dashboard at `https://dashboard.example.com`.
-</Expandable>
-
-<Expandable title="Variable security" default-open="false">
-  Rotate `PAYMENT_KEY` every 90 days. Store `CART_TOKEN` only in secure, HttpOnly cookies.
+<Expandable title="Advanced configuration options" default-open="false">
+  Fine-tune regions, environment variables, and caching rules in the project settings to match your traffic patterns.
 </Expandable>
