@@ -1,0 +1,193 @@
+---
+title: Authentication
+description: Secure your Stripe API requests using secret keys, publishable keys, and webhook signatures.
+---
+
+## Overview
+
+Stripe uses multiple authentication mechanisms depending on what you are building. Server-side API requests use secret keys. Browser and mobile code uses publishable keys for client-side tokenization and SDK initialization. Webhooks use a signature header so you can verify that Stripe sent the event.
+
+Use the Dashboard to create, rotate, and restrict keys. Keep secret keys on your server only. Never expose a secret key in client-side code, mobile bundles, or logs.
+
+### Common authentication concepts
+
+- **Secret key**: A server-side credential that can access authenticated API endpoints.
+- **Publishable key**: A client-side credential that identifies your account and is safe to use in public code.
+- **Restricted key**: A secret key with limited permissions.
+- **Webhook signature**: A cryptographic signature in the `Stripe-Signature` header that lets you validate webhook requests.
+
+<Callout kind="info">
+Use test mode while you build. Test keys and live keys are separate, and each environment has its own credentials.
+</Callout>
+
+## Authentication methods
+
+Use the method that matches where your code runs and what the request needs to do.
+
+<Tabs>
+  <Tab title="Secret key" icon="lock">
+    Use a secret key from your backend to create charges, manage customers, and read sensitive account data.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Send your secret key as a Bearer token in the `Authorization` header when your integration expects header-based authentication.
+    </ParamField>
+
+    <ParamField body="api_key" param-type="string" required="true">
+      Store your secret key in server-side configuration, not in request bodies or client code.
+    </ParamField>
+  </Tab>
+
+  <Tab title="Publishable key" icon="code">
+    Use a publishable key in browser or mobile code to initialize client-side Stripe functionality.
+
+    <ParamField body="publishable_key" param-type="string" required="true">
+      Use the publishable key in client-side initialization only. It is safe to expose publicly.
+    </ParamField>
+  </Tab>
+
+  <Tab title="Restricted key" icon="shield">
+    Use a restricted key when a service needs only a narrow slice of API access.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Send the restricted secret key from trusted server code and scope it to the minimum permissions required.
+    </ParamField>
+  </Tab>
+
+  <Tab title="Webhook signature" icon="check-circle">
+    Use the `Stripe-Signature` header to verify webhook events before you process them.
+
+    <ParamField header="Stripe-Signature" param-type="string" required="true">
+      Verify the signature against your webhook endpoint secret before you trust the event payload.
+    </ParamField>
+  </Tab>
+</Tabs>
+
+## Implement API authentication
+
+Most Stripe API requests use a secret key from your server. Load the key from environment variables, send it only over HTTPS, and rotate it if you suspect exposure.
+
+<Steps>
+  <Step title="Create or retrieve a key" icon="key">
+    Open the Dashboard and create the key you need for test mode or live mode. Use a restricted key if the integration only needs limited access.
+
+    ```bash
+    export STRIPE_SECRET_KEY="YOUR_SECRET_KEY"
+    ```
+  </Step>
+
+  <Step title="Send the key from your server" icon="terminal">
+    Use the secret key in server-side requests only. Do not embed it in frontend code.
+
+    <CodeGroup tabs="JavaScript,Python,cURL">
+      ```javascript
+      const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+      async function createCustomer() {
+        const customer = await stripe.customers.create({
+          email: "jenny.rosen@example.com",
+        });
+
+        return customer;
+      }
+      ```
+      ```python
+      import os
+      import stripe
+
+      stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
+
+      customer = stripe.Customer.create(
+          email="jenny.rosen@example.com"
+      )
+      ```
+      ```bash
+      curl https://api.example.com/v1/customers \
+        -u "$STRIPE_SECRET_KEY:"
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Verify webhook events" icon="shield">
+    Compare the incoming signature against your endpoint secret before you process the payload.
+
+    ```javascript
+    const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    function verifyWebhook(rawBody, signature) {
+      return stripe.webhooks.constructEvent(rawBody, signature, endpointSecret);
+    }
+    ```
+  </Step>
+</Steps>
+
+### Webhook verification checklist
+
+- Read the raw request body before parsing JSON.
+- Use the endpoint secret that matches the webhook endpoint.
+- Reject requests when signature verification fails.
+- Process each event idempotently so retries do not create duplicate side effects.
+
+## Secure your integration
+
+<Callout kind="alert">
+Never ship your secret key to the browser, store it in a public repository, or log it in plaintext. If a key is exposed, rotate it immediately and update every environment that uses it.
+</Callout>
+
+### Dashboard key management
+
+Use the Dashboard to manage your credentials over the full lifecycle:
+
+- Create separate keys for test mode and live mode.
+- Rotate keys periodically and after any suspected exposure.
+- Remove unused restricted keys.
+- Review webhook endpoint secrets when you recreate endpoints.
+
+### Restricted keys and OAuth
+
+Restricted keys help you limit access for internal services and automation. OAuth is useful when a connected account grants access to its data and capabilities. In both cases, scope access to the minimum required permissions and revoke credentials you no longer need.
+
+### PCI compliance considerations
+
+Use Stripe-hosted payment UIs and tokenization flows when possible so sensitive card data does not pass through your systems. If your application handles card data directly, your compliance obligations increase. Keep these rules in mind:
+
+- Do not store raw card numbers, CVCs, or magnetic stripe data.
+- Use client-side tokenization for payment details whenever possible.
+- Limit access to keys that can read payment data.
+- Separate test and live credentials in every environment.
+
+## Reference examples
+
+The following examples show the three most common authentication patterns together.
+
+<CodeGroup tabs="Node.js,Python,cURL">
+  ```javascript
+  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+  async function listCustomers() {
+    return await stripe.customers.list({ limit: 3 });
+  }
+
+  listCustomers();
+  ```
+  ```python
+  import os
+  import stripe
+
+  stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
+
+  customers = stripe.Customer.list(limit=3)
+  ```
+  ```bash
+  curl https://api.example.com/v1/customers?limit=3 \
+    -u "$STRIPE_SECRET_KEY:"
+  ```
+</CodeGroup>
+
+## Related setup notes
+
+- Keep your publishable key in client-side initialization only.
+- Keep your secret key in server-side environment variables.
+- Verify every webhook before you trust the payload.
+- Use restricted keys for narrow internal workflows.
+- Rotate credentials on a schedule and after any incident.

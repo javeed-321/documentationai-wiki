@@ -1,0 +1,55 @@
+---
+title: Introduction
+description: Introduction to the Stripe API for building custom payment and financial workflows.
+---
+
+<Image
+  src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416392648-tsntejft5od-Image-9.png?q=85&fm=auto&auto=compress%2Cformat"
+  alt="Stripe documentation"
+  width="800"
+  height="400"
+/>
+
+## Welcome
+
+Stripe gives you REST APIs for payments, billing, Connect, Radar, and reporting. You use webhooks to react to events, idempotency to safely retry requests, and pagination to move through large result sets.
+
+Its platform supports online, in-app, and in-person transactions in more than 135 currencies. Build against stable versions, handle rate limits explicitly, and design for event-driven workflows from the start.
+
+<Columns cols={2}>
+  <Card title="REST API fundamentals" icon="code" href="#rest-api-fundamentals">
+    Learn how Stripe resources, methods, and responses fit together.
+  </Card>
+  <Card title="Webhooks and events" icon="bell" href="#webhooks-and-events">
+    Process asynchronous updates from payment and billing events.
+  </Card>
+  <Card title="Idempotency and versioning" icon="shield" href="#idempotency-and-versioning">
+    Make retries safe and keep behavior predictable across versions.
+  </Card>
+  <Card title="Rate limits and pagination" icon="bar-chart" href="#rate-limits-and-pagination">
+    Handle large volumes and page through collections efficiently.
+  </Card>
+</Columns>
+
+<Columns cols={2}>
+  <Card
+    title="API reference"
+    icon="arrow-right"
+    href="/api-docs/reference"
+    horizontal
+  >
+    Move from the introduction to endpoint details and field definitions.
+  </Card>
+  <Card
+    title="Webhooks guide"
+    icon="arrow-right"
+    href="/api-docs/webhooks"
+    horizontal
+  >
+    Learn how to verify signatures and process incoming events.
+  </Card>
+</Columns>
+
+<Callout kind="tip">
+  Start with a single payment flow, add webhook handling next, then expand to billing or Connect once your retry and error handling are in place.
+</Callout>

@@ -1,125 +1,83 @@
 ---
 title: Changelog
-description: Release notes for new Notion AI capabilities, agent improvements, and platform updates.
+description: Latest updates and changes to the Stripe platform and APIs.
 ---
 
-## Overview
+## Changelog
 
-This page records recent Notion releases in reverse chronological order.
-
-Use it to track AI agent improvements, search and meeting note updates, integration changes, and security or scalability fixes.
-
-## Recent updates
-
-<Columns cols={3}>
-  <Card title="AI agents" icon="zap" href="https://www.notion.so/ja/product/agents" target="_blank" cta="View product">
-    
-    Automate repetitive work, route tasks, and keep work moving continuously.
-  </Card>
-  <Card title="Enterprise search" icon="search" href="https://www.notion.so/ja/product/enterprise-search" target="_blank" cta="View product">
-    
-    Find answers faster across your workspace and connected tools.
-  </Card>
-  <Card title="Meeting notes" icon="file-text" href="https://www.notion.so/ja/product/ai-meeting-notes" target="_blank" cta="View product">
-    
-    Capture, summarize, and share meetings with AI assistance.
-  </Card>
-</Columns>
-
-<Update label="2026-06-10" description="v2.4.0" tags={["feature", "bugfix"]}>
-
-## New features
-
-- Added agent routing improvements for repetitive work and follow-up actions.
-- Expanded enterprise search coverage across workspace content and connected sources.
-- Improved meeting note generation for clearer summaries and action items.
-- Refined Notion AI responses for writing assistance in docs and notes.
-
-## Bug fixes
-
-- Fixed edge cases that could delay agent task handoff.
-- Resolved search ranking issues for recently updated pages.
-- Improved meeting note stability during longer sessions.
-- Addressed security and scalability regressions in high-usage workspaces.
-
-</Update>
-
-<Update label="2026-05-18" description="v2.3.0" tags={["feature", "bugfix"]}>
-
-## New features
-
-- Added new custom agent workflows for common workspace operations.
-- Improved calendar-aware suggestions for planning and scheduling.
-- Expanded integrations so connected apps are easier to act on from one place.
-- Streamlined AI-assisted report generation for project and team updates.
-
-## Bug fixes
-
-- Fixed connection syncing issues for some external tools.
-- Reduced latency for search queries in larger workspaces.
-- Improved permission handling for secure content access.
-- Resolved intermittent failures in agent-triggered actions.
-
-</Update>
-
-<Update label="2026-04-22" description="v2.2.0" tags={["feature", "bugfix"]}>
-
-## New features
-
-- Launched refinements to meeting notes with better speaker-aware summaries.
-- Improved enterprise search answers for knowledge base content and docs.
-- Added platform updates that support more reliable automation at scale.
-- Enhanced workspace performance for teams managing many projects.
-
-## Bug fixes
-
-- Fixed occasional duplicate results in search.
-- Resolved formatting issues in generated notes and reports.
-- Improved reliability for sync operations across connected apps.
-- Addressed scalability issues affecting large enterprise workspaces.
-
-</Update>
-
-## Release summary
-
-- New AI agent features focus on automation, routing, and task completion.
-- Search and meeting note enhancements improve discovery and documentation.
-- Integration updates reduce friction across connected tools.
-- Security and scalability fixes keep large workspaces stable and responsive.
-
-## Related product areas
-
-<Tabs>
-  <Tab title="AI" icon="zap">
-    
-    <p>Use Notion AI for writing help, workspace answers, and task automation.</p>
-
-    <p>Key areas include agents, meeting notes, and enterprise search.</p>
-  </Tab>
-  <Tab title="Workspace" icon="book-open">
-    
-    <p>Use docs, wikis, and projects to centralize knowledge and track work.</p>
-
-    <p>Keep teams aligned in one collaborative environment.</p>
-  </Tab>
-  <Tab title="Connections" icon="link">
-    
-    <p>Connect external tools to extend workflows without adding infrastructure.</p>
-
-    <p>Use integrations to keep information and actions in sync.</p>
-  </Tab>
-</Tabs>
-
-## Notes
+Review the latest Stripe platform and API updates below. Entries are listed newest first.
 
 <Callout kind="info">
-Release entries are concise by design. Check the Notion release page for the latest product announcements.
+Use this page as a starter kit. Replace sample entries with your own release notes before publishing.
 </Callout>
 
-<Expandable title="What this changelog covers" default-open="false">
+<Update label="2026-06-01" description="v2026.06" tags={["feature", "bugfix"]}>
 
-This changelog focuses on product updates for Notion AI, agents, search, meeting notes, integrations, security, and scalability.
+## New features
 
-It does not list every minor content edit or regional landing page change.
+- Added support for a new payment method in select regions.
+- Expanded availability for local payment acceptance in additional markets.
+- Rolled out Dashboard improvements for subscription management workflows.
+
+## Bug fixes
+
+- Resolved an issue that could delay payment method display updates in the Dashboard.
+- Fixed inconsistent API response formatting for certain billing objects.
+
+## Deprecations
+
+- Deprecated an older Dashboard export option. Migrate to the current export flow before removal.
+
+</Update>
+
+<Update label="2026-04-18" description="v2026.04" tags={["feature"]}>
+
+## API version updates
+
+- Introduced refinements to payment intent confirmation behavior.
+- Added clearer validation messages for request payloads with missing required fields.
+- Updated endpoint documentation for billing and Connect resources.
+
+## Dashboard updates
+
+- Improved navigation for revenue and reporting views.
+- Added faster filtering for disputes and payout records.
+
+</Update>
+
+<Update label="2026-02-27" description="v2026.02" tags={["bugfix"]}>
+
+## Fixes
+
+- Fixed a case where some connected account settings did not save on the first attempt.
+- Resolved a currency display issue for multi-currency price tables.
+- Corrected a rare timeout during invoice preview generation.
+
+## Notices
+
+- Continue using the current API version unless you have tested newer behavior in staging.
+- Review any webhook handlers that depend on older billing response fields.
+
+</Update>
+
+## What to expect
+
+Stripe release notes typically include new payment methods and regions, API version changes, Dashboard updates, and deprecation notices. Check this page regularly if your integration depends on specific request or response behavior.
+
+### How to read entries
+
+- `feature` tags mark additions, improvements, and expanded availability.
+- `bugfix` tags mark corrections to existing behavior.
+- Dates use ISO format so you can track changes chronologically.
+
+<Expandable title="Release note checklist" default-open="false">
+
+Before you publish an update, confirm that you have:
+
+- Named the affected product area clearly.
+- Included the release date.
+- Described the change in one sentence when possible.
+- Marked deprecations early enough for migration.
+- Tested any integration that depends on the changed behavior.
 
 </Expandable>

@@ -1,174 +1,178 @@
 ---
 title: Feature Overview
-description: Deep dive into Notion's AI features, agents, calendar, mail, wikis, and project management tools.
+description: Explore Stripe's core products including Payments, Billing, Issuing, Connect, and Treasury.
 ---
 
 ## Overview
 
-Notion is an AI-powered workspace that brings notes, docs, projects, and apps into one place. You use it to centralize knowledge, coordinate work, and reduce the tool sprawl that slows teams down. The platform combines structured content with AI features that help you write, search, summarize, route work, and automate repetitive tasks.
+Stripe gives you a single platform for accepting money, moving money, and automating how you earn revenue. You can start with one capability, then add more as your business grows. That makes it a practical fit for online stores, software businesses, marketplaces, and services that need to handle payments at scale.
 
-For new users, the fastest way to understand Notion is to think in three layers: content, coordination, and automation. Content lives in docs and wikis. Coordination happens in projects, calendars, and mail. Automation comes from AI agents, meeting notes, and enterprise search. Together, these layers help you keep work moving around the clock.
+Use this page as a starter guide for evaluating the core building blocks: payments, billing, issuing, Connect, and Treasury. Each section below explains what it does, where it fits, and what to consider before you implement it.
 
 <Callout kind="info">
-
-Notion works best when you connect your workspace structure to the way your team already collaborates. Start with one shared use case, then expand into adjacent workflows.
-
+This page is a starter kit. Replace the examples with your own products, account structure, and compliance requirements.
 </Callout>
 
 <Columns cols={3}>
-  <Card title="AI Agents" icon="zap" href="https://www.notion.so/ja/product/agents" target="_blank" cta="Learn more">
-    Automate repetitive tasks, route work, and keep processes moving without manual follow-up.
+  <Card title="Payments" icon="credit-card" href="#online-in-app-and-in-person-payments">
+    Accept payments across channels and optimize authorization rates.
   </Card>
-  <Card title="Calendar and Mail" icon="calendar" href="https://www.notion.so/ja/product/calendar" target="_blank" cta="Learn more">
-    Coordinate time and communication in the same workspace you use for planning and execution.
+  <Card title="Billing" icon="file-text" href="#flexible-billing-and-invoicing">
+    Support subscriptions, usage-based pricing, and invoicing.
   </Card>
-  <Card title="Wikis and Projects" icon="book-open" href="https://www.notion.so/ja/product/wikis" target="_blank" cta="Learn more">
-    Organize knowledge and project work in a shared, searchable system.
+  <Card title="Financial Services" icon="wallet" href="#issuing-connect-and-treasury">
+    Issue cards, manage platforms, and move funds across accounts.
   </Card>
 </Columns>
 
-## AI agents and automation
+## Online, in-app, and in-person payments
 
-AI agents are the automation layer in Notion. You use them to reduce repetitive work, answer questions, and move tasks forward with less manual intervention. Instead of switching between tools, you keep the context in one workspace and let agents act on it.
+Stripe Payments helps you accept payments where your customers already are. You can take checkout flows online, embed payment experiences in an app, or process card-present payments in person. The platform is designed to support global expansion, with many currencies and payment methods available through a consistent API-driven workflow.
 
-Agents are especially useful when the workflow is predictable: triaging requests, preparing summaries, generating status updates, or turning scattered inputs into a repeatable output. Because the agent works inside your workspace context, it can support ongoing work rather than isolated one-off prompts.
+A good starting point is to map your payment surface. Online commerce often needs optimized checkout and retries. In-app purchases need mobile-friendly flows. In-person transactions need terminal support and consistent reconciliation with the rest of your business.
 
 <Tabs>
-  <Tab title="What agents do" icon="zap">
+  <Tab title="Online" icon="globe">
+    Use online payments when customers buy through a browser.
 
-    Agents help you automate routine work, route requests, and generate outputs that would otherwise require repeated manual effort.
-
-  </Tab>
-  <Tab title="Best-fit use cases" icon="check-circle">
-
-    Use agents for status drafts, work routing, knowledge lookup, and recurring updates across teams.
+    - Optimize checkout for conversion.
+    - Offer local payment methods where they improve acceptance.
+    - Keep fraud review and refund handling in the same workflow.
 
   </Tab>
-  <Tab title="What to expect" icon="settings">
+  <Tab title="In-app" icon="smartphone">
+    Use in-app payments when customers purchase inside a mobile experience.
 
-    You define the workflow, provide the right context, and review the result before it becomes part of your process.
+    - Keep the payment flow native to the app.
+    - Reduce friction for recurring or one-click purchases.
+    - Make sure receipts and payment status are easy to track.
+
+  </Tab>
+  <Tab title="In-person" icon="store">
+    Use in-person payments when you need card-present transactions.
+
+    - Connect a terminal to a shared commerce stack.
+    - Reconcile store sales with online sales in one system.
+    - Keep reporting and refund workflows consistent across channels.
 
   </Tab>
 </Tabs>
 
-### Example automation workflow
-
-```mermaid
-graph LR
-    A[Request arrives] --> B[Agent reviews context]
-    B --> C[Draft is created]
-    C --> D[You review and publish]
-```
-
-## Meeting notes and writing assistance
-
-Notion AI includes tools that help you capture meetings and turn rough drafts into clear writing. Meeting Notes reduce the burden of manual note-taking by organizing key points, action items, and follow-ups. Writing Assistant helps you refine language, summarize content, and move from a blank page to a usable draft faster.
-
-This is valuable when your team works across many meetings and documents. Instead of copying notes into another tool, you can keep the record close to the work itself. That makes it easier to reference decisions later and to keep project documentation current.
-
-<CodeGroup tabs="Before,After">
-  ```markdown
-  Project update:
-  - Team discussed launch timing
-  - Design needs final review
-  - Follow-up scheduled for Friday
-  ```
-
-  ```markdown
-  Project update:
-  
-  The team reviewed launch timing, identified the final design review as the last open item, and scheduled a follow-up for Friday.
-  ```
-</CodeGroup>
-
-### Practical guidance
-
-<Expandable title="How to get better output from writing tools" default-open="false">
-
-Start with a clear goal, add the relevant context, and keep the source material focused. Short, specific prompts usually produce more useful drafts than broad requests.
-
-</Expandable>
-
-<Expandable title="How to use meeting notes well" default-open="false">
-
-Capture decisions, action items, and owners during the meeting, then turn the note into a living project reference after the call.
-
-</Expandable>
-
-## Enterprise search
-
-Enterprise Search helps you find answers across your workspace faster. You use it when knowledge is spread across docs, wikis, project pages, and other connected sources. Instead of hunting through folders or asking multiple people, you search once and surface the context you need.
-
-This feature matters most as a workspace grows. The more content your team creates, the more important it becomes to locate the right page, decision, or detail quickly. Search is not just about retrieval; it supports faster decision-making by reducing the time spent looking for information.
-
-<Callout kind="tip">
-
-Treat search quality as a content problem as much as a tooling problem. Clear page titles, consistent structure, and up-to-date documentation make results more useful.
-
-</Callout>
-
-### Common search patterns
-
-- Find prior decisions before starting a new project
-- Locate policy details without asking another team
-- Recover meeting context before a follow-up
-- Reuse existing documentation instead of rewriting it
-
-## Calendar and mail
-
-Notion Calendar and Notion Mail extend the workspace into time and communication. Calendar helps you plan meetings and focus time around the work you manage in Notion. Mail helps you keep communication connected to your broader workflow so you can move from message to task with less friction.
-
-Together, they support a more continuous flow of work. You can review a message, schedule time, update a project, and capture follow-up notes without losing context. That makes them especially useful for teams that need to coordinate across planning, execution, and communication.
-
-<Columns cols={2}>
-  <Card title="Notion Calendar" icon="calendar" href="https://www.notion.so/ja/product/calendar" target="_blank" cta="Open Calendar">
-    Plan your day around meetings, deep work, and project priorities.
-  </Card>
-  <Card title="Notion Mail" icon="mail" href="https://www.notion.so/ja/product/mail" target="_blank" cta="Open Mail">
-    Keep communication connected to the same workspace where work gets done.
-  </Card>
-</Columns>
-
-### When to use each tool
-
-| Tool | Best for | Why it helps |
-| ---- | -------- | ------------ |
-| Calendar | Scheduling and focus time | Keeps time management aligned with active work |
-| Mail | Message handling and follow-up | Reduces context switching between communication and execution |
-| Workspace pages | Decisions and project context | Stores the record where your team can find it later |
-
-## Wikis and project management
-
-Wikis give your team one shared source of truth. You use them for policies, onboarding, reference material, and any information that should stay easy to find and update. Projects organize execution, making it easier to track ownership, progress, and next steps in the same environment as the documentation.
-
-This combination is powerful because planning and knowledge reinforce each other. A project can link to the wiki pages that explain how work should be done, and the wiki can point back to the project pages that show what is happening now. That reduces duplicate information and keeps teams aligned.
+### Example implementation flow
 
 <Steps>
-  <Step title="Create a wiki home" icon="book-open">
-    Define the pages people need most often, such as onboarding, process guides, and team references.
+  <Step title="Choose your channel" icon="arrow-right">
+    Decide whether you are starting with online, in-app, or in-person payments.
+
   </Step>
-  <Step title="Connect active projects" icon="rocket">
-    Link each project to the docs and decisions it depends on.
+  <Step title="Configure payment methods" icon="settings">
+    Enable the payment methods that match your customers and regions.
+
   </Step>
-  <Step title="Use AI to maintain momentum" icon="zap">
-    Summarize updates, draft follow-ups, and surface what needs attention next.
+  <Step title="Review results" icon="bar-chart">
+    Track authorization, conversion, and refund trends so you can tune the experience.
+
   </Step>
 </Steps>
 
-## Best practices
+## Flexible billing and invoicing
 
-To get value from Notion quickly, start with one team process and build from there. Choose a workflow that has recurring work, clear decisions, and a lot of context loss today. That gives AI features and shared pages something concrete to improve.
+Stripe Billing supports recurring revenue models, usage-based pricing, and invoice-driven collections. That matters when your pricing is not a simple one-time charge. You can bill monthly, charge by consumption, or combine fixed and variable components in one plan.
 
-Focus on structure before scale. Use consistent page names, keep source content current, and store decisions where the team already works. If you connect agents, search, calendar, and mail to the same system of record, you get a workspace that is easier to maintain and faster to use.
+The main design choice is how your customers pay over time. Subscription businesses usually need automatic renewals, proration, and dunning. Usage-based businesses need metering and clear thresholds. Invoice-based businesses often need approval workflows and flexible payment timing.
 
-<Expandable title="A simple rollout plan" default-open="false">
+<CodeGroup tabs="Subscription,Usage-based,Invoice">
+  ```javascript
+const plan = {
+  name: "Pro Plan",
+  interval: "monthly",
+  amount: 4900,
+};
+  ```
+  ```python
+plan = {
+    "name": "Pro Plan",
+    "interval": "monthly",
+    "amount": 4900,
+}
+  ```
+  ```bash
+curl https://api.example.com/billing/plans
+  ```
+</CodeGroup>
 
-Begin with one shared workspace for notes and project tracking, add meeting notes for recurring meetings, then introduce automation where repetitive work is costing time.
+<Expandable title="What to model before you launch" default-open="false">
+Before you launch billing, define these details clearly:
+
+- What triggers a charge.
+- Whether billing is fixed, usage-based, or mixed.
+- How you handle upgrades, downgrades, and cancellations.
+- Which invoices need manual review before collection.
 
 </Expandable>
 
-<Expandable title="What to measure" default-open="false">
+## Issuing, Connect, and Treasury
 
-Track time saved on recurring tasks, search success rate, meeting follow-up completion, and how often teams reuse existing content instead of recreating it.
+Stripe also supports financial operations beyond checkout. Issuing lets you create and manage cards for employees, contractors, or customers. Connect helps you build a platform that moves money between multiple parties. Treasury gives you tools for storing funds and managing cash flows inside a financial workflow.
 
-</Expandable>
+These capabilities are especially useful when your business is not just a merchant, but a platform or financial workflow. Marketplaces, SaaS platforms, and service providers often use them to reduce operational friction and to keep the full money movement lifecycle in one place.
+
+### Card issuing and platform payouts
+
+Issuing is useful when you want to control spending with virtual or physical cards. Connect is useful when you need to pay sellers, split funds, or manage platform economics. Treasury is useful when you want to organize balances and move funds with more control.
+
+<Card title="Issuing" icon="credit-card" href="#issuing-connect-and-treasury">
+  Create cards for controlled spend and track transactions in the same platform.
+</Card>
+
+<Card title="Connect" icon="users" href="#issuing-connect-and-treasury">
+  Build a marketplace or platform with coordinated money movement.
+</Card>
+
+<Card title="Treasury" icon="database" href="#issuing-connect-and-treasury">
+  Manage funds, balances, and cash flow in a more structured way.
+</Card>
+
+## Stablecoin and crypto money movement
+
+If you are exploring new money movement models, Stripe can also support emerging financial infrastructure such as stablecoins and crypto-related use cases. These are usually most relevant when your application needs programmable settlement, cross-border efficiency, or new types of stored value.
+
+Keep this section tied to a real business need. You should define why you need this capability, which jurisdictions apply, and how you will handle risk, reporting, and customer support. For many teams, the right approach is to pilot carefully before expanding.
+
+### Best practices
+
+- Start with one core use case before adding more products.
+- Keep your payment, billing, and reporting model aligned.
+- Review refund, dispute, and reconciliation workflows early.
+- Confirm compliance and regional requirements before launch.
+- Use clear internal ownership for finance, operations, and support.
+
+## Evaluation examples
+
+Use the examples below to shape your own rollout plan.
+
+### Starter evaluation path
+
+1. Accept payments for one primary channel.
+2. Add billing if your revenue is recurring or usage-based.
+3. Introduce issuing or Connect if your business manages spend or multiple parties.
+4. Extend into Treasury or other financial workflows when you need tighter control over funds.
+
+### Typical business fits
+
+| Business type | Best starting point | Why it fits |
+| --- | --- | --- |
+| E-commerce | Payments | You need fast checkout and broad payment method coverage. |
+| SaaS | Billing | You need recurring revenue and invoicing. |
+| Marketplace | Connect | You need to route money between buyers, sellers, and the platform. |
+| On-demand platform | Payments and Connect | You need to collect money and coordinate payouts. |
+
+## Choosing what to implement first
+
+If you are evaluating Stripe for the first time, begin with the part of your revenue model that creates the most immediate value. For many teams, that is payments. For subscription businesses, billing may be the better first step. For platforms, money movement and multi-party payout logic often matter most.
+
+The best implementation is the one that matches how your business earns money today, while leaving room for the next model you may need tomorrow.
+
+<Callout kind="tip">
+When you draft your rollout plan, write down the payment methods, billing rules, payout rules, and reporting needs before you start building.
+</Callout>

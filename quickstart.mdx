@@ -1,180 +1,225 @@
 ---
 title: Quickstart
-description: Set up your Notion workspace, enable AI agents, and start automating tasks in minutes.
+description: Get up and running with Stripe by creating an account and accepting your first payment.
 ---
 
-## Overview
+## Quickstart
 
-Notion gives you one place to plan, write, search, and automate work. In this quickstart, you set up a workspace, turn on AI features, create a simple agent, and connect one external tool so you can reach first success fast.
+Set up Stripe, create your first payment intent, and confirm it with a test card. This starter path assumes you are evaluating Stripe for the first time and want a fast, working result.
 
-Use this page as a starter kit. It shows the shortest path to a working setup, then points you to deeper pages for docs, projects, search, and integrations.
+Stripe gives you the building blocks to accept payments, manage billing, and grow into more advanced revenue models later. In this guide, you focus on the minimum path to success: account setup, API keys, installation, a payment intent, and a test payment.
 
 <Callout kind="info">
-This guide assumes you are evaluating Notion for a team or small organization. You can follow the same steps for personal use, then expand into team settings later.
+Use your Stripe test mode keys while you build. Test mode lets you validate your integration safely before you accept real payments.
 </Callout>
 
-## What you need first
+### What you will do
 
-Before you start, make sure you have an active Notion workspace and permission to manage workspace settings. If you are setting this up for a team, choose one person to own the initial setup so you avoid duplicated configuration.
+You will complete four small steps:
 
-You also need a clear first use case. A good starting point is one repetitive task, one knowledge source, or one meeting workflow. Notion AI works best when you give it a focused job to do.
+- Create a Stripe account and find your API keys.
+- Install a Stripe library in your app.
+- Create a payment intent on your server.
+- Confirm the payment with a test card.
 
-<Callout kind="tip">
-Start with one workflow, not everything at once. A narrow first success helps you confirm value in minutes.
-</Callout>
+### Before you start
 
-## Quick setup
+Make sure you have:
 
-Follow these steps in order. The goal is to move from a blank workspace to one automated workflow as quickly as possible.
+- A Stripe account.
+- A server environment where you can keep secret keys private.
+- A client app or simple frontend that can send the payment details.
+- Access to Stripe test mode.
+
+## Set up your account and keys
+
+Start in the Stripe Dashboard and switch to test mode. From there, copy your publishable key for the client and your secret key for the server. Keep the secret key out of browser code and version control.
+
+If you are just exploring, you can use the dashboard links to move between account creation, sign in, and guided setup. Once your account is ready, you can reuse the same test-mode keys while you build the rest of the flow.
 
 <Steps>
-  <Step title="Set up your workspace" icon="settings">
-    
-Open your workspace and create a simple structure for the team. Start with a home page, a docs area, a projects area, and a knowledge base. Keep the structure small so people can find things without training.
+  <Step title="Create or open your account" icon="users">
+    Go to the Stripe Dashboard and sign in or create a new account.
 
-Choose one owner for workspace administration and one owner for content standards. That keeps page structure, permissions, and naming consistent as the workspace grows.
-
-  </Step>
-  <Step title="Enable Notion AI" icon="zap">
-    
-Turn on Notion AI from your workspace settings, then confirm that AI features are available in pages, search, and meeting notes. This gives you access to writing help, answers from your knowledge base, and task automation.
-
-If your team uses sensitive content, review access controls before you invite broader usage. AI features should reflect the same permissions your workspace already enforces.
+    Use the account you plan to keep for development so your test data stays in one place.
 
   </Step>
-  <Step title="Create a first agent" icon="bot">
-    
-Create an agent for one repeatable task, such as routing requests, summarizing updates, or preparing a weekly report. Give the agent a clear purpose and simple instructions.
+  <Step title="Find your test keys" icon="key">
+    Open the Developers area in the dashboard and copy:
 
-Keep the first version short. You want a small, dependable automation that proves the flow before you expand into more advanced behavior.
+    - Your publishable key for client-side use.
+    - Your secret key for server-side use.
+
+    Store the secret key as an environment variable, not in your frontend bundle.
 
   </Step>
-  <Step title="Connect one external tool" icon="cloud">
-    
-Connect one source of truth, such as a calendar, mail system, or project tracker. A single connection is enough to validate that Notion can bring outside work into one place.
+  <Step title="Prepare your environment" icon="settings">
+    Add the key values to your local environment and restart your app so the values load correctly.
 
-After the connection is live, test a simple end-to-end flow. For example, capture a request, surface it in Notion, and let the agent prepare a summary or next action.
+    Keep test mode enabled until you are ready to move to live payments.
 
   </Step>
 </Steps>
 
-## Minimal working example
+## Install Stripe libraries
 
-This example shows the shape of a simple setup: one workspace, one AI-enabled page, one custom agent, and one connected source. Adjust the names to match your team.
+Install the Stripe library that matches your server language. The library helps you create payment intents securely from your backend.
 
-<CodeGroup tabs="Notion page,Agent prompt,Connection note">
-  
-```text
-Workspace home
+<CodeGroup tabs="JavaScript,Python,cURL">
+  ```javascript
+  import Stripe from "stripe";
 
-- Docs
-- Projects
-- Knowledge base
-- Team updates
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-AI page
+  export async function createPaymentIntent() {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 2000,
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
 
-- Summarize this meeting
-- Extract action items
-- Route follow-ups to the right owner
-```
+    return paymentIntent.client_secret;
+  }
+  ```
 
-```text
-Agent instructions
+  ```python
+  import os
+  import stripe
 
-1. Read the latest meeting notes.
-2. Identify decisions, risks, and owners.
-3. Create a concise status update.
-4. Flag anything that needs follow-up.
-5. Keep the output short and actionable.
-```
+  stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
 
-```text
-Connection note
+  def create_payment_intent():
+      payment_intent = stripe.PaymentIntent.create(
+          amount=2000,
+          currency="usd",
+          automatic_payment_methods={"enabled": True},
+      )
+      return payment_intent.client_secret
+  ```
 
-Connect one shared tool first.
-
-Examples:
-- Calendar for meetings
-- Mail for inbound requests
-- Project tracker for work intake
-
-Verify that the agent can read the connected context and return a useful result.
-```
-
+  ```bash
+  curl https://api.example.com/create-payment-intent \
+    -H "Content-Type: application/json" \
+    -d '{"amount":2000,"currency":"usd"}'
+  ```
 </CodeGroup>
 
-## Recommended first workflow
+Stripe libraries handle the API calls for you and keep your integration predictable as you grow. For this quickstart, you only need enough code to create one payment intent and return its client secret to the browser.
 
-Use this simple flow to get value quickly. It works well for teams that want fewer status meetings and faster handoffs.
+## Create your first payment intent
 
-```mermaid
-graph LR
-    A[Team input] --> B[Notion page]
-    B --> C[AI agent]
-    C --> D[Summary or task]
-    D --> E[Team follow-up]
-```
+A payment intent tells Stripe how much to charge and in which currency. Your server creates it, then your client uses the returned client secret to complete the payment.
 
-The main idea is simple: capture work in Notion, let AI process it, and then share a clear next action. Once that loop works, you can expand into docs, projects, meeting notes, and search.
+Here is a minimal server route that creates a payment intent for a twenty-dollar charge in U.S. dollars.
 
-## Where to go next
+<CodeGroup tabs="Node.js,Python">
+  ```javascript
+  import express from "express";
+  import Stripe from "stripe";
 
-These pages help you go deeper after your first setup. Choose the path that matches your next goal.
+  const app = express();
+  app.use(express.json());
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+  app.post("/create-payment-intent", async (req, res) => {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 2000,
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    res.json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  });
+
+  app.listen(3000);
+  ```
+
+  ```python
+  from flask import Flask, jsonify
+  import os
+  import stripe
+
+  app = Flask(__name__)
+  stripe.api_key = os.environ["STRIPE_SECRET_KEY"]
+
+  @app.post("/create-payment-intent")
+  def create_payment_intent():
+      payment_intent = stripe.PaymentIntent.create(
+          amount=2000,
+          currency="usd",
+          automatic_payment_methods={"enabled": True},
+      )
+
+      return jsonify(clientSecret=payment_intent.client_secret)
+
+  app.run(port=3000)
+  ```
+</CodeGroup>
+
+When you create the intent, you define the amount and currency on the server. Stripe returns a client secret that your frontend uses to complete the payment without exposing your secret key.
+
+## Test with a card
+
+Use Stripe test cards to confirm the end-to-end flow. A successful test shows that your server, client, and Stripe account are connected correctly.
+
+<Steps>
+  <Step title="Send the client secret to your frontend" icon="arrow-right">
+    Call your server route from the browser and store the returned client secret.
+
+    Use that value to confirm the payment on the client.
+
+  </Step>
+  <Step title="Enter a test card" icon="credit-card">
+    Use a Stripe test card number such as `4242 4242 4242 4242`.
+
+    Enter any future expiration date, any three-digit CVC, and any postal code.
+
+  </Step>
+  <Step title="Confirm the payment" icon="check-circle">
+    Confirm the payment and wait for the success response.
+
+    If the payment succeeds, you have completed your first Stripe transaction in test mode.
+
+  </Step>
+</Steps>
+
+### Common test result
+
+If the payment succeeds, you should see a completed payment in the dashboard test data view. If it fails, verify that:
+
+- Your secret key is the test mode secret key.
+- Your server creates the payment intent before the client confirms it.
+- The amount is a valid integer value in the smallest currency unit.
+
+## Next steps
+
+You now have the smallest useful Stripe integration: an account, keys, a payment intent, and a tested payment flow. From here, you can expand into subscriptions, saved payment methods, fraud protection, or marketplace payments.
 
 <Columns cols={3}>
-  <Card title="Docs" icon="book-open" href="https://www.notion.so/ja/product/docs" target="_blank" cta="Open docs">
-    
-Create simple, powerful documentation for your team.
-
+  <Card title="Payments" icon="credit-card" href="https://stripe.com/payments" target="_blank" cta="Learn more">
+    Accept online and in-person payments with a single platform.
   </Card>
-  <Card title="Projects" icon="check-circle" href="https://www.notion.so/ja/product/projects" target="_blank" cta="Open projects">
-    
-Track work, owners, and status in one place.
-
+  <Card title="Billing" icon="file-text" href="https://stripe.com/billing" target="_blank" cta="Learn more">
+    Build recurring billing, invoices, and usage-based pricing.
   </Card>
-  <Card title="Enterprise Search" icon="search" href="https://www.notion.so/ja/product/enterprise-search" target="_blank" cta="Learn more">
-    
-Find answers across your workspace faster.
-
+  <Card title="Developers" icon="code" href="https://stripe.com/docs" target="_blank" cta="Open docs">
+    Explore implementation details, APIs, and deeper integration patterns.
   </Card>
 </Columns>
 
-<Columns cols={3}>
-  <Card title="AI Agents" icon="zap" href="https://www.notion.so/ja/product/agents" target="_blank" cta="Build an agent">
-    
-Automate repetitive work and keep work moving around the clock.
+<Expandable title="What should you build next?" default-open="false">
+  After your first successful payment, try one of these paths:
 
-  </Card>
-  <Card title="AI Meeting Notes" icon="mic" href="https://www.notion.so/ja/product/ai-meeting-notes" target="_blank" cta="See notes">
-    
-Turn meetings into clean summaries and action items.
-
-  </Card>
-  <Card title="Connections" icon="link" href="https://www.notion.so/ja/connections" target="_blank" cta="Connect tools">
-    
-Bring external tools into your workspace.
-
-  </Card>
-</Columns>
-
-## Common next steps
-
-Once your first workflow works, add the pieces that make Notion more valuable for your team.
-
-- Expand your workspace structure with pages for teams, meetings, and projects.
-- Add more agents for routing, reporting, and answering common questions.
-- Connect additional tools so Notion can see more of your work context.
-- Standardize templates so new pages and projects start with the same format.
-
-<Expandable title="What should I automate first?" default-open="false">
-  
-Start with the task that repeats most often and needs the least judgment. Good examples include weekly status summaries, meeting recap drafts, and request routing. Once that works, move to more complex workflows.
-
-</Expandable>
-
-<Expandable title="How do I know my setup is ready?" default-open="false">
-  
-You are ready when a new user can find the workspace home, open the right page, and complete one AI-powered task without extra help. If that is not true yet, simplify the structure and reduce the number of starting points.
+  - Add webhook handling so your backend can react to payment status changes.
+  - Build a subscription flow for recurring revenue.
+  - Support additional payment methods for more customers.
+  - Move from test mode to live mode when you are ready to accept real payments.
 
 </Expandable>

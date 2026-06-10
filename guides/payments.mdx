@@ -1,0 +1,183 @@
+---
+title: Accepting Payments
+description: Learn how to accept cards, wallets, and local payment methods online and in person.
+---
+
+## Overview
+
+Stripe gives you one payments platform for online, in-app, and in-person commerce. You can start with a simple hosted checkout flow, move to a fully customized integration with payment intents, add multicurrency support as you expand, and extend the same platform to physical locations with Terminal.
+
+Use the hosted path when you want to launch quickly. Use the lower-level path when you need control over the customer experience, payment methods, retries, or post-payment fulfillment. In both cases, Stripe helps you collect payment details securely, confirm payments, and manage the lifecycle of a transaction from authorization to settlement.
+
+<Callout kind="info">
+  Before you go live, make sure your account is configured for the markets and currencies you plan to support, and verify that your business details are complete.
+</Callout>
+
+<Columns cols={3}>
+  <Card title="Checkout Sessions" icon="shopping-cart" href="#checkout-sessions">
+    Launch a hosted payment flow with minimal setup.
+  </Card>
+  <Card title="Payment Intents" icon="code" href="#payment-intents">
+    Build a custom payment flow with full control over confirmation and retries.
+  </Card>
+  <Card title="Terminal" icon="monitor" href="#terminal">
+    Accept card-present payments in stores, pop-ups, and events.
+  </Card>
+</Columns>
+
+## Checkout sessions
+
+Checkout sessions are the fastest way to start accepting payments online. You create a session on your server, provide the items, amount, and accepted payment methods, then send customers to Stripe’s hosted payment page. Stripe handles the payment form, localization, and much of the conversion work for you.
+
+This approach is a strong default when you want to reduce integration time and avoid building your own payment UI. It is especially useful for one-time purchases, simple subscriptions, and launches where speed matters more than deep customization.
+
+<Steps>
+  <Step title="Create a session" icon="plus">
+    Create a checkout session with the items you want to sell, the return URLs, and the payment methods you want to enable.
+  </Step>
+  <Step title="Redirect the customer" icon="arrow-right">
+    Send the customer to the session URL so Stripe can collect payment details securely.
+  </Step>
+  <Step title="Fulfill the order" icon="check-circle">
+    Listen for the completed payment event and release digital goods, ship inventory, or activate access.
+  </Step>
+</Steps>
+
+<CodeGroup tabs="cURL,JavaScript">
+  ```bash
+curl https://api.example.com/v1/checkout/sessions \
+  -u sk_test_YOUR_API_KEY: \
+  -d mode=payment \
+  -d "line_items[0][price_data][currency]=usd" \
+  -d "line_items[0][price_data][product_data][name]=T-shirt" \
+  -d "line_items[0][price_data][unit_amount]=2500" \
+  -d "line_items[0][quantity]=1" \
+  -d success_url=https://example.com/success \
+  -d cancel_url=https://example.com/cancel
+```
+  ```javascript
+const session = await stripe.checkout.sessions.create({
+  mode: "payment",
+  line_items: [
+    {
+      price_data: {
+        currency: "usd",
+        product_data: { name: "T-shirt" },
+        unit_amount: 2500,
+      },
+      quantity: 1,
+    },
+  ],
+  success_url: "https://example.com/success",
+  cancel_url: "https://example.com/cancel",
+});
+```
+</CodeGroup>
+
+## Payment intents
+
+Payment intents are the foundation for custom payment flows. They let you create, track, and confirm a payment while keeping your own page design and business logic. Use them when you need to support saved payment details, dynamic payment methods, asynchronous confirmation, or advanced post-processing.
+
+A payment intent moves through a clear lifecycle: you create it, collect payment details, confirm it, and then handle the final result. That structure helps you build reliable checkout experiences while still supporting cards, wallets, and many local methods.
+
+<Tabs>
+  <Tab title="Cards" icon="credit-card">
+    
+You can collect card details in your own payment form and confirm the payment intent after the customer reviews the order.
+
+```javascript
+const intent = await stripe.paymentIntents.create({
+  amount: 2500,
+  currency: "usd",
+  automatic_payment_methods: { enabled: true },
+});
+```
+
+  </Tab>
+  <Tab title="Wallets" icon="smartphone">
+    
+Wallets reduce friction for returning customers and mobile shoppers. Stripe can present eligible wallet options based on the device, browser, and currency.
+
+```javascript
+const intent = await stripe.paymentIntents.create({
+  amount: 2500,
+  currency: "usd",
+  automatic_payment_methods: { enabled: true },
+});
+```
+
+  </Tab>
+  <Tab title="Local methods" icon="globe">
+    
+Local payment methods help you improve conversion in regions where customers expect familiar rails and bank-based payment options.
+
+```javascript
+const intent = await stripe.paymentIntents.create({
+  amount: 2500,
+  currency: "eur",
+  automatic_payment_methods: { enabled: true },
+});
+```
+
+  </Tab>
+</Tabs>
+
+<ExpandableGroup>
+  <Expandable title="When should you use a payment intent?" default-open="false">
+    
+Use a payment intent when you want more control over the checkout experience, need to support multiple payment methods in one flow, or expect asynchronous confirmation.
+
+  </Expandable>
+  <Expandable title="Do you need a separate flow for retries?" default-open="false">
+    
+No. You can update the payment intent and guide the customer through another confirmation attempt when payment fails or requires additional verification.
+
+  </Expandable>
+</ExpandableGroup>
+
+## Multicurrency
+
+Stripe lets you present and charge in multiple currencies so you can sell across borders with less friction. The key is to choose the currency that best matches the customer’s location, the product pricing strategy, and your settlement requirements.
+
+If you sell globally, plan your currency strategy early. Some businesses keep a single base currency and convert at the edge. Others localize prices by market and create separate pricing for each region. Stripe supports both approaches, so you can align checkout with your revenue model instead of forcing every customer through the same currency.
+
+| Scenario | Recommended approach | Why it helps |
+| --- | --- | --- |
+| Domestic launch | Use one currency | Keeps operations simple |
+| Cross-border online sales | Support several major currencies | Improves conversion and local trust |
+| Regional expansion | Localize prices by market | Reduces surprises at checkout |
+| Mixed online and in-person sales | Standardize currencies where possible | Simplifies reconciliation |
+
+<Callout kind="tip">
+  Keep your product catalog, pricing, and reporting aligned so currency changes do not create confusion in fulfillment or accounting.
+</Callout>
+
+## In-person Terminal
+
+Terminal extends Stripe payments to the physical world. You can accept card-present payments in stores, at events, and in service locations while keeping your reporting and transaction history in the same platform as your online payments.
+
+This is useful when your business has both digital and physical channels. You can unify customer records, simplify reconciliation, and keep your payment operations consistent across environments. The same payment lifecycle principles still apply: create the payment, collect the card-present details, confirm the transaction, and complete fulfillment or receipt delivery.
+
+<Steps>
+  <Step title="Choose a reader" icon="settings">
+    Select the hardware that fits your environment, from countertop checkout to mobile setups.
+  </Step>
+  <Step title="Collect the payment" icon="terminal">
+    Use the reader to accept a contactless or chip payment in person.
+  </Step>
+  <Step title="Reconcile the result" icon="database">
+    Match the in-person transaction with your order, customer, and reporting records.
+  </Step>
+</Steps>
+
+## Best practices
+
+Start with the simplest flow that fits your business model. If you only need a quick launch, use checkout sessions. If you need custom logic, build with payment intents. If you sell internationally, decide which currencies and payment methods you will support before you publish prices. If you operate physical locations, design your in-person and online reporting together so your team can see one consistent view of revenue.
+
+Also, test the full payment lifecycle, not just successful payments. Verify failures, cancellations, currency differences, and offline or delayed confirmation cases. That is how you build a payment experience that stays reliable as volume grows.
+
+1. Choose the integration level that matches your timeline.
+2. Enable only the payment methods you can support operationally.
+3. Test success, failure, and retry paths.
+4. Confirm your fulfillment and reporting logic before launch.
+5. Expand to new currencies and in-person channels as your needs grow.
