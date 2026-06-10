@@ -1,37 +1,37 @@
 ---
 title: Introduction
-description: Overview of Javeed's APIs for building SMS, voice, video, and messaging applications.
+description: Overview of the ShopifyMax API for building fast e-commerce integrations.
 ---
 
-<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416420393-s9t4cno1w99-Image-8.png?q=85&fm=auto&auto=compress%2Cformat" alt="Twilio documentation" width="800" height="400" />
+<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416392648-tsntejft5od-Image-9.png?q=85&fm=auto&auto=compress%2Cformat" alt="ShopifyMax documentation" width="800" height="400" />
 
 ## Welcome
 
-Twilio exposes REST APIs that let you send messages, place calls, and stream video from your own applications. Use these endpoints to integrate communications directly into your backend services.
+The ShopifyMax API exposes endpoints for checkout operations under three seconds and catalog access for more than one hundred thousand products. It accepts `CART_TOKEN` and `PAYMENT_KEY` variables on every request.
 
 <Columns cols={2}>
-  <Card title="Platform Capabilities" icon="cloud" href="#platform">
-    Access a global infrastructure that scales to millions of interactions per day.
+  <Card title="API Endpoints" icon="terminal">
+    Direct access to checkout, catalog, and authentication endpoints.
   </Card>
-  <Card title="SMS and WhatsApp" icon="message-square" href="#messaging">
-    Deliver SMS and WhatsApp messages with delivery receipts and two-way support.
+  <Card title="Checkout Performance" icon="zap">
+    Process orders in under three seconds with built-in rate limiting.
   </Card>
-  <Card title="Voice and SIP" icon="phone" href="#voice">
-    Initiate calls, manage conferences, and connect via SIP trunking to carriers.
+  <Card title="Catalog Access" icon="database">
+    Retrieve and update catalogs exceeding one hundred thousand products.
   </Card>
-  <Card title="Video and Real-Time" icon="video" href="#video">
-    Embed peer-to-peer video, screen sharing, and real-time data channels.
+  <Card title="Variable Handling" icon="code">
+    Pass `CART_TOKEN` and `PAYMENT_KEY` in request headers.
   </Card>
 </Columns>
 
-<Card title="Explore Messaging APIs" icon="arrow-right" href="/api-docs/messaging" horizontal cta="View endpoints">
-  Review request formats and response schemas for SMS and WhatsApp.
+<Card title="Explore Endpoints" icon="arrow-right" href="/api-docs/endpoints" horizontal>
+  Review all available API paths and request formats.
 </Card>
 
-<Card title="Explore Voice APIs" icon="arrow-right" href="/api-docs/voice" horizontal cta="View endpoints">
-  Review request formats and response schemas for calls and SIP.
+<Card title="Explore Variables" icon="arrow-right" href="/api-docs/variables" horizontal>
+  Learn how to supply `CART_TOKEN` and `PAYMENT_KEY` correctly.
 </Card>
 
 <Callout kind="tip">
-Store your account SID and auth token in environment variables before making any requests.
+  Always validate `PAYMENT_KEY` before submitting checkout requests.
 </Callout>

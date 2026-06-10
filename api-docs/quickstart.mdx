@@ -1,66 +1,63 @@
 ---
 title: Quickstart
-description: Send your first SMS message or make an outbound call with Twilio in minutes.
+description: Integrate with the ShopifyMax API and complete your first checkout call.
 ---
 
-## Prerequisites
-
 <Callout kind="info">
-Create a Twilio account and retrieve your Account SID and Auth Token from the console. You also need a phone number capable of sending SMS or making voice calls.
+Install the client library and obtain an API token before making requests. The platform supports checkouts under three seconds and catalogs exceeding 100000 products.
 </Callout>
 
-## Obtain a Twilio phone number
-
-Log in to the console and navigate to the phone numbers section. Search for and purchase a number that supports the required capabilities.
-
-## Send an SMS via REST API
+## Install the client
 
 <Steps>
-  <Step title="Set credentials">
-    Export your Account SID and Auth Token as environment variables.
+  <Step title="Install the package" icon="download">
+    Add the official client to your project.
+
+```bash
+npm install @shopifymax/api
+```
   </Step>
-  <Step title="Execute the request">
-    Issue a POST request to the Messages resource.
+  <Step title="Configure credentials" icon="key">
+    Store your token in an environment variable named `SHOPIFYMAX_TOKEN`.
   </Step>
 </Steps>
 
-<CodeGroup tabs="cURL,Python">
-```bash
-curl -X POST https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json \
-  --data-urlencode "From=+15005550006" \
-  --data-urlencode "To=+15005550006" \
-  --data-urlencode "Body=Hello from Twilio" \
-  -u YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN
+## Authenticate requests
+
+All calls require a bearer token in the Authorization header. The token authenticates both `CART_TOKEN` and `PAYMENT_KEY` flows.
+
+## Create a checkout
+
+<CodeGroup tabs="JavaScript,cURL">
+```javascript
+import { ShopifyMaxClient } from '@shopifymax/api';
+
+const client = new ShopifyMaxClient({ token: process.env.SHOPIFYMAX_TOKEN });
+
+const checkout = await client.checkout.create({
+  cartToken: 'CART_TOKEN',
+  paymentKey: 'PAYMENT_KEY',
+  items: [{ sku: 'SKU-001', quantity: 2 }]
+});
+
+console.log(checkout.id);
 ```
-```python
-import requests
-response = requests.post(
-    "https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json",
-    auth=("YOUR_ACCOUNT_SID", "YOUR_AUTH_TOKEN"),
-    data={"From": "+15005550006", "To": "+15005550006", "Body": "Hello from Twilio"}
-)
-print(response.json())
+
+```bash
+curl -X POST https://api.example.com/v1/checkout \
+  -H "Authorization: Bearer $SHOPIFYMAX_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"cartToken":"CART_TOKEN","paymentKey":"PAYMENT_KEY","items":[{"sku":"SKU-001","quantity":2}]}'
 ```
 </CodeGroup>
-
-## Handle incoming webhooks
-
-Configure your webhook URL in the phone number settings. Your server must respond with valid TwiML.
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Message>Thanks for contacting us.</Message>
-</Response>
-```
 
 ## Next steps
 
 <Columns cols={2}>
-  <Card title="REST API reference" href="#rest-api" icon="book-open">
-    Explore all available endpoints and parameters.
+  <Card title="Checkout reference" icon="book-open" href="/api-docs/checkout">
+    Full parameter list and response schema.
   </Card>
-  <Card title="Webhook guide" href="#webhooks" icon="settings">
-    Learn how to validate signatures and respond correctly.
+  <Card title="Error handling" icon="alert-triangle" href="#error-codes">
+    Common status codes and retry guidance.
   </Card>
 </Columns>

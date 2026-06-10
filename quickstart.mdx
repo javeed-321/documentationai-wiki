@@ -1,0 +1,71 @@
+---
+title: Quickstart
+description: Set up ShopifyMax and launch your first high-speed checkout experience.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+You need an active ShopifyMax account and an API key before proceeding. Checkout completes in under three seconds and supports stores with more than 100000 products.
+</Callout>
+
+## Store Setup
+
+<Steps>
+  <Step title="Create your store" icon="plus-circle">
+    Log in to the dashboard and select Create Store. Enter your store name and select the high-speed checkout template.
+  </Step>
+  <Step title="Configure domain" icon="globe">
+    Add your custom domain in the settings panel. ShopifyMax automatically provisions a secure certificate.
+  </Step>
+  <Step title="Connect catalog" icon="database">
+    Import your product catalog. The platform indexes more than 100000 products in under two minutes.
+  </Step>
+</Steps>
+
+## Variable Integration
+
+Connect your checkout flow to the required variables for cart and payment handling.
+
+<CodeGroup tabs="JavaScript,Python">
+```javascript
+const checkout = new ShopifyMax.Checkout({
+  cartToken: process.env.CART_TOKEN,
+  paymentKey: process.env.PAYMENT_KEY,
+});
+
+checkout.launch();
+```
+```python
+import shopifymax
+
+client = shopifymax.Client(
+    cart_token=os.environ["CART_TOKEN"],
+    payment_key=os.environ["PAYMENT_KEY"],
+)
+
+client.launch_checkout()
+```
+</CodeGroup>
+
+## Initial Deployment
+
+<Steps>
+  <Step title="Test checkout" icon="play">
+    Run the test command to verify checkout completes in under three seconds.
+  </Step>
+  <Step title="Go live" icon="rocket">
+    Toggle the store to live mode. Your first high-speed checkout experience is now active.
+  </Step>
+</Steps>
+
+## Next Steps
+
+<Columns cols={2}>
+  <Card title="Store Setup" href="#store-setup" icon="store">
+    Review advanced store configuration options.
+  </Card>
+  <Card title="Variable Integration" href="#variable-integration" icon="code">
+    Explore additional supported variables and security settings.
+  </Card>
+</Columns>

@@ -1,61 +1,64 @@
 ---
 title: Authentication
-description: Authenticate requests to Twilio APIs using Account SID, Auth Token, and API keys.
+description: Authenticate requests using CART_TOKEN and PAYMENT_KEY for secure ShopifyMax access.
 ---
 
 ## Overview
 
-Every request to the Twilio REST API must include valid credentials. You authenticate using your Account SID paired with either an Auth Token or an API key. Twilio supports HTTP Basic Auth for direct requests and built-in credential handling inside the official helper libraries.
+ShopifyMax uses token-based authentication for all API requests. Every call must include a valid `CART_TOKEN` or `PAYMENT_KEY` header. Requests without valid credentials return a 401 status.
 
-## Authentication methods
+## Authentication Methods
 
 <Tabs>
-  <Tab title="Account SID and Auth Token" icon="key">
-    Your Account SID and Auth Token are created automatically when you sign up. Use them for all API calls until you generate API keys.
+  <Tab title="Cart Token" icon="key">
+    Use `CART_TOKEN` for cart operations and session management.
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Base64-encoded string in the format `Basic {base64(AccountSID:AuthToken)}`.
+    <ParamField header="X-Cart-Token" param-type="string" required="true">
+      Unique cart identifier issued on session creation.
     </ParamField>
   </Tab>
-  <Tab title="API Keys" icon="key">
-    API keys provide scoped access and can be rotated independently of your primary account credentials. Create them in the Twilio Console under API keys.
+  <Tab title="Payment Key" icon="lock">
+    Use `PAYMENT_KEY` for payment and checkout flows.
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Base64-encoded string in the format `Basic {base64(APIKeySID:APIKeySecret)}`.
+    <ParamField header="X-Payment-Key" param-type="string" required="true">
+      Secret key tied to the merchant account.
     </ParamField>
   </Tab>
 </Tabs>
 
-## Implementation examples
+## Implementation
 
-Use the following patterns to authenticate requests. Replace the placeholder values with your own credentials.
+Send credentials in request headers. The examples below show the required format.
 
-<CodeGroup tabs="cURL,Python,Node.js">
-```bash
-curl -X GET 'https://api.example.com/2010-04-01/Accounts/ACxxxxxxxx.json' \
-  -u 'ACxxxxxxxx:your_auth_token'
+<CodeGroup tabs="JavaScript,Python,cURL">
+```javascript
+const res = await fetch('https://api.example.com/v1/cart', {
+  headers: {
+    'X-Cart-Token': 'ct_abc123',
+    'Content-Type': 'application/json'
+  }
+});
 ```
 
 ```python
-from twilio.rest import Client
+import requests
 
-client = Client('ACxxxxxxxx', 'your_auth_token')
-account = client.api.accounts('ACxxxxxxxx').fetch()
-print(account.friendly_name)
+headers = {
+    'X-Payment-Key': 'pk_live_xyz789',
+    'Content-Type': 'application/json'
+}
+response = requests.get('https://api.example.com/v1/orders', headers=headers)
 ```
 
-```javascript
-const twilio = require('twilio');
-
-const client = twilio('ACxxxxxxxx', 'your_auth_token');
-client.api.accounts('ACxxxxxxxx')
-  .fetch()
-  .then(account => console.log(account.friendly_name));
+```bash
+curl https://api.example.com/v1/products \
+  -H "X-Cart-Token: ct_abc123" \
+  -H "Content-Type: application/json"
 ```
 </CodeGroup>
 
-## Security recommendations
+## Security Recommendations
 
 <Callout kind="alert">
-Never commit Account SIDs, Auth Tokens, or API key secrets to source control. Store credentials in environment variables and rotate API keys on a regular schedule. Use API keys with the minimum required permissions for each application.
+Store `PAYMENT_KEY` values only in secure server environments. Never expose them in client-side code or logs. Rotate keys immediately if a leak is suspected.
 </Callout>

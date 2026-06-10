@@ -1,16 +1,17 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: Twilio API
+  title: ShopifyMax
   license:
     name: MIT
 servers:
-  - url: https://api.twilio.com/v1
+  - url: https://api.shopifymax.com/v1
 paths:
-  /messages:
+  /products:
     get:
-      summary: List messages
-      operationId: listMessages
+      summary: List products
+      description: Retrieves a paginated list of products from the catalog. Use the limit parameter to control page size when browsing large inventories.
+      operationId: listProducts
       parameters:
         - name: limit
           in: query
@@ -21,7 +22,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of messages
+          description: An paged array of products
           headers:
             x-next:
               description: A link to the next page of responses
@@ -30,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Messages'
+                $ref: '#/components/schemas/Products'
         default:
           description: unexpected error
           content:
@@ -38,8 +39,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create message
-      operationId: createMessage
+      summary: Create product
+      operationId: createProduct
       responses:
         201:
           description: Null response
@@ -49,15 +50,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /messages/{messageId}:
+  /products/{productId}:
     get:
-      summary: Message details
-      operationId: showMessageById
+      summary: Get product
+      description: Retrieves detailed information about a specific product by its unique identifier. Use this endpoint to check catalog data before showing product pages.
+      operationId: showProductById
       parameters:
-        - name: messageId
+        - name: productId
           in: path
           required: true
-          description: The id of the message to retrieve
+          description: The id of the product to retrieve
           schema:
             type: string
       responses:
@@ -66,17 +68,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Messages'
+                $ref: '#/components/schemas/Product'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /calls:
+  /checkouts:
     get:
-      summary: List calls
-      operationId: listCalls
+      summary: List checkouts
+      description: Retrieves recent checkout sessions and their statuses. Use this to monitor fast checkout performance and active cart flow.
+      operationId: listCheckouts
       parameters:
         - name: limit
           in: query
@@ -87,7 +90,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of calls
+          description: An paged array of checkouts
           headers:
             x-next:
               description: A link to the next page of responses
@@ -96,7 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Calls'
+                $ref: '#/components/schemas/Checkouts'
         default:
           description: unexpected error
           content:
@@ -104,8 +107,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create call
-      operationId: createCall
+      summary: Create checkout
+      operationId: createCheckout
       responses:
         201:
           description: Null response
@@ -115,15 +118,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /calls/{callId}:
+  /checkouts/{checkoutId}:
     get:
-      summary: Call details
-      operationId: showCallById
+      summary: Get checkout
+      description: Retrieves detailed information about a specific checkout session by its unique identifier. Use this endpoint to verify cart progress and payment readiness.
+      operationId: showCheckoutById
       parameters:
-        - name: callId
+        - name: checkoutId
           in: path
           required: true
-          description: The id of the call to retrieve
+          description: The id of the checkout to retrieve
           schema:
             type: string
       responses:
@@ -132,7 +136,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Calls'
+                $ref: '#/components/schemas/Checkout'
         default:
           description: unexpected error
           content:
@@ -141,38 +145,36 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Message:
+    Product:
       required:
         - id
         - name
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
         name:
           type: string
         tag:
           type: string
-    Messages:
+    Products:
       type: array
       items:
-        $ref: '#/components/schemas/Message'
-    Call:
+        $ref: '#/components/schemas/Product'
+    Checkout:
       required:
         - id
-        - name
+        - status
       properties:
         id:
-          type: integer
-          format: int64
-        name:
           type: string
-        tag:
+        status:
           type: string
-    Calls:
+        cartToken:
+          type: string
+    Checkouts:
       type: array
       items:
-        $ref: '#/components/schemas/Call'
+        $ref: '#/components/schemas/Checkout'
     Error:
       required:
         - code

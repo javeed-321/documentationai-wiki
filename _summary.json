@@ -1,25 +1,30 @@
 {
-  "id": "sk-uc-api",
-  "testName": "API Documentation only — Twilio",
-  "productName": "Twilio",
+  "id": "sk-013-mixed-chars",
+  "testName": "E-commerce Platform with mixed chars",
+  "productName": "ShopifyMax",
   "source": "evals",
-  "difficulty": "simple",
+  "difficulty": "edge-case",
   "useCases": [
+    "product-guides",
     "api-docs"
   ],
   "tags": [
-    "v2-router",
-    "api-docs",
-    "simple"
+    "edge-case",
+    "special-characters",
+    "mdx-escaping",
+    "fixture-import"
   ],
   "passed": true,
-  "durationMs": 30357,
-  "totalFiles": 8,
-  "validFiles": 8,
+  "durationMs": 22293,
+  "totalFiles": 11,
+  "validFiles": 11,
   "failedFiles": [],
-  "totalAttempts": 8,
-  "tokens": 64867,
+  "totalAttempts": 11,
+  "tokens": 93466,
   "files": [
+    "introduction.mdx",
+    "quickstart.mdx",
+    "guides/overview.mdx",
     "api-docs/introduction.mdx",
     "api-docs/authentication.mdx",
     "api-docs/quickstart.mdx",

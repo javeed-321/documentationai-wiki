@@ -1,131 +1,115 @@
 ---
 title: Error Codes
-description: Common Twilio REST API error codes and how to resolve issues like invalid numbers or auth failures.
+description: Resolve common ShopifyMax API errors such as payment declines and token issues.
 ---
 
-## Common Error Codes
+## Payment Failure Codes
 
-Twilio returns standard HTTP status codes along with a numeric error code in the response body. Each code maps to a specific failure condition during request validation or delivery.
+Payment failures occur when the checkout flow rejects a transaction. Each failure returns a specific code in the response body.
 
-## Invalid Number Errors
-
-<Expandable title="21211: Invalid 'To' Phone Number" default-open="false">
+<Expandable title="PAYMENT_001: Card issuer rejection" default-open="false">
 
 **Problem**
 
-The request fails with HTTP 400 and the body contains:
-
-```json
-{
-  "code": 21211,
-  "message": "The 'To' number +15551234567 is not a valid phone number.",
-  "status": 400
-}
-```
+The API returns `{"error":"PAYMENT_001","message":"Card issuer rejected transaction"}` during checkout completion.
 
 **Cause**
 
-The value supplied in the `To` parameter does not match E.164 format or is not a number that can receive the requested channel.
+The card network declined the authorization request. This typically follows from insufficient funds, mismatched billing address, or regional restrictions on the card.
 
 **Fix**
 
-Format the number with a leading `+` and country code. Validate the number before the request:
+Capture the decline reason from the `details` field in the response. Retry with an alternate payment method or prompt the customer to contact their issuer. Verify that the `{PAYMENT_KEY}` value matches the merchant account configuration.
 
 ```bash
-curl -X POST https://api.twilio.com/2010-04-01/Accounts/ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/Messages.json \
-  --data-urlencode "To=+15551234567" \
-  --data-urlencode "From=+15559876543" \
-  --data-urlencode "Body=Test" \
-  -u ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:your_auth_token
+curl -X POST https://api.example.com/v1/checkout \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"cart_token":"abc123","payment_key":"pk_live_xxx"}'
 ```
 
 </Expandable>
 
-<Expandable title="20003: Authenticate" default-open="false">
+<Expandable title="PAYMENT_002: CVV mismatch" default-open="false">
 
 **Problem**
 
-The request returns HTTP 401 with:
-
-```json
-{
-  "code": 20003,
-  "message": "Authenticate",
-  "status": 401
-}
-```
+Checkout fails with `{"error":"PAYMENT_002","message":"CVV verification failed"}`.
 
 **Cause**
 
-The request did not include a valid Account SID and Auth Token pair in the `Authorization` header.
+The supplied CVV does not match the value on file with the card issuer.
 
 **Fix**
 
-Use HTTP Basic Auth with your Account SID as the username and Auth Token as the password. Example:
-
-```bash
-curl -X GET https://api.twilio.com/2010-04-01/Accounts/ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.json \
-  -u ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:your_auth_token
-```
-
-Store the token in an environment variable and never commit it to source control.
+Re-collect the CVV from the customer and resubmit the payment object. Ensure the request includes the correct `cvv` parameter under the payment details.
 
 </Expandable>
 
-## Rate Limiting
+## Token Validation Errors
 
-<Expandable title="429: Too Many Requests" default-open="false">
+Token errors prevent cart operations when authentication values are invalid.
+
+<Expandable title="TOKEN_100: Invalid cart token" default-open="false">
 
 **Problem**
 
-Repeated requests return HTTP 429 and the header `X-Rate-Limit-Remaining: 0`.
+Requests return `{"error":"TOKEN_100","message":"Cart token is malformed or expired"}`.
 
 **Cause**
 
-The account exceeded the allowed request rate for the endpoint.
+The `CART_TOKEN` value is either expired, already consumed, or contains invalid characters.
 
 **Fix**
 
-Implement exponential backoff. Wait at least the number of seconds indicated by the `Retry-After` header before retrying:
+Generate a fresh token by calling the cart creation endpoint. Store the new token and include it in subsequent requests.
 
-```python
-import time
-import requests
-
-def send_with_backoff(url, payload, token):
-    delay = 1
-    while True:
-        resp = requests.post(url, data=payload, auth=token)
-        if resp.status_code != 429:
-            return resp
-        time.sleep(delay)
-        delay = min(delay * 2, 60)
+```javascript
+const response = await fetch('https://api.example.com/v1/cart', {
+  method: 'POST',
+  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }
+});
+const { cart_token } = await response.json();
 ```
 
 </Expandable>
 
-## Webhook Failures
-
-<Expandable title="Webhook Delivery Failures" default-open="false">
+<Expandable title="TOKEN_101: Payment key mismatch" default-open="false">
 
 **Problem**
 
-Status callbacks never arrive or Twilio logs show repeated 4xx/5xx responses from your endpoint.
+The server replies `{"error":"TOKEN_101","message":"Payment key does not match cart merchant"}`.
 
 **Cause**
 
-Your webhook URL returns a non-2xx status, times out after 15 seconds, or rejects the request due to TLS or authentication issues.
+The supplied `{PAYMENT_KEY}` belongs to a different merchant account than the one that created the cart.
 
 **Fix**
 
-Ensure the endpoint responds with HTTP 200 within 15 seconds and uses a publicly reachable HTTPS URL. Test the endpoint with:
+Confirm both keys originate from the same ShopifyMax merchant dashboard. Replace the key in the request payload and retry.
+
+</Expandable>
+
+## Catalog Limit Responses
+
+Catalog operations return specific limits when product counts exceed platform thresholds.
+
+<Expandable title="CATALOG_200: Product count exceeded" default-open="false">
+
+**Problem**
+
+Bulk import fails with `{"error":"CATALOG_200","message":"Catalog exceeds 100000 products"}`.
+
+**Cause**
+
+The merchant attempted to add products beyond the supported catalog size.
+
+**Fix**
+
+Remove inactive products or split the catalog across multiple ShopifyMax stores. Use the delete endpoint to prune entries before retrying the import.
 
 ```bash
-curl -X POST https://your-webhook.example.com/twilio \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "CallSid=CAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&CallStatus=completed"
+curl -X DELETE https://api.example.com/v1/products/12345 \
+  -H "Authorization: Bearer YOUR_API_KEY"
 ```
-
-Check the Twilio Console under the specific resource's "Webhooks & Email" logs for the exact failure reason.
 
 </Expandable>
