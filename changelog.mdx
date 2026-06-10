@@ -1,89 +1,125 @@
 ---
 title: Changelog
-description: Track updates to ShopifyMax services, campaigns, and API releases.
+description: Release notes for new Notion AI capabilities, agent improvements, and platform updates.
 ---
 
 ## Overview
 
-This page tracks recent changes to ShopifyMax services, campaigns, and API releases.
+This page records recent Notion releases in reverse chronological order.
 
-Updates are listed newest first. Each entry includes the release date, version, and a short set of factual changes.
+Use it to track AI agent improvements, search and meeting note updates, integration changes, and security or scalability fixes.
 
-## Recent releases
+## Recent updates
 
-<Update label="2026-06-03" description="v2.4.0" tags={["feature"]}>
+<Columns cols={3}>
+  <Card title="AI agents" icon="zap" href="https://www.notion.so/ja/product/agents" target="_blank" cta="View product">
+    
+    Automate repetitive work, route tasks, and keep work moving continuously.
+  </Card>
+  <Card title="Enterprise search" icon="search" href="https://www.notion.so/ja/product/enterprise-search" target="_blank" cta="View product">
+    
+    Find answers faster across your workspace and connected tools.
+  </Card>
+  <Card title="Meeting notes" icon="file-text" href="https://www.notion.so/ja/product/ai-meeting-notes" target="_blank" cta="View product">
+    
+    Capture, summarize, and share meetings with AI assistance.
+  </Card>
+</Columns>
 
-## New clients
+<Update label="2026-06-10" description="v2.4.0" tags={["feature", "bugfix"]}>
 
-- Added onboarding support for three new luxury hospitality clients.
-- Expanded campaign launch templates for destination and lifestyle briefs.
+## New features
 
-## Design system
+- Added agent routing improvements for repetitive work and follow-up actions.
+- Expanded enterprise search coverage across workspace content and connected sources.
+- Improved meeting note generation for clearer summaries and action items.
+- Refined Notion AI responses for writing assistance in docs and notes.
 
-- Updated typography scales for editorial and premium landing pages.
-- Added new spacing tokens for hero, card, and section layouts.
+## Bug fixes
 
-## API enhancements
-
-- Added campaign status filtering to reporting endpoints.
-- Improved response consistency for asset metadata and publish events.
-
-## Experience platform
-
-- Reduced dashboard load time on campaign overview pages.
-- Added clearer publishing states for scheduled experience launches.
-
-</Update>
-
-<Update label="2026-05-12" description="v2.3.0" tags={["feature"]}>
-
-## New clients
-
-- Added support for a new luxury travel account.
-- Enabled brand-safe rollout settings for multi-region campaigns.
-
-## Design system
-
-- Refined button hierarchy across commerce and editorial surfaces.
-- Standardized image ratios for destination storytelling modules.
-
-## API enhancements
-
-- Added support for bulk campaign tag updates.
-- Improved rate-limit handling for high-volume asset sync requests.
-
-## Experience platform
-
-- Updated activity feeds to show more detailed launch history.
-- Added draft review states for cross-team approvals.
+- Fixed edge cases that could delay agent task handoff.
+- Resolved search ranking issues for recently updated pages.
+- Improved meeting note stability during longer sessions.
+- Addressed security and scalability regressions in high-usage workspaces.
 
 </Update>
 
-<Update label="2026-04-18" description="v2.2.0" tags={["bugfix"]}>
+<Update label="2026-05-18" description="v2.3.0" tags={["feature", "bugfix"]}>
 
-## New clients
+## New features
 
-- Fixed an issue that delayed client workspace provisioning for new accounts.
+- Added new custom agent workflows for common workspace operations.
+- Improved calendar-aware suggestions for planning and scheduling.
+- Expanded integrations so connected apps are easier to act on from one place.
+- Streamlined AI-assisted report generation for project and team updates.
 
-## Design system
+## Bug fixes
 
-- Fixed inconsistent hover states in the navigation and card components.
-- Resolved spacing drift in stacked content blocks on smaller screens.
-
-## API enhancements
-
-- Fixed pagination inconsistencies in list responses.
-- Resolved missing campaign labels in export payloads.
-
-## Experience platform
-
-- Fixed an issue where scheduled launches could display the wrong status.
-- Resolved a refresh bug in the reporting overview panel.
+- Fixed connection syncing issues for some external tools.
+- Reduced latency for search queries in larger workspaces.
+- Improved permission handling for secure content access.
+- Resolved intermittent failures in agent-triggered actions.
 
 </Update>
+
+<Update label="2026-04-22" description="v2.2.0" tags={["feature", "bugfix"]}>
+
+## New features
+
+- Launched refinements to meeting notes with better speaker-aware summaries.
+- Improved enterprise search answers for knowledge base content and docs.
+- Added platform updates that support more reliable automation at scale.
+- Enhanced workspace performance for teams managing many projects.
+
+## Bug fixes
+
+- Fixed occasional duplicate results in search.
+- Resolved formatting issues in generated notes and reports.
+- Improved reliability for sync operations across connected apps.
+- Addressed scalability issues affecting large enterprise workspaces.
+
+</Update>
+
+## Release summary
+
+- New AI agent features focus on automation, routing, and task completion.
+- Search and meeting note enhancements improve discovery and documentation.
+- Integration updates reduce friction across connected tools.
+- Security and scalability fixes keep large workspaces stable and responsive.
+
+## Related product areas
+
+<Tabs>
+  <Tab title="AI" icon="zap">
+    
+    <p>Use Notion AI for writing help, workspace answers, and task automation.</p>
+
+    <p>Key areas include agents, meeting notes, and enterprise search.</p>
+  </Tab>
+  <Tab title="Workspace" icon="book-open">
+    
+    <p>Use docs, wikis, and projects to centralize knowledge and track work.</p>
+
+    <p>Keep teams aligned in one collaborative environment.</p>
+  </Tab>
+  <Tab title="Connections" icon="link">
+    
+    <p>Connect external tools to extend workflows without adding infrastructure.</p>
+
+    <p>Use integrations to keep information and actions in sync.</p>
+  </Tab>
+</Tabs>
 
 ## Notes
 
-All dates reflect release publication dates for ShopifyMax.
+<Callout kind="info">
+Release entries are concise by design. Check the Notion release page for the latest product announcements.
+</Callout>
 
-For example domain references, use the `example.com` domain only in documentation samples and never in operations.
+<Expandable title="What this changelog covers" default-open="false">
+
+This changelog focuses on product updates for Notion AI, agents, search, meeting notes, integrations, security, and scalability.
+
+It does not list every minor content edit or regional landing page change.
+
+</Expandable>
