@@ -1,16 +1,16 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: Vercel API
+  title: ShopifyMax API
   license:
     name: MIT
 servers:
-  - url: https://api.vercel.com/v1
+  - url: https://api.shopifymax.com/v1
 paths:
-  /deployments:
+  /campaigns:
     get:
-      summary: List deployments
-      operationId: listDeployments
+      summary: List campaigns
+      operationId: listCampaigns
       parameters:
         - name: limit
           in: query
@@ -21,7 +21,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of deployments
+          description: An paged array of campaigns
           headers:
             x-next:
               description: A link to the next page of responses
@@ -30,7 +30,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deployments'
+                $ref: '#/components/schemas/Campaigns'
         default:
           description: unexpected error
           content:
@@ -38,8 +38,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create deployment
-      operationId: createDeployment
+      summary: Create campaign
+      operationId: createCampaigns
       responses:
         201:
           description: Null response
@@ -49,15 +49,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /deployments/{deploymentId}:
+  /campaigns/{campaignId}:
     get:
-      summary: Get deployment
-      operationId: showDeploymentById
+      summary: Campaign details
+      operationId: showCampaignById
       parameters:
-        - name: deploymentId
+        - name: campaignId
           in: path
           required: true
-          description: The id of the deployment to retrieve
+          description: The id of the campaign to retrieve
           schema:
             type: string
       responses:
@@ -66,17 +66,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deployments'
+                $ref: '#/components/schemas/Campaigns'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /projects:
+  /clients:
     get:
-      summary: List projects
-      operationId: listProjects
+      summary: List clients
+      operationId: listClients
       parameters:
         - name: limit
           in: query
@@ -87,7 +87,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of projects
+          description: An paged array of clients
           headers:
             x-next:
               description: A link to the next page of responses
@@ -96,22 +96,34 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Projects'
+                $ref: '#/components/schemas/Clients'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /projects/{projectId}:
+    post:
+      summary: Create client
+      operationId: createClients
+      responses:
+        201:
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /clients/{clientId}:
     get:
-      summary: Get project
-      operationId: showProjectById
+      summary: Client details
+      operationId: showClientById
       parameters:
-        - name: projectId
+        - name: clientId
           in: path
           required: true
-          description: The id of the project to retrieve
+          description: The id of the client to retrieve
           schema:
             type: string
       responses:
@@ -120,7 +132,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Projects'
+                $ref: '#/components/schemas/Clients'
         default:
           description: unexpected error
           content:
@@ -129,7 +141,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Deployment:
+    Campaign:
       required:
         - id
         - name
@@ -141,11 +153,15 @@ components:
           type: string
         tag:
           type: string
-    Deployments:
+    Campaigns:
       type: array
       items:
-        $ref: '#/components/schemas/Deployment'
-    Project:
+        $ref: '#/components/schemas/Campaign'
+    Clients:
+      type: array
+      items:
+        $ref: '#/components/schemas/Client'
+    Client:
       required:
         - id
         - name
@@ -157,10 +173,6 @@ components:
           type: string
         tag:
           type: string
-    Projects:
-      type: array
-      items:
-        $ref: '#/components/schemas/Project'
     Error:
       required:
         - code

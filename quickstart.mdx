@@ -1,65 +1,134 @@
 ---
 title: Quickstart
-description: Deploy your first application to Vercel in minutes using the CLI or Git integration.
+description: Start your first brand project with ShopifyMax in four simple steps.
 ---
 
-## Prerequisites
+## Quickstart
+
+ShopifyMax helps you move from a rough idea to a clear brand direction fast. In this quickstart, you create a project brief, run creative discovery, shape initial concepts, and prepare client onboarding so you can reach a first review in minutes.
+
+Use the example values here as a starter template. Replace them with your own project details as soon as you are ready.
 
 <Callout kind="info">
-You need a Vercel account and Node.js version 18 or later on your machine.
+
+This page uses the `example.com` domain for documentation samples only. Do not use it in production operations.
+
 </Callout>
 
-## Install the Vercel CLI
+### Before you begin
+
+You should have these items ready before you start:
+
+- A project name
+- A short brand summary
+- A list of goals, audiences, and key deliverables
+- One primary contact for client onboarding
+
+### Four-step setup
 
 <Steps>
-<Step title="Install globally" icon="download">
-Run the following command to add the CLI to your system.
+  <Step title="Create the project brief" icon="book-open">
+    
+    Define the brand, audience, scope, and success criteria. Keep this short and specific so your team can move quickly.
 
-```bash
-npm install -g vercel
-```
-</Step>
-<Step title="Log in" icon="log-in">
-Authenticate with your account.
+  </Step>
 
-```bash
-vercel login
-```
-</Step>
+  <Step title="Run creative discovery" icon="search">
+    
+    Gather references, inspiration, and business context. Capture tone, visual direction, and any brand constraints.
+
+  </Step>
+
+  <Step title="Develop initial concepts" icon="palette">
+    
+    Turn your discovery notes into one or more concept directions. Focus on message, mood, and a clear point of view.
+
+  </Step>
+
+  <Step title="Complete client onboarding" icon="users">
+    
+    Share the brief, align on review timing, and confirm approvals. This gives everyone a simple path from concept to feedback.
+
+  </Step>
 </Steps>
 
-## Deploy from the command line
+### Minimal working example
 
-<CodeGroup tabs="npm,yarn">
-```bash
-vercel
-```
-```bash
-yarn dlx vercel
-```
+Use this template to structure your first project in ShopifyMax.
+
+<CodeGroup tabs="JSON,Markdown">
+  ```json
+  {
+    "projectName": "Coastal Resort Brand Refresh",
+    "brief": {
+      "goal": "Create a premium identity for a hospitality launch",
+      "audience": "Travelers seeking luxury and cultural depth",
+      "tone": "Refined, warm, memorable",
+      "deliverables": ["Brand direction", "Concept boards", "Client review"]
+    }
+  }
+  ```
+
+  ```markdown
+  ## Project Brief
+
+  Goal: Create a premium identity for a hospitality launch.
+
+  Audience: Travelers seeking luxury and cultural depth.
+
+  Tone: Refined, warm, memorable.
+
+  Deliverables: Brand direction, concept boards, client review.
+  ```
 </CodeGroup>
 
-Follow the prompts to select your project and confirm the deployment. Your site becomes live immediately at a generated URL.
+### What to do next
 
-## Connect a Git repository
+<Columns cols={3}>
+  <Card title="Project briefing" icon="book-open" href="#project-briefing">
+    
+    Learn how to write a stronger brief that keeps your team aligned from day one.
 
-Push your code to GitHub, GitLab, or Bitbucket, then import the repository from the Vercel dashboard. Every push to the main branch triggers an automatic build and deploy.
+  </Card>
 
-## Automatic builds and deploys
+  <Card title="Creative discovery" icon="zap" href="#creative-discovery">
+    
+    Explore the prompts and inputs that help you uncover the right brand direction.
 
-Vercel detects your framework, installs dependencies, and runs the build script. Production deployments appear at your assigned domain while preview deployments are created for every pull request.
+  </Card>
 
-## Add a custom domain
+  <Card title="Client onboarding" icon="users" href="#client-onboarding">
+    
+    Set expectations, review timing, and approval flow before you present concepts.
 
-Navigate to your project settings and enter a domain from example.com. Vercel provisions an SSL certificate automatically and routes traffic within minutes.
-
-## Next steps
-
-<Columns cols={2}>
-<Card title="CLI reference" icon="terminal" href="#install-the-vercel-cli">
-Review every available command.
-</Card>
-<Card title="Domains" icon="globe" href="#add-a-custom-domain">
-Configure production domains and redirects.
-</Card>
+  </Card>
 </Columns>
+
+### Example flow
+
+```mermaid
+graph LR
+    A[Project Brief] --> B[Creative Discovery]
+    B --> C[Initial Concepts]
+    C --> D[Client Onboarding]
+```
+
+### Need more detail
+
+<Expandable title="What should I include in a brief?" default-open="false">
+
+Include the brand name, business goal, target audience, tone, deliverables, and any must-have constraints. If you already have references, add them here too.
+
+</Expandable>
+
+<Expandable title="How many concepts should I start with?" default-open="false">
+
+Start with two or three clear directions. That gives you enough range to compare options without slowing the review process.
+
+</Expandable>
+
+<Expandable title="When is the project ready for client review?" default-open="false">
+
+You are ready when the brief is complete, the discovery notes are captured, and the initial concepts clearly reflect the agreed direction.
+
+</Expandable>

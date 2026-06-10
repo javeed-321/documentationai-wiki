@@ -1,71 +1,146 @@
 ---
 title: Feature Overview
-description: Key features including preview deployments, serverless functions, and edge middleware.
+description: Explore the core services ShopifyMax offers for destinations and lifestyle brands.
 ---
 
 ## Overview
 
-Vercel provides a modern deployment platform that simplifies shipping web applications. You connect your Git repository, and the platform handles builds, previews, and production releases automatically. Core capabilities include instant preview deployments for every pull request, serverless functions for backend logic, and edge middleware for request-level customization. Analytics and monitoring tools give you visibility into performance and usage.
+ShopifyMax helps you create and amplify unforgettable brands, destinations, and experiences through culture. As a creative agency, it focuses on work that feels editorial, refined, and memorable, with services shaped for travel, hospitality, luxury, and lifestyle brands.
 
-## Preview Deployments
-
-Every code change triggers an isolated preview environment. You review changes in a live URL before merging, which reduces risk in production.
-
-<Card title="Instant Previews" icon="zap" href="#examples">
-  Share working previews with teammates or stakeholders without manual setup.
-</Card>
-
-## Serverless Functions
-
-Write API routes as functions that scale automatically. No server management is required, and cold starts remain minimal on the global network.
+Use this guide to understand the core services ShopifyMax provides and how they fit together. You will see how campaign development, hospitality activations, cultural storytelling, and visual identity systems support a cohesive brand experience from concept to execution.
 
 <Callout kind="info">
-  Functions run close to users for low latency on every request.
+This page is a starter overview for evaluation and planning. You can adapt the examples to your own brand, launch, or destination program.
 </Callout>
 
-## Edge Middleware
+<Columns cols={3}>
+  <Card title="Campaign Development" icon="rocket" href="#campaign-development">
+    Build focused launch concepts and brand campaigns that capture attention.
+  </Card>
+  <Card title="Hospitality Activations" icon="users" href="#hospitality-activations">
+    Design in-person moments that make guests feel welcomed and immersed.
+  </Card>
+  <Card title="Cultural Storytelling" icon="book-open" href="#cultural-storytelling">
+    Shape narratives that connect your brand to place, taste, and audience.
+  </Card>
+</Columns>
 
-Intercept requests at the edge to rewrite paths, add headers, or run authentication checks before content reaches the origin.
+## Campaign Development
 
-<Tabs>
-  <Tab title="JavaScript" icon="code">
-    Add middleware logic directly in your project.
-  </Tab>
-  <Tab title="TypeScript" icon="code">
-    Use full type safety for request handling.
-  </Tab>
-</Tabs>
+Campaign development gives you a clear creative direction for launches, seasonal moments, and destination programs. ShopifyMax helps define the message, the visual approach, and the sequence of touchpoints so your campaign feels intentional across channels.
 
-## Analytics and Monitoring
+A strong campaign starts with one idea and extends it consistently. That can include naming, creative themes, key visuals, social moments, and supporting content. The goal is not simply to promote; it is to create a point of view that people remember.
 
-Track real-time metrics such as page views, Core Web Vitals, and error rates. Dashboards surface trends so you can optimize quickly.
+### What it includes
 
-## Examples
+- Creative concept development
+- Audience and message framing
+- Launch content direction
+- Channel-ready visual and verbal assets
 
-<CodeGroup tabs="vercel.json,api/hello.js">
-```json
-{
-  "functions": {
-    "api/*.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  }
-}
+### Example campaign workflow
+
+<CodeGroup tabs="Brief,Concept,Launch">
+  ```text
+Define the audience, objective, and desired impression.
 ```
-```javascript
-export default function handler(req, res) {
-  res.status(200).json({ message: 'Hello from Vercel' });
-}
+  ```text
+Turn the strategy into a campaign idea, visual direction, and message system.
+```
+  ```text
+Roll out the assets across digital, social, print, and in-person moments.
 ```
 </CodeGroup>
 
+## Hospitality Activations
+
+Hospitality activations turn a space into an experience. ShopifyMax can help you design moments for hotels, resorts, members clubs, restaurants, and destination partners that feel elevated and easy to navigate. These activations are strongest when the brand story is visible in the details.
+
+Think of an activation as a temporary or seasonal expression of your brand. It might appear in a lobby, at a dinner series, during a launch event, or across a guest journey. The objective is to make the experience feel considered from first impression to final farewell.
+
+### Typical activation elements
+
+- Welcome moments and signage
+- Event programming and guest flow
+- Sensory details and styling cues
+- Brand touchpoints for photo and social sharing
+
+<Tabs>
+  <Tab title="In-Person" icon="map-pin">
+    Focus on guest movement, signage, service cues, and atmosphere.
+  </Tab>
+  <Tab title="Hybrid" icon="cloud">
+    Extend the experience with digital invitations, previews, and post-event content.
+  </Tab>
+  <Tab title="Seasonal" icon="calendar">
+    Refresh the space with a theme that supports holidays, travel peaks, or launches.
+  </Tab>
+</Tabs>
+
+## Cultural Storytelling
+
+Cultural storytelling connects your brand to context. ShopifyMax uses storytelling to show why a place, partnership, or collection matters, not just what it is. For destination and lifestyle brands, that often means combining heritage, local references, hospitality cues, and modern aesthetics.
+
+This service is useful when you need a narrative that feels authentic and editorial. You can use it to guide campaigns, press materials, launch presentations, and experience design. The result is a brand voice that feels grounded and distinctive.
+
+<Expandable title="What makes a strong story system?" default-open="false">
+
+A strong story system includes a clear theme, a consistent tone, and repeatable language for different channels.
+
+You should be able to adapt the story for a launch page, a guest invitation, a press summary, and on-site signage without losing the core message.
+
+</Expandable>
+
+## Visual Identity Systems
+
+Visual identity systems give your brand a consistent look and feel across every touchpoint. ShopifyMax can help define the visual rules that keep campaigns, activations, and storytelling aligned. That usually includes color, typography, imagery style, layout logic, and art direction principles.
+
+For destinations and lifestyle brands, consistency matters because your audience often encounters the brand in many different settings. A flexible identity system helps you stay recognizable while still leaving room for seasonal campaigns and special experiences.
+
+### Common identity outputs
+
+| Output | Purpose |
+| --- | --- |
+| Logo usage guidance | Keeps the mark clear and consistent |
+| Color palette | Supports recognition and mood |
+| Typography rules | Creates a distinct written voice |
+| Image direction | Aligns photography and visual tone |
+| Layout patterns | Helps every asset feel related |
+
+## Examples
+
+You can use ShopifyMax services together or independently depending on your goals. A hotel launch might begin with cultural storytelling, move into campaign development, and finish with a hospitality activation. A lifestyle brand refresh might start with a visual identity system and then expand into campaign rollouts.
+
+Here are a few practical combinations:
+
+1. **Destination launch:** story system, campaign concept, guest-facing activation
+2. **Luxury retreat:** identity refresh, editorial campaign, seasonal event design
+3. **Lifestyle collection:** visual direction, social launch assets, cultural narrative
+
 ## Best Practices
 
-- Keep preview deployments short-lived by merging or closing pull requests promptly.
-- Place shared logic in reusable utilities rather than duplicating code across functions.
-- Use middleware sparingly to avoid added latency on every request.
+To get the strongest result, start with the business goal and the audience experience. Be specific about where the brand will appear, how people will encounter it, and what impression should remain after the moment ends.
 
-<Expandable title="Advanced configuration options" default-open="false">
-  Fine-tune regions, environment variables, and caching rules in the project settings to match your traffic patterns.
+<Steps>
+  <Step title="Define the outcome" icon="check-circle">
+    Decide whether you need awareness, bookings, press attention, guest engagement, or a visual refresh.
+  </Step>
+  <Step title="Choose the service mix" icon="settings">
+    Select the combination of campaign development, activations, storytelling, and identity work that supports the goal.
+  </Step>
+  <Step title="Align the touchpoints" icon="layout">
+    Make sure the message, visuals, and experience all reinforce the same brand idea.
+  </Step>
+</Steps>
+
+<Callout kind="tip">
+Use the Example Domain only for documentation samples. It is safe for examples, but you should avoid use in operations.
+</Callout>
+
+<Expandable title="When should you start with visual identity?" default-open="false">
+
+Start with visual identity when your brand looks inconsistent, when new campaigns feel disconnected, or when you need a stronger foundation for future launches.
+
+If the brand is already clear, you can begin with campaign development or cultural storytelling and expand the system later.
+
 </Expandable>

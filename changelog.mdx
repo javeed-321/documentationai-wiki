@@ -1,42 +1,89 @@
 ---
 title: Changelog
-description: Release notes for Vercel platform updates, new features, and infrastructure changes.
+description: Track updates to ShopifyMax services, campaigns, and API releases.
 ---
 
-## Platform Releases
+## Overview
 
-<Update label="2024-11-05" description="v2.3.0" tags={["feature", "bugfix"]}>
+This page tracks recent changes to ShopifyMax services, campaigns, and API releases.
 
-## New Features
+Updates are listed newest first. Each entry includes the release date, version, and a short set of factual changes.
 
-- Added edge function cold start metrics in the dashboard.
-- Introduced support for custom domains with automatic SSL renewal.
+## Recent releases
 
-## Bug Fixes
+<Update label="2026-06-03" description="v2.4.0" tags={["feature"]}>
 
-- Resolved CLI deployment timeout on large monorepos.
-- Fixed API rate limit headers returning incorrect values.
+## New clients
+
+- Added onboarding support for three new luxury hospitality clients.
+- Expanded campaign launch templates for destination and lifestyle briefs.
+
+## Design system
+
+- Updated typography scales for editorial and premium landing pages.
+- Added new spacing tokens for hero, card, and section layouts.
+
+## API enhancements
+
+- Added campaign status filtering to reporting endpoints.
+- Improved response consistency for asset metadata and publish events.
+
+## Experience platform
+
+- Reduced dashboard load time on campaign overview pages.
+- Added clearer publishing states for scheduled experience launches.
+
+</Update>
+
+<Update label="2026-05-12" description="v2.3.0" tags={["feature"]}>
+
+## New clients
+
+- Added support for a new luxury travel account.
+- Enabled brand-safe rollout settings for multi-region campaigns.
+
+## Design system
+
+- Refined button hierarchy across commerce and editorial surfaces.
+- Standardized image ratios for destination storytelling modules.
+
+## API enhancements
+
+- Added support for bulk campaign tag updates.
+- Improved rate-limit handling for high-volume asset sync requests.
+
+## Experience platform
+
+- Updated activity feeds to show more detailed launch history.
+- Added draft review states for cross-team approvals.
 
 </Update>
 
-<Update label="2024-10-20" description="v2.2.1" tags={["bugfix"]}>
+<Update label="2026-04-18" description="v2.2.0" tags={["bugfix"]}>
 
-## Bug Fixes
+## New clients
 
-- Corrected preview deployment URL generation for projects with hyphens.
-- Patched memory leak in the build pipeline for Next.js applications.
+- Fixed an issue that delayed client workspace provisioning for new accounts.
+
+## Design system
+
+- Fixed inconsistent hover states in the navigation and card components.
+- Resolved spacing drift in stacked content blocks on smaller screens.
+
+## API enhancements
+
+- Fixed pagination inconsistencies in list responses.
+- Resolved missing campaign labels in export payloads.
+
+## Experience platform
+
+- Fixed an issue where scheduled launches could display the wrong status.
+- Resolved a refresh bug in the reporting overview panel.
 
 </Update>
 
-<Update label="2024-09-15" description="v2.2.0" tags={["feature", "deprecation"]}>
+## Notes
 
-## New Features
+All dates reflect release publication dates for ShopifyMax.
 
-- Launched the new Projects API v2 endpoint for bulk operations.
-- Added CLI command for direct environment variable imports.
-
-## Deprecations
-
-- Deprecated the legacy `/v1/deployments` endpoint. Migrate to v2 by January 2025.
-
-</Update>
+For example domain references, use the `example.com` domain only in documentation samples and never in operations.
