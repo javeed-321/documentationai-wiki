@@ -1,0 +1,209 @@
+---
+title: Quickstart
+description: Send your first SMS or make your first voice call using Twilio's REST API in minutes.
+---
+
+## Quickstart
+
+Twilio lets you send messages and place calls with simple REST API requests. In this quickstart, you set up credentials, send your first SMS message, make an outbound voice call, use a helper library, and verify the results in the Twilio Console.
+
+Use this page as the fastest path to first success. If you already have an account and a verified phone number, you can usually complete the flow in under five minutes.
+
+<Callout kind="info">
+
+You need a Twilio account, an active Twilio phone number, and a destination number that you can verify or call. Keep your Account SID and Auth Token private.
+
+</Callout>
+
+## Before you start
+
+Make sure you have the essentials ready:
+
+- A Twilio account
+- A Twilio phone number with SMS and voice capability
+- A verified destination number for testing
+- A local development environment with a recent version of Node.js, Python, or your preferred web language
+
+If you are testing in the console, confirm that your account has permission to send messages and place calls in your chosen region.
+
+## Choose your first path
+
+<Columns cols={2}>
+  <Card title="Send an SMS" icon="message-square" href="#">
+    Learn how to send your first text message with the Messages API.
+  </Card>
+  <Card title="Make a voice call" icon="phone-call" href="#">
+    Place an outbound call and play a short message when the call connects.
+  </Card>
+</Columns>
+
+## Set up your credentials
+
+Use your Account SID and Auth Token from the Twilio Console. Store them as environment variables so your code can read them without hardcoding secrets.
+
+<CodeGroup tabs="macOS/Linux,Windows,Python">
+  ```bash
+export TWILIO_ACCOUNT_SID=YOUR_ACCOUNT_SID
+export TWILIO_AUTH_TOKEN=YOUR_AUTH_TOKEN
+export TWILIO_PHONE_NUMBER=+15551234567
+```
+
+  ```powershell
+setx TWILIO_ACCOUNT_SID "YOUR_ACCOUNT_SID"
+setx TWILIO_AUTH_TOKEN "YOUR_AUTH_TOKEN"
+setx TWILIO_PHONE_NUMBER "+15551234567"
+```
+
+  ```python
+import os
+
+account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+auth_token = os.environ["TWILIO_AUTH_TOKEN"]
+from_number = os.environ["TWILIO_PHONE_NUMBER"]
+```
+</CodeGroup>
+
+## Install a helper library
+
+Twilio helper libraries wrap the REST API and make authentication, requests, and response handling easier. Pick the language you are using and install the matching package.
+
+<Tabs>
+  <Tab title="Node.js" icon="terminal">
+
+    ```bash
+npm install twilio
+```
+
+  </Tab>
+  <Tab title="Python" icon="package">
+
+    ```bash
+pip install twilio
+```
+
+  </Tab>
+  <Tab title="Java" icon="code">
+
+    ```bash
+mvn install:install-file -Dfile=twilio-8.37.0.jar
+```
+
+  </Tab>
+</Tabs>
+
+## Send your first SMS
+
+Use the Messages API to send a text message from your Twilio number to a verified destination number. The example below uses the official helper library and your environment variables.
+
+<Steps>
+  <Step title="Create the client" icon="settings">
+
+    Initialize the Twilio client with your Account SID and Auth Token.
+
+    ````javascript
+const twilio = require("twilio");
+
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
+    ````
+
+  </Step>
+  <Step title="Send the message" icon="message-square">
+
+    Create a message with your Twilio phone number, a destination number, and message body.
+
+    ````javascript
+await client.messages.create({
+  from: process.env.TWILIO_PHONE_NUMBER,
+  to: "+15558675310",
+  body: "Hello from Twilio",
+});
+    ````
+
+  </Step>
+  <Step title="Check the result" icon="check-circle">
+
+    Save the returned message SID and inspect it in the Console if you need to debug delivery.
+
+    ````javascript
+console.log("Message sent");
+    ````
+
+  </Step>
+</Steps>
+
+## Make an outbound voice call
+
+Use the Calls API to place a voice call and point it to TwiML instructions that say what to do when the call connects. For a minimal test, play a short message or return a simple voice response from a public endpoint.
+
+<CodeGroup tabs="Node.js,Python">
+  ```javascript
+const twilio = require("twilio");
+
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
+
+async function makeCall() {
+  const call = await client.calls.create({
+    from: process.env.TWILIO_PHONE_NUMBER,
+    to: "+15558675310",
+    url: "https://example.com/voice.xml",
+  });
+
+  console.log(call.sid);
+}
+
+makeCall();
+```
+
+  ```python
+from twilio.rest import Client
+import os
+
+client = Client(
+    os.environ["TWILIO_ACCOUNT_SID"],
+    os.environ["TWILIO_AUTH_TOKEN"],
+)
+
+call = client.calls.create(
+    from_=os.environ["TWILIO_PHONE_NUMBER"],
+    to="+15558675310",
+    url="https://example.com/voice.xml",
+)
+
+print(call.sid)
+```
+</CodeGroup>
+
+## Test in the Twilio Console
+
+You can confirm delivery, inspect request details, and review errors in the Twilio Console. Use it to validate numbers, verify webhook URLs, and see the full status of your SMS or call.
+
+<Expandable title="What to check if your test fails" default-open="false">
+
+- Confirm the destination number is verified when your account requires verification.
+- Confirm the sender number supports the channel you are testing.
+- Confirm your Account SID and Auth Token match the active project.
+- Confirm the webhook or TwiML URL is reachable from the public internet.
+
+</Expandable>
+
+## Next steps
+
+After your first success, move to the deeper guides that match your use case.
+
+<Columns cols={3}>
+  <Card title="Messages API" icon="message-circle" href="#">
+    Explore delivery status, scheduling, and message media.
+  </Card>
+  <Card title="Voice API" icon="phone" href="#">
+    Learn how to control calls with TwiML and call status events.
+  </Card>
+  <Card title="Console" icon="layout-dashboard" href="#">
+    Use the Console to monitor traffic, troubleshoot, and manage numbers.
+  </Card>
+</Columns>

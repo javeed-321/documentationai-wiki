@@ -1,0 +1,206 @@
+---
+title: Authentication
+description: Authenticate requests to Twilio APIs using Account SID, Auth Token, and API keys for secure access.
+---
+
+## Overview
+
+To call Twilio APIs, you authenticate each request with credentials that identify your account and prove the request is authorized. Twilio uses a simple model centered on your Account SID, Auth Token, and API keys.
+
+Use the Account SID and Auth Token for quick, account-level access. Use API keys when you want to create narrower credentials for applications, services, or environments. For signed requests, Twilio helper libraries can validate that a webhook or callback came from Twilio before you trust the payload.
+
+## Authentication methods
+
+Choose the method that fits your use case. For most server-side API requests, you will use HTTP basic authentication with your Account SID as the username and your Auth Token as the password. For application-specific access, create API keys and use the key SID and secret instead of your Auth Token.
+
+<Tabs>
+  <Tab title="Account SID and Auth Token" icon="lock">
+    Use this method for direct API requests from trusted server environments.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      HTTP basic authentication header that contains your Account SID and Auth Token.
+    </ParamField>
+
+    The username is your Account SID and the password is your Auth Token.
+
+    <Callout kind="tip">
+      Use this pattern only from secure backend code. Do not expose your Auth Token in browsers, mobile apps, or other untrusted clients.
+    </Callout>
+  </Tab>
+
+  <Tab title="API key authentication" icon="key">
+    Use API keys when you want to isolate access, rotate credentials more safely, or separate environments.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      HTTP basic authentication header that contains your API key SID and API key secret.
+    </ParamField>
+
+    API keys help you avoid reusing your Auth Token across multiple services.
+  </Tab>
+
+  <Tab title="Request signing" icon="shield">
+    Use Twilio helper libraries to verify that incoming requests were sent by Twilio.
+
+    Twilio signs requests with a signature that you validate against your own public endpoint and shared credential values. If the signature check fails, reject the request before processing any data.
+
+    <Callout kind="info">
+      Validate signatures for webhooks and callbacks before you trust the request body, query string, or headers.
+    </Callout>
+  </Tab>
+</Tabs>
+
+## Implement authentication
+
+Use one of the patterns below depending on your environment. The examples show the same API call with different credential types so you can adapt them to your stack.
+
+<CodeGroup tabs="cURL,JavaScript,Python">
+  ```bash
+  curl -u "$TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN" \
+    https://api.example.com/2010-04-01/Accounts.json
+  ```
+
+  ```javascript
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+  const response = await fetch("https://api.example.com/2010-04-01/Accounts.json", {
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${accountSid}:${authToken}`).toString("base64")}`,
+    },
+  });
+
+  console.log(await response.json());
+  ```
+
+  ```python
+  import base64
+  import os
+  import requests
+
+  account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+  auth_token = os.environ["TWILIO_AUTH_TOKEN"]
+  token = base64.b64encode(f"{account_sid}:{auth_token}".encode()).decode()
+
+  response = requests.get(
+      "https://api.example.com/2010-04-01/Accounts.json",
+      headers={"Authorization": f"Basic {token}"},
+  )
+
+  print(response.json())
+  ```
+</CodeGroup>
+
+## Request signing
+
+When Twilio sends a webhook or callback to your application, verify the request signature before you read the payload. This protects you from spoofed requests and helps ensure the request really originated from Twilio.
+
+<Steps>
+  <Step title="Capture the request inputs" icon="download">
+    Collect the full request URL, the POST body, and the signature header that Twilio sends.
+
+    Keep the exact raw values. Small changes to the URL, query string, or body can break signature validation.
+  </Step>
+
+  <Step title="Compute the expected signature" icon="settings">
+    Use a Twilio helper library to recompute the signature from your endpoint URL and request data.
+
+    Compare the computed value with the signature Twilio provided.
+  </Step>
+
+  <Step title="Reject untrusted requests" icon="shield">
+    If the values do not match, stop processing immediately and return an error response.
+
+    If they match, continue with your normal webhook logic.
+  </Step>
+</Steps>
+
+<CodeGroup tabs="Node.js,Python,Ruby">
+  ```javascript
+  const twilio = require("twilio");
+
+  const isValid = twilio.validateRequest(
+    process.env.TWILIO_AUTH_TOKEN,
+    request.headers["x-twilio-signature"],
+    "https://dashboard.example.com/webhooks/twilio",
+    request.body
+  );
+
+  if (!isValid) {
+    throw new Error("Invalid Twilio signature");
+  }
+  ```
+
+  ```python
+  from twilio.request_validator import RequestValidator
+  import os
+
+  validator = RequestValidator(os.environ["TWILIO_AUTH_TOKEN"])
+
+  is_valid = validator.validate(
+      "https://dashboard.example.com/webhooks/twilio",
+      request_body,
+      request.headers["X-Twilio-Signature"],
+  )
+
+  if not is_valid:
+      raise ValueError("Invalid Twilio signature")
+  ```
+
+  ```ruby
+  require "twilio-ruby"
+
+  validator = Twilio::Security::RequestValidator.new(ENV["TWILIO_AUTH_TOKEN"])
+
+  is_valid = validator.validate(
+    "https://dashboard.example.com/webhooks/twilio",
+    request.body.read,
+    request.env["HTTP_X_TWILIO_SIGNATURE"]
+  )
+
+  raise "Invalid Twilio signature" unless is_valid
+  ```
+</CodeGroup>
+
+## Security tips
+
+<Callout kind="alert">
+  Treat your Auth Token and API key secret like passwords. Store them in environment variables or a managed secret store, rotate them regularly, and never commit them to source control or send them to the browser.
+</Callout>
+
+Use these practices to reduce exposure and limit blast radius:
+
+- Use the Auth Token only on trusted servers.
+- Prefer API keys for applications that need separate credentials.
+- Rotate credentials after team changes, incidents, or environment rebuilds.
+- Verify webhook signatures before processing any message, call, or event.
+- Scope logging so you never print secrets, authorization headers, or signed payloads.
+
+## Reference fields
+
+Use these values when you document or implement Twilio authentication flows.
+
+<ParamField path="Account SID" param-type="string" required="true">
+  The primary identifier for your Twilio account. Use it as the username in HTTP basic authentication.
+</ParamField>
+
+<ParamField path="Auth Token" param-type="string" required="true">
+  The shared secret paired with your Account SID. Use it as the password for account-level authentication.
+</ParamField>
+
+<ParamField path="API key SID" param-type="string" required="false">
+  The identifier for an API key you create for server-side access.
+</ParamField>
+
+<ParamField path="API key secret" param-type="string" required="false">
+  The secret paired with an API key SID. Store it securely and rotate it when needed.
+</ParamField>
+
+<ParamField header="X-Twilio-Signature" param-type="string" required="false">
+  The request signature header Twilio sends for webhook and callback validation.
+</ParamField>
+
+<Expandable title="When should you use API keys instead of the Auth Token?" default-open="false">
+  Use API keys when you want to create credentials that are easier to scope, rotate, and separate by service or environment. Keep the Auth Token for account-level access and administrative workflows.
+
+  If a credential leaks, API keys limit exposure better than reusing the Auth Token everywhere.
+</Expandable>

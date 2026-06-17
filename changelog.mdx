@@ -1,101 +1,120 @@
 ---
 title: Changelog
-description: Track the latest product updates, new features, and platform improvements across Webflow.
+description: Track recent updates and new features across Twilio's messaging, voice, and engagement APIs.
 ---
 
-## Latest updates
+## Overview
 
-Use this changelog to track recent Webflow releases. Entries are listed newest first and focus on product changes that affect teams building, managing, and optimizing websites.
+This changelog summarizes recent Twilio updates across messaging, voice, and engagement APIs. Use it to scan new capabilities, operational changes, and deprecation notices before you ship to production.
+
+Twilio updates frequently. Review the latest entries first, then check the version notes for anything that affects request parameters, channel behavior, or call routing.
 
 <Callout kind="info">
-These release notes are concise by design. They highlight the most relevant changes in AI, AEO, CMS, hosting, design, and collaboration.
+  This page is a starter kit. Replace the sample release entries with your own Twilio release history as needed.
 </Callout>
 
-<Columns cols={3}>
-  <Card title="AI and AEO" icon="zap" href="#">
-    Track new capabilities for AI-assisted workflows and AI search visibility.
-  </Card>
-  <Card title="CMS and Hosting" icon="cloud" href="#">
-    Review updates to content delivery, reliability, and publishing performance.
-  </Card>
-  <Card title="Designer and Collaboration" icon="users" href="#">
-    See improvements for building, editing, and working together in the canvas.
-  </Card>
-</Columns>
+## Recent updates
 
-## Release history
+<Update label="2026-06-12" description="v2.14.0" tags={["feature"]}>
 
-<Update label="2026-06-17" description="v3.14.0" tags={["feature"]}>
+### New API endpoints
 
-## New features
+- Added a new Conversations endpoint for retrieving persistent interaction context.
+- Added a new Messaging endpoint for channel-specific delivery diagnostics.
+- Added support for request filtering by account scope and date range.
 
-- Added Webflow AEO support for enterprise teams to improve visibility in AI search.
-- Expanded AI-assisted content workflows for faster page and copy iteration.
-- Improved Optimize workflows to help you test and refine high-intent pages.
+### Messaging channel updates
 
-## Platform improvements
+- Expanded WhatsApp message routing controls.
+- Improved delivery status reporting for template-based messages.
+- Added a new recipient metadata parameter for message audits.
 
-- Updated discovery and guidance across AI-related tools.
-- Refined publishing flow for teams managing multiple high-traffic sites.
+### Voice and SIP improvements
+
+- Added SIP trunk health checks for inbound and outbound traffic.
+- Improved call event timing for voice webhooks.
+- Added a new parameter for selecting fallback routing behavior.
 
 </Update>
 
-<Update label="2026-05-21" description="v3.13.0" tags={["feature", "bugfix"]}>
+<Update label="2026-05-08" description="v2.13.0" tags={["bugfix"]}>
 
-## CMS and hosting
+### Voice fixes
 
-- Improved CMS performance for large collections and frequent editorial updates.
-- Reduced publishing delays for sites with complex content models.
-- Added hosting reliability enhancements for steadier delivery during traffic spikes.
+- Fixed an issue where some call status callbacks arrived out of order.
+- Resolved a SIP registration edge case affecting retry behavior.
+- Corrected voicemail detection timing for certain regional numbers.
 
-## Designer and collaboration
+### Messaging fixes
 
-- Improved real-time collaboration clarity for shared editing sessions.
-- Refined designer interactions to make layout adjustments more predictable.
-- Fixed an issue that could cause comments to appear out of order in some projects.
+- Fixed duplicate delivery receipts for high-volume message bursts.
+- Resolved inconsistent error details for rejected outbound messages.
+- Improved validation for sender identifiers on select channels.
 
-</Update>
+### Deprecations
 
-<Update label="2026-04-18" description="v3.12.0" tags={["feature"]}>
-
-## Design and workflow updates
-
-- Added new design tooling to speed up responsive page creation.
-- Improved page building controls for structured landing page assembly.
-- Enhanced shared libraries so teams can reuse approved components more consistently.
-
-## Content operations
-
-- Updated content editing flows to reduce friction for marketing teams.
-- Improved localization support for multilingual site management.
-- Streamlined handoff between design, content, and publishing tasks.
+- Marked an older voice routing parameter as deprecated.
+- Notified customers to migrate away from the legacy message status field.
+- Added guidance for replacing the deprecated SIP timeout setting.
 
 </Update>
 
-## What changed in this release cycle
+<Update label="2026-04-15" description="v2.12.0" tags={["feature"]}>
 
-The latest releases center on visibility, performance, and team velocity. Webflow continues to expand AI features, strengthen CMS and hosting foundations, and refine the designer experience for collaborative website delivery.
+### Engagement platform updates
 
-<Tabs>
-  <Tab title="AI and AEO" icon="zap">
-    New release items focus on AI-assisted workflows and AEO capabilities that help you improve discoverability in AI search.
+- Added a new customer context parameter for engagement flows.
+- Expanded support for channel-aware routing across voice and messaging.
+- Introduced a new endpoint for retrieving delivery summaries.
 
-  </Tab>
-  <Tab title="CMS and Hosting" icon="cloud">
-    Updates improve collection performance, publishing reliability, and delivery consistency for content-heavy sites.
+### API parameter changes
 
-  </Tab>
-  <Tab title="Designer and Collaboration" icon="users">
-    Updates refine shared editing, layout control, and reusable components so teams can move faster together.
+- Added optional parameters for locale, channel preference, and fallback destination.
+- Updated validation rules for message payload length on supported channels.
+- Improved support for webhook signature verification metadata.
 
-  </Tab>
-</Tabs>
+### Operational notes
 
-<Expandable title="How to read this changelog" default-open="false">
+- Release notes now include clearer status codes for failed deliveries.
+- Voice and SIP logs now expose more consistent correlation identifiers.
+- Legacy endpoint behavior remains available during the migration window.
 
-- Start with the newest update at the top.
-- Use the version description to identify the release line.
-- Scan the tags to see whether a change is a feature or a bug fix.
-- Use the section headings to find AI, CMS, hosting, design, or collaboration changes quickly.
+</Update>
+
+## Voice release notes
+
+The entries above focus on voice, SIP, and messaging changes that can affect call flows and delivery outcomes. If you maintain production integrations, review the following areas first:
+
+- New endpoint availability
+- New optional parameters
+- Channel-specific behavior changes
+- Deprecation timelines
+
+Use dated version entries to map your deployment schedule to Twilio's release cadence. If a version introduces a new parameter, update your webhook handlers and validate request parsing before rollout.
+
+## Deprecation guidance
+
+Twilio marks older fields and routing options as deprecated before removing them. When you see a deprecation notice, confirm whether the replacement parameter changes behavior, default values, or validation rules.
+
+Recommended migration steps:
+
+1. Identify every request, webhook, and retry path that uses the deprecated field.
+2. Replace the field with the supported parameter.
+3. Test voice and messaging flows in a staging environment.
+4. Monitor delivery and call logs after release.
+5. Remove fallback logic only after the new path is stable.
+
+## Notes for maintainers
+
+Keep entries terse, dated, and factual. Use the newest update first, and group changes by API area so readers can find relevant changes quickly.
+
+<Expandable title="How to add a new release entry" default-open="false">
+
+Add one `Update` component per release and keep the content short.
+
+- Use an ISO date in the `label` attribute.
+- Use a semantic version in the `description` attribute.
+- Use `feature` or `bugfix` tags only when they match the release.
+- Keep bullets factual and specific.
 
 </Expandable>
