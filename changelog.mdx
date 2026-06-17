@@ -1,120 +1,41 @@
 ---
 title: Changelog
-description: Track recent updates and new features across Twilio's messaging, voice, and engagement APIs.
+description: Track recent updates and changes to the Stripe platform, APIs, and developer tools.
 ---
-
-## Overview
-
-This changelog summarizes recent Twilio updates across messaging, voice, and engagement APIs. Use it to scan new capabilities, operational changes, and deprecation notices before you ship to production.
-
-Twilio updates frequently. Review the latest entries first, then check the version notes for anything that affects request parameters, channel behavior, or call routing.
-
-<Callout kind="info">
-  This page is a starter kit. Replace the sample release entries with your own Twilio release history as needed.
-</Callout>
 
 ## Recent updates
 
-<Update label="2026-06-12" description="v2.14.0" tags={["feature"]}>
+<Update label="2024-10-15" description="API version 2024-10-15" tags={["feature"]}>
 
-### New API endpoints
+## New features
 
-- Added a new Conversations endpoint for retrieving persistent interaction context.
-- Added a new Messaging endpoint for channel-specific delivery diagnostics.
-- Added support for request filtering by account scope and date range.
+- Added support for three new payment methods in the European Union.
+- Introduced dashboard widgets for real-time revenue forecasting.
 
-### Messaging channel updates
+## API changes
 
-- Expanded WhatsApp message routing controls.
-- Improved delivery status reporting for template-based messages.
-- Added a new recipient metadata parameter for message audits.
-
-### Voice and SIP improvements
-
-- Added SIP trunk health checks for inbound and outbound traffic.
-- Improved call event timing for voice webhooks.
-- Added a new parameter for selecting fallback routing behavior.
+- Updated the Payment Intents API to include expanded fraud signals.
 
 </Update>
 
-<Update label="2026-05-08" description="v2.13.0" tags={["bugfix"]}>
+<Update label="2024-09-20" description="API version 2024-09-20" tags={["feature", "bugfix"]}>
 
-### Voice fixes
+## New features
 
-- Fixed an issue where some call status callbacks arrived out of order.
-- Resolved a SIP registration edge case affecting retry behavior.
-- Corrected voicemail detection timing for certain regional numbers.
+- Launched Sigma templates for subscription analytics.
+- Added bulk refund capability in the dashboard.
 
-### Messaging fixes
+## Bug fixes
 
-- Fixed duplicate delivery receipts for high-volume message bursts.
-- Resolved inconsistent error details for rejected outbound messages.
-- Improved validation for sender identifiers on select channels.
-
-### Deprecations
-
-- Marked an older voice routing parameter as deprecated.
-- Notified customers to migrate away from the legacy message status field.
-- Added guidance for replacing the deprecated SIP timeout setting.
+- Resolved an issue with webhook retry timing under high load.
 
 </Update>
 
-<Update label="2026-04-15" description="v2.12.0" tags={["feature"]}>
+<Update label="2024-08-30" description="API version 2024-08-30" tags={["deprecation"]}>
 
-### Engagement platform updates
+## Deprecations
 
-- Added a new customer context parameter for engagement flows.
-- Expanded support for channel-aware routing across voice and messaging.
-- Introduced a new endpoint for retrieving delivery summaries.
-
-### API parameter changes
-
-- Added optional parameters for locale, channel preference, and fallback destination.
-- Updated validation rules for message payload length on supported channels.
-- Improved support for webhook signature verification metadata.
-
-### Operational notes
-
-- Release notes now include clearer status codes for failed deliveries.
-- Voice and SIP logs now expose more consistent correlation identifiers.
-- Legacy endpoint behavior remains available during the migration window.
+- Deprecated legacy token creation endpoints effective January 2025.
+- Removed support for outdated Radar rule syntax.
 
 </Update>
-
-## Voice release notes
-
-The entries above focus on voice, SIP, and messaging changes that can affect call flows and delivery outcomes. If you maintain production integrations, review the following areas first:
-
-- New endpoint availability
-- New optional parameters
-- Channel-specific behavior changes
-- Deprecation timelines
-
-Use dated version entries to map your deployment schedule to Twilio's release cadence. If a version introduces a new parameter, update your webhook handlers and validate request parsing before rollout.
-
-## Deprecation guidance
-
-Twilio marks older fields and routing options as deprecated before removing them. When you see a deprecation notice, confirm whether the replacement parameter changes behavior, default values, or validation rules.
-
-Recommended migration steps:
-
-1. Identify every request, webhook, and retry path that uses the deprecated field.
-2. Replace the field with the supported parameter.
-3. Test voice and messaging flows in a staging environment.
-4. Monitor delivery and call logs after release.
-5. Remove fallback logic only after the new path is stable.
-
-## Notes for maintainers
-
-Keep entries terse, dated, and factual. Use the newest update first, and group changes by API area so readers can find relevant changes quickly.
-
-<Expandable title="How to add a new release entry" default-open="false">
-
-Add one `Update` component per release and keep the content short.
-
-- Use an ISO date in the `label` attribute.
-- Use a semantic version in the `description` attribute.
-- Use `feature` or `bugfix` tags only when they match the release.
-- Keep bullets factual and specific.
-
-</Expandable>

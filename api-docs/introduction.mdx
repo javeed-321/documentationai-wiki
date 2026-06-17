@@ -1,54 +1,41 @@
 ---
 title: Introduction
-description: Overview of Twilio's Customer Engagement Platform and its APIs for building voice, messaging, and communications applications.
+description: Introduction to the Stripe API for integrating payments, billing, and financial services into your application.
 ---
 
-<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416373576-61fes65kpt8-Image-6.png?q=85&fm=auto&auto=compress%2Cformat" alt="Twilio documentation" width="800" height="400" />
+<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416392648-tsntejft5od-Image-9.png?q=85&fm=auto&auto=compress%2Cformat" alt="Stripe documentation" width="800" height="400" />
 
 ## Welcome
 
-Twilio gives you a Customer Engagement Platform for building direct, personalized communication across voice, SMS, WhatsApp, and email. You use web APIs to create customer journeys that connect sales, marketing, support, and service.
+The Stripe API provides a REST interface for accepting payments, managing billing, and accessing financial services. You send HTTPS requests to endpoints that support JSON request and response bodies.
 
-Twilio operates in 180 countries and supports the infrastructure you need to reach customers on their preferred channels. Start with the platform capabilities below, then explore the Voice and messaging documentation that fits your application.
+## Core capabilities
 
 <Columns cols={2}>
-  <Card title="Platform" icon="cloud" href="#">
-
-Twilio Platform brings customer context, communication channels, and automation together on one API-first foundation.
-
+  <Card title="REST API" icon="code" href="#">
+    Standard HTTP methods and resource-oriented URLs handle all operations for payments, customers, and subscriptions.
   </Card>
-  <Card title="Messaging" icon="message-circle" href="#">
-
-Send SMS and WhatsApp messages with programmable APIs for transactional and conversational workflows.
-
+  <Card title="Payment methods" icon="credit-card" href="#">
+    Support for cards, bank transfers, wallets, and local payment options across more than 135 currencies.
   </Card>
-  <Card title="Voice" icon="phone" href="#">
-
-Build call flows, interactive voice experiences, and SIP-based connectivity for real-time communication.
-
+  <Card title="Idempotency" icon="refresh-cw" href="#">
+    Supply an Idempotency-Key header to safely retry requests without duplicating side effects.
   </Card>
-  <Card title="Global reach" icon="globe" href="#">
-
-Design applications for worldwide delivery across 180 countries with channel-aware routing.
-
+  <Card title="Rate limits" icon="gauge" href="#">
+    Default limits of 100 read and 100 write requests per second per account with clear retry guidance.
   </Card>
 </Columns>
 
-<Columns cols={2}>
-  <Card title="Explore Voice docs" icon="arrow-right" href="#" horizontal="true">
+## Explore further
 
-See how to structure voice requests, call handling, and telephony integrations.
+<Card title="Authentication" icon="key" href="#">
+  Learn how to authenticate requests using API keys and manage them securely in the Dashboard.
+</Card>
 
-  </Card>
-  <Card title="Explore Messaging docs" icon="arrow-right" href="#" horizontal="true">
-
-Learn how to send messages, manage delivery, and build channel-specific workflows.
-
-  </Card>
-</Columns>
+<Card title="Errors" icon="alert-triangle" href="#">
+  Review error codes, handling strategies, and best practices for robust integrations.
+</Card>
 
 <Callout kind="tip">
-
-Use Twilio when you need one communication layer for voice, SMS, WhatsApp, and customer engagement workflows.
-
+  Start with the REST reference to understand resource models before building your first integration.
 </Callout>

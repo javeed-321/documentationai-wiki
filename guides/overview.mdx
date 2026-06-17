@@ -1,0 +1,93 @@
+---
+title: Feature Overview
+description: Explore Stripe's core products including Payments, Billing, Connect, Radar, and Sigma for comprehensive commerce tooling.
+---
+
+## Overview
+
+Stripe provides a complete set of tools to accept payments, manage recurring revenue, power marketplaces, and analyze financial data. You integrate once and unlock online payments, in-person terminals, subscription billing, Connect for platforms, fraud protection via Radar, and deep analytics through Sigma.
+
+## Accepting Payments
+
+Accept payments online or in physical locations with a single integration.
+
+<Tabs>
+  <Tab title="Online" icon="globe">
+    Use the Payments API to handle card and alternative payment methods in your web or mobile checkout flow.
+
+    Create a payment intent on your server, then confirm it from the client.
+
+    ```javascript
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 2000,
+      currency: 'usd',
+      automatic_payment_methods: {enabled: true},
+    });
+    ```
+
+  </Tab>
+  <Tab title="In Person" icon="credit-card">
+    Pair Stripe Terminal with card readers for retail and hospitality locations. Accept tap, dip, or swipe transactions with the same underlying payment objects.
+
+  </Tab>
+</Tabs>
+
+## Subscription Management
+
+Billing handles recurring charges, trials, upgrades, and proration automatically.
+
+<Columns cols={2}>
+  <Card title="Plans & add-ons" icon="package" href="#">
+    Define multiple price points and attach usage-based metered billing.
+  </Card>
+  <Card title="Customer portal" icon="users" href="#">
+    Let customers update cards, change plans, or download invoices without code.
+  </Card>
+</Columns>
+
+## Marketplace Operations
+
+Use Connect to onboard connected accounts, split payments, and manage payouts on behalf of sellers or service providers.
+
+<CodeGroup tabs="Create account,Accept payment">
+```javascript
+const account = await stripe.accounts.create({
+  type: 'express',
+  country: 'US',
+});
+```
+
+```javascript
+const paymentIntent = await stripe.paymentIntents.create({
+  amount: 1000,
+  currency: 'usd',
+  application_fee_amount: 200,
+  transfer_data: {destination: 'acct_xxx'},
+});
+```
+</CodeGroup>
+
+## Analytics and Reporting
+
+Sigma lets you run SQL queries directly against your Stripe data for custom financial reports.
+
+<Expandable title="Example Sigma query" default-open="false">
+  Retrieve monthly recurring revenue by product in a single query.
+
+  ```sql
+  SELECT
+    DATE_TRUNC('month', created) AS month,
+    SUM(amount) AS revenue
+  FROM charges
+  WHERE status = 'succeeded'
+  GROUP BY 1
+  ORDER BY 1;
+  ```
+
+</Expandable>
+
+## Best Practices
+
+<Callout kind="tip">
+  Always use idempotency keys on create calls to safely retry requests without creating duplicate objects.
+</Callout>

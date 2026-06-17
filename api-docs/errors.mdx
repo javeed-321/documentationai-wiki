@@ -1,378 +1,109 @@
 ---
 title: Error Codes
-description: Understand Twilio REST API error codes, causes, and recommended solutions for messaging and voice failures.
+description: Understand Stripe API error codes including declines, authentication failures, and rate limiting responses.
 ---
 
 ## Overview
 
-Twilio error codes help you identify why a message, call, or API request failed. In practice, you use them to separate transient issues, such as rate limits, from configuration issues, such as invalid credentials, malformed payloads, or unsupported destination numbers.
+Stripe returns machine-readable error codes in JSON responses. Inspect the `type` and `code` fields to determine the exact failure and apply the correct remediation.
 
-This page focuses on troubleshooting the most common Twilio REST API failures for SMS, WhatsApp, and Voice. Each issue below follows the same pattern: problem, cause, and fix.
+## Card Decline Errors
 
-<Callout kind="info">
-Use the exact error code and message from the Twilio response body, then check the corresponding request parameters, sender configuration, and account limits.
-</Callout>
+<Expandable title="card_declined with insufficient_funds">
+Problem:  
+A charge request returns HTTP 402 with `"code": "card_declined"` and `"decline_code": "insufficient_funds"`.
 
-## Quick reference
+Cause:  
+The customer's card has insufficient available balance for the attempted amount.
 
-Use this table to narrow down the failure class before you inspect the full response.
-
-| Area | Typical symptom | What it usually means |
-| --- | --- | --- |
-| SMS and WhatsApp | `21614`, `21408`, or `30007` | Destination, sender, or content restriction |
-| Voice | `21201`, `21206`, or `13223` | Invalid parameter, call setup failure, or permission issue |
-| Rate limiting | `429 Too Many Requests` | You are sending too quickly or exceeding a quota |
-| Delivery debugging | `Message status = failed` or `Call status = no-answer` | The request succeeded, but delivery or answer failed later |
-
-## Common troubleshooting patterns
-
-<Steps>
-  <Step title="Capture the full failure response" icon="search">
-    Record the HTTP status code, Twilio error code, `requestSid`, and the raw response body.
-
-    ```bash
-    curl -i https://api.example.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json
-    ```
-
-  </Step>
-  <Step title="Match the code to the channel" icon="layers">
-    Confirm whether the failure happened on SMS, WhatsApp, or Voice. The same HTTP status can mean different things depending on the API resource.
-  </Step>
-  <Step title="Check sender, recipient, and content" icon="check-circle">
-    Validate the `From` number, `To` number, webhook URL, and message body or call parameters before you retry.
-  </Step>
-</Steps>
-
-## SMS and WhatsApp errors
-
-### 21614 - To number is invalid for SMS or WhatsApp
-
-<Expandable title="Problem, cause, and fix" default-open="true">
-  You send a message and Twilio returns an error similar to `21614: To number is not a valid mobile number`.
-
-  **Cause**
-
-  The destination number is invalid, not in E.164 format, or not supported for the channel you selected. For WhatsApp, the recipient must also be reachable through an approved WhatsApp sender path.
-
-  **Fix**
-
-  Verify the destination number format, remove punctuation, and resend with a fully qualified number such as `+14155552671`.
-
-  ```bash
-  curl -X POST https://api.example.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json \
-    --data-urlencode "To=+14155552671" \
-    --data-urlencode "From=+15017122661" \
-    --data-urlencode "Body=Test message"
-  ```
-
-</Expandable>
-
-### 21608 - Message body is too long
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  You attempt to send a long SMS and Twilio rejects the request with `21608: Message body is too long`.
-
-  **Cause**
-
-  The body exceeds the allowed length for the configured encoding or the message was not segmented the way you expected. This often appears when you append tracking text or dynamic fields.
-
-  **Fix**
-
-  Shorten the content, split it into multiple messages, or move the detail into a link. If you need to preserve exact content, test the final rendered body before sending.
-
-  ```text
-  Original body:
-  Your verification code is 123456. This code expires in 10 minutes. Do not share it with anyone.
-
-  Revised body:
-  Your verification code is 123456. It expires in 10 minutes.
-  ```
-
-</Expandable>
-
-### 30007 - Carrier rejected the message
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  Message status changes to `failed` and the error code is `30007`.
-
-  **Cause**
-
-  The downstream carrier rejected the message. Common reasons include unsupported content, unregistered sender use case, suspicious links, or destination filtering.
-
-  **Fix**
-
-  Review the message content, sender reputation, and destination country rules. Remove shortened links, keep the content specific to the expected use case, and retry with a compliant sender.
-
-  **Useful checks**
-
-  - Confirm the sender is allowed for the destination country.
-  - Remove URL shorteners and verify the final link resolves.
-  - Compare the exact failed body against a known-good template.
-
-</Expandable>
-
-### 30008 - Message delivery failed
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  Twilio accepts the message, but the final status becomes `failed` with `30008`.
-
-  **Cause**
-
-  The message was accepted by Twilio but could not be delivered to the handset. This can happen when the device is unavailable, the route is blocked, or the carrier cannot complete delivery.
-
-  **Fix**
-
-  Check the delivery status callback, verify the recipient can receive messages, and retry only after correcting the route or content. If you see repeated failures to the same destination, test with another known-valid number.
-
-  ```json
-  {
-    "status": "failed",
-    "error_code": 30008,
-    "error_message": "Message delivery failed"
-  }
-  ```
-
-</Expandable>
-
-### WhatsApp template or content issues
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  Your WhatsApp send request fails or stalls after submission.
-
-  **Cause**
-
-  The message body does not match the WhatsApp send path, template requirements are missing, or the sender is not set up for that content type.
-
-  **Fix**
-
-  Confirm that the sender is configured for WhatsApp, use the approved message format for the destination, and make sure the body content matches the template or session rules you are using.
-
-  **Example failure shape**
-
-  ```json
-  {
-    "code": 63016,
-    "message": "Channel not supported",
-    "more_info": "https://www.twilio.com/docs/errors/63016"
-  }
-  ```
-
-</Expandable>
-
-## Voice API errors
-
-### 21201 - Invalid `Url` parameter
-
-<Expandable title="Problem, cause, and fix" default-open="true">
-  A voice call request fails with `21201: Invalid URL`.
-
-  **Cause**
-
-  The TwiML URL or webhook URL is malformed, unreachable, blocked by authentication, or returns non-XML content.
-
-  **Fix**
-
-  Serve valid TwiML from a public HTTPS endpoint and make sure the URL returns a `200 OK` response with XML. If the endpoint requires auth, Twilio cannot fetch it unless you expose it correctly.
-
-  ```xml
-  <Response>
-    <Say>Hello from Twilio</Say>
-  </Response>
-  ```
-
-</Expandable>
-
-### 21206 - The call could not be completed as dialed
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  You create a call and receive a failure similar to `21206`.
-
-  **Cause**
-
-  The destination number is invalid, unrouteable, or not allowed for your current account and destination combination.
-
-  **Fix**
-
-  Recheck the dialed number in E.164 format, validate the destination country, and confirm that your account can place calls to that region.
-
-  ```bash
-  curl -X POST https://api.example.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Calls.json \
-    --data-urlencode "To=+442071838750" \
-    --data-urlencode "From=+15017122661" \
-    --data-urlencode "Url=https://example.com/twiml.xml"
-  ```
-
-</Expandable>
-
-### 21217 - Calling from an unverified number
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  The call request is rejected because the caller ID is not allowed.
-
-  **Cause**
-
-  You are attempting to place a call from a number that is not assigned to your account or not verified for the current environment.
-
-  **Fix**
-
-  Use a Twilio-owned number or a verified caller ID that is enabled for outbound calling in the target region.
-
-  **Checklist**
-
-  - Confirm the `From` number exists in your account.
-  - Confirm voice capability is enabled on that number.
-  - Make sure the number can be used for the destination you are dialing.
-
-</Expandable>
-
-### 13223 - Insufficient permission to place the call
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  The API request returns a permission error before the call connects.
-
-  **Cause**
-
-  Your account, subaccount, or calling configuration does not have permission for the target destination or feature.
-
-  **Fix**
-
-  Review geo-permissions, voice configuration, and account-level restrictions. If the destination region is blocked, enable it intentionally and retry.
-
-  ```json
-  {
-    "code": 13223,
-    "message": "Permission to call this number is not enabled"
-  }
-  ```
-
-</Expandable>
-
-## Rate limiting and quota errors
-
-### 20429 - Too many requests
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  Your application receives `429 Too Many Requests` or a Twilio error code like `20429`.
-
-  **Cause**
-
-  You are sending requests faster than the allowed rate, often because of a retry loop, burst traffic, or parallel workers.
-
-  **Fix**
-
-  Back off, reduce concurrency, and retry with exponential delay. If the traffic is expected, queue requests and smooth the send rate instead of firing them all at once.
-
-  ```bash
-  for attempt in 1 2 3; do
-    curl -sS -X POST https://api.example.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json && break
-    sleep $((attempt * 2))
-  done
-  ```
-
-</Expandable>
-
-### Quota exceeded or sender limit reached
-
-<Expandable title="Problem, cause, and fix" default-open="false">
-  The request fails after a burst of traffic, or delivery stops once you hit a daily or account-specific ceiling.
-
-  **Cause**
-
-  You reached a messaging quota, per-sender limit, or destination-specific throughput restriction.
-
-  **Fix**
-
-  Check your account limits, confirm the sender is eligible for the volume you are sending, and spread traffic across a compliant schedule. If the limit is temporary, wait for the window to reset before retrying.
-
-  **Operational note**
-
-  A `202 Accepted` response only means Twilio accepted the request. It does not guarantee delivery when the downstream quota is exhausted.
-
-</Expandable>
-
-## Debugging failed deliveries
-
-### Step 1 - Inspect the status callback
-
-Use the delivery status event to see whether the failure happened at accept time or later during carrier or network handoff.
+Fix:  
+Advise the customer to use a different card or reduce the charge amount. You can surface the `decline_code` value directly to the customer.
 
 ```json
 {
-  "MessageSid": "SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  "MessageStatus": "failed",
-  "ErrorCode": 30007,
-  "ErrorMessage": "Carrier violation"
+  "error": {
+    "type": "card_error",
+    "code": "card_declined",
+    "decline_code": "insufficient_funds",
+    "message": "Your card has insufficient funds."
+  }
 }
 ```
 
-### Step 2 - Reproduce with the smallest valid request
+</Expandable>
 
-Strip the request down to one sender, one recipient, and a short body or simple TwiML document. This isolates whether the issue comes from content, routing, or configuration.
+<Expandable title="card_declined with do_not_honor">
+Problem:  
+Charge fails with `"decline_code": "do_not_honor"`.
 
-### Step 3 - Verify the endpoint response
+Cause:  
+The issuing bank declined the transaction without providing a more specific reason.
 
-If the failure is webhook-related, test the URL directly and confirm the response is valid.
+Fix:  
+Ask the customer to contact their bank or try another card. Do not retry the same card immediately.
+
+</Expandable>
+
+## API Authentication Errors
+
+<Expandable title="Invalid API key">
+Problem:  
+Requests return HTTP 401 with `"type": "invalid_request_error"` and message containing `"Invalid API Key"`.
+
+Cause:  
+The `Authorization` header contains an unknown or revoked secret key.
+
+Fix:  
+Verify that you are using the correct secret key from the Developers section of the Stripe dashboard and that the key has not been deleted.
 
 ```bash
-curl -i https://example.com/twilio/voice
+curl https://api.stripe.com/v1/charges \
+  -u sk_test_your_key_here:
 ```
 
-Expected behavior:
+</Expandable>
 
-- The endpoint returns `200 OK`
-- The response body is valid TwiML
-- The response does not require interactive login
-- The request completes quickly enough for Twilio to fetch it
+## Idempotency Errors
 
-## Response examples
+<Expandable title="idempotency_key_in_use">
+Problem:  
+A POST returns HTTP 409 with `"code": "idempotency_key_in_use"`.
 
-### Messaging failure
+Cause:  
+The same idempotency key is already attached to an in-progress request.
 
-```json
-{
-  "code": 21614,
-  "message": "To number is not a valid mobile number",
-  "more_info": "https://www.twilio.com/docs/errors/21614",
-  "status": 400
-}
+Fix:  
+Wait for the original request to complete, then retry with the same key or generate a new key for a new operation.
+
+</Expandable>
+
+## Rate Limiting and Retries
+
+<Expandable title="Rate limit exceeded">
+Problem:  
+HTTP 429 response with `"type": "rate_limit_error"`.
+
+Cause:  
+Too many requests were sent in a short time window.
+
+Fix:  
+Implement exponential backoff. Respect the `Retry-After` header when present.
+
+```python
+import time
+import requests
+
+def retry_request(url, headers, data, max_retries=5):
+    for attempt in range(max_retries):
+        response = requests.post(url, headers=headers, json=data)
+        if response.status_code != 429:
+            return response
+        time.sleep(2 ** attempt)
+    raise Exception("Max retries exceeded")
 ```
 
-### Voice failure
+</Expandable>
 
-```json
-{
-  "code": 21201,
-  "message": "Invalid URL",
-  "more_info": "https://www.twilio.com/docs/errors/21201",
-  "status": 400
-}
-```
-
-## Practical checklist
-
-Before you retry a failed request, confirm the following:
-
-- The `To` and `From` values use valid E.164 formatting.
-- The content matches the channel and destination requirements.
-- The webhook URL is public, reachable, and returns the expected payload.
-- Your account has permission for the destination country and the selected channel.
-- You are not retrying too aggressively after a `429` response.
-
-<ExpandableGroup>
-  <Expandable title="When should you retry?" default-open="false">
-    Retry only when the error is transient, such as `429 Too Many Requests` or a temporary transport issue.
-
-    Do not blindly retry content, permission, or destination errors, because repeated retries usually create more failures.
-
-  </Expandable>
-  <Expandable title="When should you open a support case?" default-open="false">
-    Open a case when you see consistent failures with a valid request, a known-good destination, and no obvious account or configuration issue.
-
-    Include the full request timestamp, request SID, error code, and the exact request payload minus secrets.
-
-  </Expandable>
-</ExpandableGroup>
-
-## Next steps
-
-Use the code and message from the failure response, identify the channel, and fix the request before you resend. If you are building a troubleshooting runbook, start with the error codes that appear most often in your logs, then add the exact symptoms from your own Twilio traffic.
+<Callout kind="info">
+Always log the full error object returned by Stripe. The combination of `type`, `code`, and `decline_code` provides the precise information needed for automated handling.
+</Callout>

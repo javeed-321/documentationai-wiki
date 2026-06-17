@@ -1,0 +1,93 @@
+---
+title: Quickstart
+description: Get up and running with Stripe by creating an account, obtaining API keys, and accepting your first payment.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+Create a Stripe account and switch to test mode before you begin. All examples below run safely against test data.
+</Callout>
+
+## Create your account and obtain API keys
+
+<Steps>
+  <Step title="Sign up" icon="user">
+    Visit the Stripe dashboard and create your account. After verification you land in test mode by default.
+  </Step>
+  <Step title="Retrieve API keys" icon="key">
+    Navigate to Developers > API keys. Copy the publishable key and secret key shown there. Keep the secret key private.
+
+    ```bash
+    # Example keys (replace with your own)
+    PUBLISHABLE_KEY=pk_test_your_key_here
+    SECRET_KEY=sk_test_your_key_here
+    ```
+  </Step>
+</Steps>
+
+## Accept your first test payment
+
+Use the API directly to create a PaymentIntent and confirm it with a test card.
+
+<CodeGroup tabs="cURL,JavaScript">
+```bash
+curl https://api.stripe.com/v1/payment_intents \
+  -u sk_test_your_key_here: \
+  -d amount=2000 \
+  -d currency=usd \
+  -d "payment_method_data[card][number]"=4242424242424242 \
+  -d "payment_method_data[card][exp_month]"=12 \
+  -d "payment_method_data[card][exp_year]"=2025 \
+  -d "payment_method_data[card][cvc]"=123 \
+  -d "payment_method_data[type]"=card \
+  -d confirm=true
+```
+
+```javascript
+const response = await fetch("https://api.stripe.com/v1/payment_intents", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer sk_test_your_key_here",
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  body: new URLSearchParams({
+    amount: 2000,
+    currency: "usd",
+    "payment_method_data[card][number]": "4242424242424242",
+    "payment_method_data[card][exp_month]": "12",
+    "payment_method_data[card][exp_year]": "2025",
+    "payment_method_data[card][cvc]": "123",
+    "payment_method_data[type]": "card",
+    confirm: "true",
+  }),
+});
+const paymentIntent = await response.json();
+console.log(paymentIntent.status);
+```
+</CodeGroup>
+
+## Configure a webhook endpoint
+
+<Steps>
+  <Step title="Expose an endpoint" icon="webhook">
+    Create a POST route in your application that Stripe can reach, for example `/webhook`.
+  </Step>
+  <Step title="Register the endpoint" icon="link">
+    In the Stripe dashboard go to Developers > Webhooks and add your endpoint URL. Subscribe to the `payment_intent.succeeded` event.
+  </Step>
+  <Step title="Verify signatures" icon="shield">
+    Retrieve your webhook signing secret from the dashboard and use it to validate incoming requests.
+  </Step>
+</Steps>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Payments" icon="credit-card" href="#">
+    Learn how to accept more payment methods and handle refunds.
+  </Card>
+  <Card title="Billing" icon="file-text" href="#">
+    Set up subscriptions and recurring invoices.
+  </Card>
+</Columns>
