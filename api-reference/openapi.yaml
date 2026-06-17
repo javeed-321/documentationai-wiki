@@ -1,16 +1,16 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: Vercel API
+  title: Stripe API
   license:
     name: MIT
 servers:
-  - url: https://api.vercel.com/v1
+  - url: https://api.stripe.com/v1
 paths:
-  /deployments:
+  /payments:
     get:
-      summary: List deployments
-      operationId: listDeployments
+      summary: List payments
+      operationId: listPayments
       parameters:
         - name: limit
           in: query
@@ -21,7 +21,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of deployments
+          description: An paged array of payments
           headers:
             x-next:
               description: A link to the next page of responses
@@ -30,7 +30,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deployments'
+                $ref: '#/components/schemas/Payments'
         default:
           description: unexpected error
           content:
@@ -38,8 +38,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create deployment
-      operationId: createDeployment
+      summary: Create payment
+      operationId: createPayment
       responses:
         201:
           description: Null response
@@ -49,15 +49,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /deployments/{deploymentId}:
+  /payments/{paymentId}:
     get:
-      summary: Get deployment
-      operationId: showDeploymentById
+      summary: Get payment details
+      operationId: showPaymentById
       parameters:
-        - name: deploymentId
+        - name: paymentId
           in: path
           required: true
-          description: The id of the deployment to retrieve
+          description: The id of the payment to retrieve
           schema:
             type: string
       responses:
@@ -66,17 +66,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deployments'
+                $ref: '#/components/schemas/Payments'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /ai-gateway/models:
+  /refunds:
     get:
-      summary: List models
-      operationId: listModels
+      summary: List refunds
+      operationId: listRefunds
       parameters:
         - name: limit
           in: query
@@ -87,7 +87,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of models
+          description: An paged array of refunds
           headers:
             x-next:
               description: A link to the next page of responses
@@ -96,7 +96,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Models'
+                $ref: '#/components/schemas/Refunds'
         default:
           description: unexpected error
           content:
@@ -104,8 +104,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create model
-      operationId: createModel
+      summary: Create refund
+      operationId: createRefund
       responses:
         201:
           description: Null response
@@ -115,15 +115,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /ai-gateway/models/{modelId}:
+  /subscriptions/{subscriptionId}:
     get:
-      summary: Get model
-      operationId: showModelById
+      summary: Get subscription
+      operationId: showSubscriptionById
       parameters:
-        - name: modelId
+        - name: subscriptionId
           in: path
           required: true
-          description: The id of the model to retrieve
+          description: The id of the subscription to retrieve
           schema:
             type: string
       responses:
@@ -132,7 +132,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Models'
+                $ref: '#/components/schemas/Subscriptions'
         default:
           description: unexpected error
           content:
@@ -141,38 +141,53 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Deployment:
+    Payment:
       required:
         - id
-        - name
+        - amount
       properties:
         id:
+          type: string
+        amount:
           type: integer
           format: int64
-        name:
+        currency:
           type: string
-        tag:
-          type: string
-    Deployments:
+    Payments:
       type: array
       items:
-        $ref: '#/components/schemas/Deployment'
-    Model:
+        $ref: '#/components/schemas/Payment'
+    Refund:
       required:
         - id
-        - name
+        - amount
       properties:
         id:
+          type: string
+        amount:
           type: integer
           format: int64
-        name:
+        status:
           type: string
-        tag:
-          type: string
-    Models:
+    Refunds:
       type: array
       items:
-        $ref: '#/components/schemas/Model'
+        $ref: '#/components/schemas/Refund'
+    Subscription:
+      required:
+        - id
+        - status
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        customer:
+          type: string
+    Subscriptions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Subscription'
     Error:
       required:
         - code

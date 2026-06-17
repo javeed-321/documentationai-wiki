@@ -1,115 +1,99 @@
 ---
 title: Changelog
-description: Latest product updates, new features, and platform improvements.
+description: Track recent updates and changes to the Stripe platform and APIs.
 ---
 
-## Changelog
+## Overview
 
-Release notes for Vercel. Newest updates appear first.
+This page tracks recent changes to Stripe platform features and APIs.
+
+Use it to review the latest release notes for product updates, deprecations, and behavior changes.
 
 <Callout kind="info">
-
-This page is a starter template. Replace the sample entries with your published release history.
-
+This starter page is sample documentation. Replace the entries below with your published release history.
 </Callout>
 
-<Update label="2026-06-10" description="v1.24.0" tags={["feature"]}>
+## Recent updates
 
-## AI Cloud
+<Update label="2026-06-10" description="v2026.06.0" tags={["feature"]}>
 
-- Added faster model routing in the AI Gateway for supported requests.
-- Expanded sandboxed code execution with improved isolation defaults.
-- Improved Vercel Agent integration for stack-aware task handling.
+### API changes
 
-## Edge Network
+- Added support for expanded payment method availability in supported markets.
+- Updated subscription billing flows to improve trial-to-paid transitions.
+- Introduced new reporting fields for settlement summaries.
 
-- Rolled out lower-latency routing for dynamic traffic in more regions.
-- Improved cache behavior for static assets on the global edge CDN.
+### New features
 
-## Security
+- Added improved fraud review signals in Radar.
+- Expanded card issuing controls for authorization rules.
+- Added additional stablecoin-related settlement options in supported workflows.
 
-- Tightened bot protection controls for high-traffic routes.
-- Improved WAF rule evaluation for common application patterns.
+### Deprecations
 
-</Update>
-
-<Update label="2026-05-20" description="v1.23.0" tags={["feature", "bugfix"]}>
-
-## Core Platform
-
-- Improved Fluid Compute resource allocation for bursty workloads.
-- Reduced deployment wait time after a single Git push.
-- Fixed an issue that could delay preview availability on some projects.
-
-## Observability
-
-- Improved trace sampling consistency for long-running requests.
-- Fixed missing labels in selected deployment traces.
-
-## Workflow
-
-- Improved status reporting for orchestration runs.
-- Fixed a retry edge case for interrupted tasks.
+- Deprecated legacy event payload fields for older payment integrations.
+- Marked an older billing endpoint for removal in a future release.
 
 </Update>
 
-<Update label="2026-04-18" description="v1.22.0" tags={["feature"]}>
+<Update label="2026-05-14" description="v2026.05.0" tags={["bugfix"]}>
 
-## Security
+### API changes
 
-- Added broader DDoS protection coverage for public applications.
-- Expanded BotID verification handling for login and signup flows.
-- Improved Web Application Firewall rule management.
+- Fixed intermittent delays in event delivery for some webhooks.
+- Resolved an issue where refund status updates could appear out of order.
+- Corrected an inconsistency in invoice totals for edge-case tax calculations.
 
-## AI Cloud
+### Bug fixes
 
-- Added more consistent access patterns for the AI Gateway.
-- Improved sandbox startup time for repeated execution requests.
-
-## Content Delivery
-
-- Improved edge caching for frequently requested content.
-- Added more reliable invalidation handling for updated assets.
+- Fixed dashboard search results for large connected account lists.
+- Resolved a rounding issue in multi-currency subscription invoices.
+- Improved error handling for declined card-present transactions.
 
 </Update>
 
-## What to track
+<Update label="2026-04-18" description="v2026.04.0" tags={["feature", "bugfix"]}>
 
-Use each update to capture changes that affect deployment speed, edge delivery, AI features, and security controls.
+### API changes
 
-### Recommended entry format
+- Added new fields for payment lifecycle tracking.
+- Updated Connect account response payloads for clearer capability states.
+- Improved Sigma query availability for recent reporting data.
 
-- Date first.
-- Version second.
-- Feature and bug fix tags.
-- Short bullets with specific outcomes.
+### New features
 
-### Release areas to include
+- Added support for a broader set of local payment methods.
+- Released enhancements for subscription proration controls.
+- Improved card authorization tooling for in-person payments.
 
-| Area | What to note |
-| --- | --- |
-| AI Cloud | AI Gateway, sandboxed execution, Vercel Agent |
-| Edge network | CDN behavior, cache changes, routing updates |
-| Security | DDoS protection, WAF, BotID |
-| Platform | CI/CD, Fluid Compute, observability, workflows |
+### Bug fixes
 
-<Expandable title="Editing checklist" default-open="false">
+- Fixed duplicate balance transaction entries in a narrow reporting case.
+- Resolved a display issue affecting payment intent status labels.
 
-Before you publish an entry, confirm that you:
+</Update>
 
-- Use the newest update first.
-- Keep each bullet factual and concise.
-- Avoid marketing language.
-- Mention only Vercel features and services.
-- Keep the date in ISO format.
+## Change categories
+
+Stripe release notes usually include the following types of entries.
+
+- API changes: request, response, and schema updates.
+- New features: newly available platform capabilities.
+- Deprecations: fields, endpoints, or behaviors scheduled for removal.
+- Bug fixes: corrections to expected behavior or data display.
+
+## Reading this page
+
+Review entries from newest to oldest.
+
+For implementation details, check the relevant Stripe API reference or dashboard release notes in your internal documentation set.
+
+<Expandable title="How to customize this page" default-open="false">
+
+- Keep entries dated.
+- Put the newest update first.
+- Group changes by feature area.
+- Use concise bullets.
+- Remove sample wording before publishing.
 
 </Expandable>
-
-## Example release flow
-
-```mermaid
-graph LR
-    A[Git push] --> B[Build and deploy]
-    B --> C[Edge delivery]
-    C --> D[Security checks]
-```

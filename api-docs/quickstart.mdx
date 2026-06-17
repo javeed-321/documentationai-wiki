@@ -1,198 +1,143 @@
 ---
-title: Quickstart
-description: Make your first API call to list deployments or trigger a new build.
+title: API Quickstart
+description: Make your first API call to create a charge or customer with Stripe.
 ---
 
 ## Quickstart
 
-Use this quickstart to make your first Vercel API call in under five minutes. You will set up a token, install the SDK, and send a request that either lists deployments or starts a new build.
+Use this quickstart to make your first API call with Stripe. You will set up an API key, send a test request, and verify the response in a few minutes.
 
 <Callout kind="info">
-You need a Vercel API token before you can call the API. Store it as `VERCEL_TOKEN` in your environment, and never commit it to source control.
+
+This page uses test mode only. Replace `YOUR_API_KEY` with a test secret key before you send requests.
+
 </Callout>
 
-### What you will build
+## What you need
 
-You will learn two common request patterns:
+Before you start, make sure you have the following:
 
-- List deployments for a project
-- Trigger a new deployment from a build source
+- A Stripe account with access to the dashboard
+- A test secret key
+- `curl`, or a supported client library
+- A terminal that can reach `https://api.example.com`
 
-You will also see the response shape you can expect from the API so you can plug it into your own tooling right away.
+## Set up your environment
 
-## Prerequisites
-
-Before you start, make sure you have:
-
-- A Vercel account
-- An API token with access to deployments
-- Node.js installed if you want to use the SDK
-- `curl` installed if you want to test the API from the command line
-
-## Set up access
+Follow these steps to prepare your first request.
 
 <Steps>
-  <Step title="Create an API token" icon="lock">
-    Open your Vercel account settings, create a token, and copy it to a safe place.
+  <Step title="Create a test key" icon="key">
 
-    Use the token value as `VERCEL_TOKEN` in your shell environment.
-
-  </Step>
-  <Step title="Set the environment variable" icon="settings">
-    Export the token so your local tools can read it.
-
-    ```bash
-    export VERCEL_TOKEN="YOUR_API_TOKEN"
-    ```
+  In the Stripe dashboard, create or copy a test secret key. Store it as an environment variable so you do not hardcode it in requests.
 
   </Step>
-  <Step title="Choose a project identifier" icon="database">
-    Pick the project ID or name you want to query or deploy.
+  <Step title="Choose a request type" icon="settings">
 
-    If you are not sure which one to use, start with the project you already manage in Vercel.
+  Start with either a customer create request or a payment request. This page shows a customer example first, because it is the smallest working call.
+
+  </Step>
+  <Step title="Send a test request" icon="terminal">
+
+  Run the sample request from your terminal and confirm you receive a `200`-level response.
 
   </Step>
 </Steps>
 
 ## Make your first request
 
-Use the API endpoint to list deployments for a project. The same authentication pattern works for other deployment actions.
+Use the `customers` endpoint to create a test customer. This is a minimal request that confirms authentication, network access, and request formatting.
 
-<CodeGroup tabs="cURL,JavaScript">
+<CodeGroup tabs="cURL,JavaScript,Python">
   ```bash
-  curl -s https://api.example.com/v1/deployments \
-    -H "Authorization: Bearer $VERCEL_TOKEN" \
-    -H "Content-Type: application/json"
+curl https://api.example.com/v1/customers \
+  -u YOUR_API_KEY: \
+  -d email="jane.doe@example.com" \
+  -d name="Jane Doe"
   ```
 
   ```javascript
-  const token = process.env.VERCEL_TOKEN;
+const response = await fetch("https://api.example.com/v1/customers", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer YOUR_API_KEY",
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  body: new URLSearchParams({
+    email: "jane.doe@example.com",
+    name: "Jane Doe",
+  }),
+});
 
-  const response = await fetch("https://api.example.com/v1/deployments", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
+const customer = await response.json();
+console.log(customer);
+  ```
+
+  ```python
+import requests
+
+response = requests.post(
+    "https://api.example.com/v1/customers",
+    auth=("YOUR_API_KEY", ""),
+    data={
+        "email": "jane.doe@example.com",
+        "name": "Jane Doe",
     },
-  });
+)
 
-  const data = await response.json();
-  console.log(data);
+customer = response.json()
+print(customer)
   ```
 </CodeGroup>
 
-The response is JSON. For a successful call, you typically get a list of deployment objects with identifiers, names, states, and URLs.
+## Use test data
 
-```json
-{
-  "deployments": [
-    {
-      "id": "dpl_123",
-      "name": "my-app",
-      "state": "READY",
-      "url": "https://my-app.example.com"
-    }
-  ]
-}
-```
+Stripe provides test values so you can validate your integration without moving money. Use them to simulate success and error cases while you build.
 
-## Trigger a build
+<Tabs>
+  <Tab title="Cards" icon="credit-card">
 
-If you want to create a new deployment instead of listing existing ones, send a request to the build endpoint with the project reference.
+  Use a test card number to simulate a successful payment. Keep all other values realistic, such as an email address and billing name.
 
-<CodeGroup tabs="cURL,JavaScript">
-  ```bash
-  curl -s https://api.example.com/v1/deployments \
-    -X POST \
-    -H "Authorization: Bearer $VERCEL_TOKEN" \
-    -H "Content-Type: application/json" \
-    -d '{
-      "projectId": "prj_123",
-      "target": "production"
-    }'
-  ```
+  </Tab>
+  <Tab title="Customers" icon="users">
 
-  ```javascript
-  const token = process.env.VERCEL_TOKEN;
+  Create customers with test email addresses so you can attach them to future requests for subscriptions, invoices, or saved payment methods.
 
-  const response = await fetch("https://api.example.com/v1/deployments", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      projectId: "prj_123",
-      target: "production",
-    }),
-  });
+  </Tab>
+  <Tab title="Errors" icon="alert-triangle">
 
-  const data = await response.json();
-  console.log(data);
-  ```
-</CodeGroup>
+  Use invalid or incomplete input to confirm your error handling returns a useful message to the caller.
 
-A successful trigger returns a deployment record and a status that tells you the build has started.
-
-```json
-{
-  "deployment": {
-    "id": "dpl_456",
-    "state": "BUILDING",
-    "url": "https://my-app-git-main.example.com"
-  }
-}
-```
-
-## Response formats
-
-Use these fields to recognize the most common response shapes.
-
-| Scenario | Status | Shape |
-| --- | --- | --- |
-| List deployments | `200 OK` | `{ deployments: Deployment[] }` |
-| Trigger build | `201 Created` | `{ deployment: Deployment }` |
-| Invalid token | `401 Unauthorized` | `{ error: string }` |
-| Missing project | `404 Not Found` | `{ error: string }` |
-
-### Deployment object
-
-A deployment object usually includes the following fields:
-
-| Field | Type | Notes |
-| --- | --- | --- |
-| `id` | string | Unique deployment identifier |
-| `name` | string | Project name |
-| `state` | string | Current lifecycle state |
-| `url` | string | Public deployment URL |
-
-## Go deeper
-
-<Columns cols={3}>
-  <Card title="AI Gateway" icon="arrow-right" href="https://vercel.com/ai-gateway" target="_blank" cta="Open">
-    Route model requests through one endpoint.
-  </Card>
-  <Card title="Fluid Compute" icon="rocket" href="https://vercel.com/fluid" target="_blank" cta="Open">
-    Run serverless workloads with the right resources automatically.
-  </Card>
-  <Card title="Workflow" icon="settings" href="https://vercel.com/workflows" target="_blank" cta="Open">
-    Orchestrate long-running tasks at scale.
-  </Card>
-</Columns>
-
-<Expandable title="When should you use the SDK?" default-open="false">
-  Use the SDK when you want typed helpers, shared request logic, and easier integration in a TypeScript codebase.
-
-  Use raw `fetch` or `curl` when you want to inspect requests directly or verify the API contract first.
-
-</Expandable>
+  </Tab>
+</Tabs>
 
 ## Next steps
 
-After you complete this quickstart, you can:
+Once your first request works, move on to the areas that usually come next in a Stripe integration.
 
-- List deployments in your own project dashboard
-- Trigger deployments from CI
-- Parse JSON responses into your own status checks
-- Add retry logic for transient failures
+<Columns cols={3}>
+  <Card title="Create charges" icon="zap" href="#">
+    Learn how to create a payment flow from a customer action.
+  </Card>
+  <Card title="Add subscriptions" icon="calendar" href="#">
+    Build recurring billing for SaaS and membership products.
+  </Card>
+  <Card title="Handle webhooks" icon="cloud" href="#">
+    Receive event notifications and keep your application state in sync.
+  </Card>
+</Columns>
 
-If you are building a larger integration, keep the same authentication header and response handling patterns shown here.
+## Common checks
+
+Before you ship, verify the basics in test mode.
+
+<Expandable title="Troubleshooting checklist" default-open="false">
+
+- Confirm that `YOUR_API_KEY` is a test key.
+- Make sure the request uses the correct endpoint path.
+- Check that the request body is form encoded when the API expects it.
+- Inspect the response body for validation errors.
+- Retry with test data before you use live mode.
+
+</Expandable>

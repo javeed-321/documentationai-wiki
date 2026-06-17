@@ -1,40 +1,54 @@
 ---
-title: Introduction
-description: Introduction to the Vercel REST API for managing projects, deployments, and teams.
+title: API Introduction
+description: Introduction to Stripe's REST API for building payments and financial services.
 ---
 
-<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416350161-ay106tw0elt-Image-3.png?q=85&fm=auto&auto=compress%2Cformat" alt="Vercel documentation" width="800" height="400" />
+<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416392648-tsntejft5od-Image-9.png?q=85&fm=auto&auto=compress%2Cformat" alt="Stripe documentation" width="800" height="400" />
 
 ## Welcome
 
-Use the Vercel REST API to manage projects, deployments, and teams from code. You can automate delivery across the platform and keep operational changes consistent with your workflows.
+Stripe gives you a REST API for payments, billing, Connect, Radar, and financial reporting. You use it to create online, in-app, and in-person commerce flows across many currencies and payment methods.
 
-This starter page gives you a fast map of the API surface, along with the versioning and rate limit rules you should account for before you integrate.
+This introduction covers the core API patterns you need to start safely: versioning, request format, webhooks, and idempotency. Use these concepts as the base for every integration you build.
 
 <Columns cols={2}>
-  <Card title="Projects" icon="book-open" href="#overview">
-    Create and update application settings.
+  <Card title="Payments" icon="credit-card" href="#">
+
+Accept charges, capture funds, and support a broad set of payment methods.
+
   </Card>
-  <Card title="Deployments" icon="rocket" href="#overview">
-    Track builds and ship new versions.
+  <Card title="Billing" icon="file-text" href="#">
+
+Model subscriptions, invoices, and recurring revenue with predictable API workflows.
+
   </Card>
-  <Card title="Teams" icon="users" href="#overview">
-    Manage shared access and ownership.
+  <Card title="Connect" icon="users" href="#">
+
+Build platform and marketplace payments with managed account and transfer flows.
+
   </Card>
-  <Card title="Security" icon="shield" href="#overview">
-    Apply platform controls to your API usage.
+  <Card title="Radar" icon="shield" href="#">
+
+Reduce fraud risk with rules, signals, and automated protection controls.
+
   </Card>
 </Columns>
 
 <Columns cols={2}>
-  <Card title="Get started" icon="arrow-right" href="#overview" horizontal>
-    Review the endpoint groups and response patterns.
+  <Card title="Explore API reference" icon="arrow-right" href="#">
+
+Review endpoint details, objects, and request parameters.
+
   </Card>
-  <Card title="Read the rules" icon="chevron-right" href="#limits" horizontal>
-    Check rate limits and versioning before you send requests.
+  <Card title="Explore webhooks guide" icon="arrow-right" href="#">
+
+Learn how Stripe notifies your system about asynchronous events.
+
   </Card>
 </Columns>
 
 <Callout kind="tip">
-  Start with the endpoint overview, then confirm the current API version and limit headers in your client before shipping to production.
+
+Pin a single API version in production, make every write request idempotent, and verify webhook signatures before you trust event data.
+
 </Callout>
