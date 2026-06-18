@@ -15,8 +15,6 @@
   "navigation": {
     "tabs": [
       {
-        "show-sidebar": false,
-        "show-toc": false,
         "tab": "Help Center",
         "icon": "help-circle",
         "groups": [
@@ -27,7 +25,8 @@
             "pages": [
               {
                 "title": "Help Center",
-                "path": "help-center"
+                "path": "help-center",
+                "show-sidebar": false
               }
             ]
           },
@@ -37,7 +36,8 @@
             "pages": [
               {
                 "title": "Quickstart",
-                "path": "help-center/getting-started/quickstart"
+                "path": "help-center/getting-started/quickstart",
+                "show-sidebar": false
               },
               {
                 "group": "Account Setup",
@@ -45,11 +45,13 @@
                 "pages": [
                   {
                     "title": "Create your account",
-                    "path": "help-center/getting-started/create-account"
+                    "path": "help-center/getting-started/create-account",
+                    "show-sidebar": false
                   },
                   {
                     "title": "Invite your team",
-                    "path": "help-center/getting-started/invite-team"
+                    "path": "help-center/getting-started/invite-team",
+                    "show-sidebar": false
                   }
                 ]
               }
@@ -65,7 +67,8 @@
                 "pages": [
                   {
                     "title": "Managing members",
-                    "path": "help-center/product/managing-members"
+                    "path": "help-center/product/managing-members",
+                    "show-sidebar": false
                   },
                   {
                     "group": "Channels",
@@ -73,11 +76,13 @@
                     "pages": [
                       {
                         "title": "Email channel",
-                        "path": "help-center/product/channels/email"
+                        "path": "help-center/product/channels/email",
+                        "show-sidebar": false
                       },
                       {
                         "title": "Chat channel",
-                        "path": "help-center/product/channels/chat"
+                        "path": "help-center/product/channels/chat",
+                        "show-sidebar": false
                       }
                     ]
                   }
@@ -89,7 +94,8 @@
                 "pages": [
                   {
                     "title": "Workflows",
-                    "path": "help-center/product/automation/workflows"
+                    "path": "help-center/product/automation/workflows",
+                    "show-sidebar": false
                   }
                 ]
               }
@@ -101,11 +107,13 @@
             "pages": [
               {
                 "title": "Plans overview",
-                "path": "help-center/billing/plans"
+                "path": "help-center/billing/plans",
+                "show-sidebar": false
               },
               {
                 "title": "Invoices",
-                "path": "help-center/billing/invoices"
+                "path": "help-center/billing/invoices",
+                "show-sidebar": false
               }
             ]
           },
@@ -115,7 +123,8 @@
             "pages": [
               {
                 "title": "Common issues",
-                "path": "help-center/troubleshooting/common-issues"
+                "path": "help-center/troubleshooting/common-issues",
+                "show-sidebar": false
               }
             ]
           },
@@ -125,7 +134,8 @@
             "pages": [
               {
                 "title": "Contact & Support",
-                "path": "help-center/contact"
+                "path": "help-center/contact",
+                "show-sidebar": false
               }
             ]
           }
