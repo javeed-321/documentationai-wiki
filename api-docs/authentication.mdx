@@ -1,67 +1,64 @@
 ---
 title: Authentication
-description: Authenticate to the PlanetScale API using service tokens and OAuth.
+description: Authenticate Twilio API requests using Account SID, Auth Token, and API keys for secure access.
 ---
 
 ## Overview
 
-All requests to the PlanetScale API require authentication. You can authenticate using service tokens or OAuth 2.0. Service tokens are recommended for server-to-server integrations. OAuth is suited for applications that act on behalf of users or organizations.
+Twilio authenticates every API request with either an Account SID paired with an Auth Token or with an API key. Supply credentials via HTTP Basic Auth. The Account SID serves as the username. The Auth Token or API key secret serves as the password.
 
-## Authentication methods
+## Authentication Methods
 
 <Tabs>
-  <Tab title="Service tokens" icon="key">
-    Create a service token in the dashboard under Organization settings. Assign scopes that limit the token to specific actions such as read-only access or schema changes.
+  <Tab title="Account SID and Auth Token" icon="key">
+    Use your Account SID and Auth Token for direct access to all resources under your account.
 
-    <ParamField body="token" param-type="string" required="true">
-      The service token identifier.
-    </ParamField>
-
-    <ParamField body="token_secret" param-type="string" required="true">
-      The secret associated with the token. Store this value securely.
+    <ParamField header="Authorization" param-type="string" required="true">
+      Basic authentication header formed as `Basic` followed by the base64-encoded string of `AccountSID:AuthToken`.
     </ParamField>
   </Tab>
-  <Tab title="OAuth" icon="shield">
-    OAuth flows are initiated per organization. Register your application to obtain a client ID and secret, then exchange an authorization code for an access token.
+  <Tab title="API Key" icon="lock">
+    Create API keys in the Twilio Console to obtain a key SID and secret. API keys support granular scoping and can be revoked independently of your account credentials.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Basic authentication header formed as `Basic` followed by the base64-encoded string of `APIKeySID:APIKeySecret`.
+    </ParamField>
   </Tab>
 </Tabs>
 
 ## Implementation
 
-Use the examples below to send authenticated requests.
+Send authenticated requests to the Twilio REST API at `https://api.example.com`.
 
 <CodeGroup tabs="cURL,Python,JavaScript">
 ```bash
-curl -H "Authorization: Bearer TOKEN_SECRET" \
-  https://api.example.com/v1/organizations
+curl -X GET https://api.example.com/2010-04-01/Accounts \
+  -u "YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN"
 ```
 
 ```python
 import requests
 
-headers = {"Authorization": "Bearer TOKEN_SECRET"}
 response = requests.get(
-    "https://api.example.com/v1/organizations",
-    headers=headers,
+    "https://api.example.com/2010-04-01/Accounts",
+    auth=("YOUR_ACCOUNT_SID", "YOUR_AUTH_TOKEN")
 )
+print(response.json())
 ```
 
 ```javascript
-const response = await fetch(
-  "https://api.example.com/v1/organizations",
-  {
-    headers: {
-      Authorization: "Bearer TOKEN_SECRET",
-    },
+const response = await fetch("https://api.example.com/2010-04-01/Accounts", {
+  headers: {
+    Authorization: "Basic " + Buffer.from("YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN").toString("base64"),
   },
-);
+});
+const data = await response.json();
+console.log(data);
 ```
 </CodeGroup>
 
-## Rotating and revoking credentials
-
-Rotate service token secrets regularly. Revoke a token immediately if it is compromised.
+## Security Best Practices
 
 <Callout kind="alert">
-  Never expose token secrets in client-side code or public repositories. Rotate credentials at least every 90 days.
+Store credentials in environment variables or a secrets manager. Never commit Account SIDs, Auth Tokens, or API key secrets to source control. Rotate keys regularly and delete unused credentials from the Twilio Console.
 </Callout>

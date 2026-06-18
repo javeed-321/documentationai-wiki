@@ -1,31 +1,33 @@
 ---
 title: Roadmap
-description: Planned features for PlanetScale including expanded Postgres support and additional deployment options.
+description: Planned Twilio improvements for conversational AI, expanded channels, and customer engagement tools.
 ---
 <Board>
   <BoardColumn title="Backlog">
-    <BoardCard title="Neki engine horizontal sharding" description="Enable automatic sharding for Postgres workloads using the Neki engine." />
-    <BoardCard title="Database Traffic Control budgets" description="Add resource budgets that limit query traffic per database." />
-    <BoardCard title="BYOC compliance regions" description="Support bring-your-own-cloud deployments in additional regulated regions." />
-    <BoardCard title="Non-blocking schema changes for Postgres" description="Extend Vitess-style online DDL to the Neki Postgres engine." />
-    <BoardCard title="NVMe IOPS dashboards" description="Expose per-shard IOPS metrics from NVMe-backed instances." />
+    <BoardCard title="Conversation Memory v2" description="Add support for multi-turn context across WhatsApp and SMS sessions." />
+    <BoardCard title="RCS Rich Media Templates" description="Enable branded carousels and suggested replies for RCS campaigns." />
+    <BoardCard title="Email Channel Expansion" description="Integrate SendGrid templates directly into Conversation Orchestrator flows." />
+    <BoardCard title="Global Latency Reduction" description="Deploy edge nodes in three new regions for sub-100ms voice routing." />
+    <BoardCard title="AI Agent Handoff" description="Allow seamless transfer from AI agents to human agents with full context." />
   </BoardColumn>
   <BoardColumn title="Next Up">
-    <BoardCard title="Neki engine beta release" description="Launch the first public beta of the Neki sharded Postgres engine." />
-    <BoardCard title="Advanced traffic control alerts" description="Send notifications when query traffic approaches defined budgets." />
-    <BoardCard title="SOC 2 Type II certification" description="Complete additional compliance controls for enterprise customers." />
-    <BoardCard title="Self-hosted deployment templates" description="Provide Helm charts for self-hosted PlanetScale clusters." />
+    <BoardCard title="Orchestrator Workflow Builder" description="Launch visual drag-and-drop interface for Conversation Orchestrator." />
+    <BoardCard title="RCS Video Messaging" description="Support short-form video delivery within RCS business messaging." />
+    <BoardCard title="Email Thread Sync" description="Mirror email threads into Twilio Conversations for unified history." />
+    <BoardCard title="APAC Region Rollout" description="Expand platform availability to additional countries in Southeast Asia." />
+    <BoardCard title="Sentiment Analysis API" description="Expose real-time sentiment scoring for all messaging channels." />
   </BoardColumn>
   <BoardColumn title="In Progress">
-    <BoardCard title="Neki engine alpha testing" description="Run internal alpha tests of the Neki engine on production workloads." />
-    <BoardCard title="Query-level traffic controls" description="Implement fine-grained controls for individual query patterns." />
-    <BoardCard title="HIPAA-ready deployment options" description="Add configuration templates that satisfy HIPAA requirements." />
-    <BoardCard title="Unlimited IOPS monitoring" description="Surface real-time NVMe performance metrics in the dashboard." />
+    <BoardCard title="Persistent Memory Store" description="Store and retrieve customer interaction history across sessions." />
+    <BoardCard title="RCS Fallback Logic" description="Automatically route RCS messages to SMS when delivery fails." />
+    <BoardCard title="Email Delivery Insights" description="Provide open and click metrics inside the Twilio Console." />
+    <BoardCard title="EU Data Residency" description="Enable full data residency options for European customers." />
   </BoardColumn>
   <BoardColumn title="Done">
-    <BoardCard title="Database Traffic Control introduction" description="Release the initial Database Traffic Control feature for Postgres." />
-    <BoardCard title="Vitess NVMe storage rollout" description="Migrate all Vitess clusters to NVMe-backed instances." />
-    <BoardCard title="Managed deployment GA" description="Generally release PlanetScale Managed for bring-your-own-cloud customers." />
-    <BoardCard title="Horizontal sharding automation" description="Ship automatic shard splitting and rebalancing for Vitess." />
+    <BoardCard title="Conversation Memory Beta" description="Release initial version of persistent memory for AI conversations." />
+    <BoardCard title="Basic RCS Support" description="Add RCS messaging capability to the Conversations API." />
+    <BoardCard title="Email API Integration" description="Connect Twilio Email with existing voice and messaging workflows." />
+    <BoardCard title="LATAM Expansion" description="Launch platform services in five new Latin American countries." />
+    <BoardCard title="Orchestrator v1" description="Ship the first stable release of Conversation Orchestrator." />
   </BoardColumn>
 </Board>

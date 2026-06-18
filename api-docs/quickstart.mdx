@@ -1,90 +1,147 @@
 ---
 title: Quickstart
-description: Make your first authenticated request to provision and query PlanetScale resources.
+description: Send your first SMS, start a voice call, or integrate WhatsApp messaging using Twilio APIs.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-
-Create a PlanetScale account and note your organization name before you begin.
-
+  You need a Twilio account and an API key. Sign up at https://www.twilio.com if you do not already have one.
 </Callout>
 
-## Obtain an API token
+## Account Setup
 
 <Steps>
-<Step title="Create a service token">
-
-Open the dashboard and generate a new service token with the required scopes.
-
-</Step>
-<Step title="Store the token">
-
-Copy the token value and set it as an environment variable.
-
-```bash
-export PLANETSCALE_TOKEN="YOUR_API_TOKEN"
-```
-
-</Step>
+  <Step title="Create a Twilio account">
+    Visit the Twilio website and complete the sign-up process. Verify your email address to activate the account.
+  </Step>
+  <Step title="Obtain credentials">
+    Log in to the Twilio Console. Copy your Account SID and Auth Token from the dashboard.
+  </Step>
+  <Step title="Purchase a phone number">
+    From the Console, buy a phone number that supports SMS, voice, or WhatsApp as needed for your use case.
+  </Step>
 </Steps>
 
-## Create a database
+## Send an SMS
 
-Use the token to provision a new database.
+Use the REST API to send a text message.
 
-<CodeGroup tabs="cURL,Python">
+<CodeGroup tabs="cURL,Node.js,Python">
 ```bash
-curl -X POST https://api.example.com/organizations/my-org/databases \
-  -H "Authorization: Bearer $PLANETSCALE_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"quickstart-db","region":"us-east"}'
+curl -X POST https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json \
+  --data-urlencode "From=+15005550006" \
+  --data-urlencode "Body=Hello from Twilio" \
+  --data-urlencode "To=+15005550006" \
+  -u YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN
 ```
-```python
-import requests
-import os
 
-token = os.environ["PLANETSCALE_TOKEN"]
-resp = requests.post(
-    "https://api.example.com/organizations/my-org/databases",
-    headers={"Authorization": f"Bearer {token}"},
-    json={"name": "quickstart-db", "region": "us-east"},
+```js
+const accountSid = "YOUR_ACCOUNT_SID";
+const authToken = "YOUR_AUTH_TOKEN";
+const client = require("twilio")(accountSid, authToken);
+
+client.messages
+  .create({
+    body: "Hello from Twilio",
+    from: "+15005550006",
+    to: "+15005550006",
+  })
+  .then((message) => console.log(message.sid));
+```
+
+```python
+from twilio.rest import Client
+
+account_sid = "YOUR_ACCOUNT_SID"
+auth_token = "YOUR_AUTH_TOKEN"
+client = Client(account_sid, auth_token)
+
+message = client.messages.create(
+    body="Hello from Twilio",
+    from_="+15005550006",
+    to="+15005550006",
 )
-print(resp.json())
+print(message.sid)
 ```
 </CodeGroup>
 
-## List branches and deploy schema changes
+## Initiate a Voice Call
 
-<Steps>
-<Step title="List branches">
+Place an outbound voice call using TwiML.
 
+<CodeGroup tabs="cURL,Node.js,Python">
 ```bash
-curl https://api.example.com/organizations/my-org/databases/quickstart-db/branches \
-  -H "Authorization: Bearer $PLANETSCALE_TOKEN"
+curl -X POST https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Calls.json \
+  --data-urlencode "From=+15005550006" \
+  --data-urlencode "To=+15005550006" \
+  --data-urlencode "Url=https://example.com/voice.xml" \
+  -u YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN
 ```
 
-</Step>
-<Step title="Apply a schema change">
-
-```bash
-curl -X POST https://api.example.com/organizations/my-org/databases/quickstart-db/branches/main/schema \
-  -H "Authorization: Bearer $PLANETSCALE_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"ddl":"CREATE TABLE users (id bigint PRIMARY KEY)"}'
+```js
+client.calls
+  .create({
+    url: "https://example.com/voice.xml",
+    from: "+15005550006",
+    to: "+15005550006",
+  })
+  .then((call) => console.log(call.sid));
 ```
 
-</Step>
-</Steps>
+```python
+call = client.calls.create(
+    url="https://example.com/voice.xml",
+    from_="+15005550006",
+    to="+15005550006",
+)
+print(call.sid)
+```
+</CodeGroup>
 
-## Next steps
+## Send a WhatsApp Message
 
-<Columns cols={2}>
-<Card title="API reference" href="#" icon="book-open">
-Explore every endpoint and response field.
-</Card>
-<Card title="Branch workflows" href="#" icon="git-branch">
-Learn how to promote and delete branches safely.
-</Card>
+Send messages over WhatsApp using the same Messages resource.
+
+<CodeGroup tabs="cURL,Node.js,Python">
+```bash
+curl -X POST https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json \
+  --data-urlencode "From=whatsapp:+14155238886" \
+  --data-urlencode "Body=Hello from Twilio WhatsApp" \
+  --data-urlencode "To=whatsapp:+15005550006" \
+  -u YOUR_ACCOUNT_SID:YOUR_AUTH_TOKEN
+```
+
+```js
+client.messages
+  .create({
+    body: "Hello from Twilio WhatsApp",
+    from: "whatsapp:+14155238886",
+    to: "whatsapp:+15005550006",
+  })
+  .then((message) => console.log(message.sid));
+```
+
+```python
+message = client.messages.create(
+    body="Hello from Twilio WhatsApp",
+    from_="whatsapp:+14155238886",
+    to="whatsapp:+15005550006",
+)
+print(message.sid)
+```
+</CodeGroup>
+
+## Next Steps
+
+<Columns cols={3}>
+  <Card title="SMS API Reference" icon="book-open" href="#sms-reference">
+    Explore all SMS parameters and responses.
+  </Card>
+  <Card title="Voice API Reference" icon="phone" href="#voice-reference">
+    Review call creation options and TwiML.
+  </Card>
+  <Card title="WhatsApp Guide" icon="message-circle" href="#whatsapp-guide">
+    Learn sandbox setup and production requirements.
+  </Card>
 </Columns>

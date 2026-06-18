@@ -1,100 +1,73 @@
 ---
 title: Error Codes
-description: Common PlanetScale API error responses and how to resolve them.
+description: Common Twilio error codes for messaging failures, voice call issues, and authentication problems.
 ---
 
-## Authentication and Permission Errors
+## REST API Error Responses
 
-<Expandable title="401 Unauthorized: Invalid API key" default-open="false">
-  **Problem**
+Twilio returns standard HTTP status codes with JSON error bodies. Inspect the `code` and `message` fields to identify the root cause.
 
-  Requests return HTTP 401 with the message `{"error":"invalid_api_key","message":"The provided API key is invalid or has been revoked."}`.
+```json
+{
+  "code": 20003,
+  "message": "Authenticate",
+  "more_info": "https://www.twilio.com/docs/errors/20003",
+  "status": 401
+}
+```
 
-  **Cause**
+## Voice and SIP Trunking Errors
 
-  The `Authorization: Bearer` header contains a key that does not exist, has been deleted, or belongs to a different organization.
+<Expandable title="Error 13214: Invalid 'From' phone number">
+Problem: Outbound voice call fails with status 400.
 
-  **Fix**
+Cause: The `From` parameter contains a number that is not a verified Twilio number or a valid SIP endpoint on the account.
 
-  Generate a new key in the PlanetScale dashboard under Settings → API and replace the value in your client configuration. Verify the key has the required scopes for the endpoint you are calling.
+Fix: Replace the value with a number purchased through the Twilio Console or a SIP URI registered under the same account. Example request:
+
+```bash
+curl -X POST https://api.example.com/2010-04-01/Accounts/ACxxx/Calls.json \
+  -u "ACxxx:your_auth_token" \
+  --data-urlencode "From=+15551234567" \
+  --data-urlencode "To=+15559876543" \
+  --data-urlencode "Url=https://example.com/voice.xml"
+```
+</Expandable>
+
+<Expandable title="Error 21220: SIP trunk registration failed">
+Problem: Inbound calls over a SIP trunk return 503 Service Unavailable.
+
+Cause: The trunk's registration URI or credential list does not match the values configured on the Twilio side.
+
+Fix: Update the trunk registration settings in the Console to match the exact username and password sent by the PBX. Re-register the trunk after the change.
 
 </Expandable>
 
-<Expandable title="403 Forbidden: Insufficient permissions" default-open="false">
-  **Problem**
+<Expandable title="Error 32009: No answer from callee">
+Problem: Call connects but immediately ends with "no answer".
 
-  Requests return HTTP 403 with the message `{"error":"forbidden","message":"Your API key lacks the required permission: databases:write."}`.
+Cause: The destination answers but sends a SIP 487 or the TwiML `<Dial>` timeout expires before media flows.
 
-  **Cause**
+Fix: Increase the `timeout` attribute on `<Dial>` or verify that the callee's endpoint accepts early media. Example TwiML:
 
-  The API key was created with read-only scopes or the service token does not have access to the target database or branch.
+```xml
+<Response>
+  <Dial timeout="30">+15559876543</Dial>
+</Response>
+```
+</Expandable>
 
-  **Fix**
+## Authentication Errors
 
-  Create a new key or service token with the necessary scopes. Assign the token to the correct database and grant the required role in the Access Control settings.
+<Expandable title="Error 20003: Authenticate">
+Problem: Every request returns HTTP 401.
+
+Cause: The Account SID or Auth Token supplied in the Authorization header is invalid or has been rotated.
+
+Fix: Retrieve the current Auth Token from the Twilio Console under Account Settings and update the client configuration. Never hard-code tokens in source control.
 
 </Expandable>
 
-## Sharding and Schema Migration Failures
+## Troubleshooting Failed Requests
 
-<Expandable title="422 Unprocessable Entity: Schema change blocked by shard" default-open="false">
-  **Problem**
-
-  A `POST /v1/databases/{database}/branches/{branch}/schema` request returns `{"error":"shard_migration_blocked","message":"Schema change cannot proceed: shard 'us-east-1a' is currently under rebalance."}`.
-
-  **Cause**
-
-  A horizontal shard rebalance is in progress on the target branch, preventing concurrent DDL operations.
-
-  **Fix**
-
-  Wait for the rebalance to complete, then retry the migration. Use the `GET /v1/databases/{database}/branches/{branch}/shards` endpoint to monitor shard status before submitting new schema changes.
-
-</Expandable>
-
-<Expandable title="409 Conflict: Non-blocking migration already running" default-open="false">
-  **Problem**
-
-  Requests return HTTP 409 with `{"error":"migration_in_progress","message":"A non-blocking schema migration is already active on this branch."}`.
-
-  **Cause**
-
-  Another schema migration is queued or executing on the same branch.
-
-  **Fix**
-
-  Cancel the existing migration via `DELETE /v1/databases/{database}/branches/{branch}/migrations/{migration_id}` or wait for it to finish before starting a new one.
-
-</Expandable>
-
-## Rate Limiting and Quota Errors
-
-<Expandable title="429 Too Many Requests" default-open="false">
-  **Problem**
-
-  Requests return HTTP 429 with headers `X-RateLimit-Remaining: 0` and body `{"error":"rate_limit_exceeded","message":"You have exceeded the allowed request rate."}`.
-
-  **Cause**
-
-  The client exceeded the per-minute or per-hour quota for the authenticated key.
-
-  **Fix**
-
-  Implement exponential backoff and respect the `Retry-After` header. Consider upgrading your plan or requesting a higher quota through the PlanetScale support portal.
-
-</Expandable>
-
-<Expandable title="402 Payment Required: Quota exceeded" default-open="false">
-  **Problem**
-
-  Requests return HTTP 402 with `{"error":"quota_exceeded","message":"Database storage or connection quota has been reached."}`.
-
-  **Cause**
-
-  The organization has consumed its provisioned storage, row, or connection limit for the current billing period.
-
-  **Fix**
-
-  Increase the database size or connection limit in the dashboard under Database Settings → Resources, or contact billing to adjust your plan limits.
-
-</Expandable>
+When a request fails, capture the full response body and the `X-Twilio-Request-Id` header. Submit both values when opening a support ticket.

@@ -1,17 +1,17 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: PlanetScale API
+  title: Twilio Communications API
   license:
     name: MIT
 servers:
-  - url: https://api.planetscale.com/v1
+  - url: https://api.twilio.com/v1
 paths:
-  /databases:
+  /messages:
     get:
-      summary: List databases
-      description: Retrieves a paginated list of all databases in the account. Use the limit parameter to control page size.
-      operationId: listDatabases
+      summary: List messages
+      description: Retrieves a paginated list of messaging records sent through Twilio. Use the limit parameter to control page size.
+      operationId: listMessages
       parameters:
         - name: limit
           in: query
@@ -22,7 +22,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of databases
+          description: An paged array of messages
           headers:
             x-next:
               description: A link to the next page of responses
@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Databases'
+                $ref: '#/components/schemas/Messages'
         default:
           description: unexpected error
           content:
@@ -39,8 +39,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create database
-      operationId: createDatabase
+      summary: Create message
+      operationId: createMessage
       responses:
         201:
           description: Null response
@@ -50,16 +50,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /databases/{databaseId}:
+  /messages/{messageId}:
     get:
-      summary: Get database
-      description: Retrieves detailed information about a specific database by its unique identifier. Use this when you need configuration, engine, or deployment details.
-      operationId: showDatabaseById
+      summary: Get message details
+      description: Retrieves detailed information about a specific message delivery by its unique identifier. Use this to inspect delivery state and channel details.
+      operationId: showMessageById
       parameters:
-        - name: databaseId
+        - name: messageId
           in: path
           required: true
-          description: The id of the database to retrieve
+          description: The id of the message to retrieve
           schema:
             type: string
       responses:
@@ -68,18 +68,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Database'
+                $ref: '#/components/schemas/Message'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /deployments:
+  /calls:
     get:
-      summary: List deployments
-      description: Retrieves a paginated list of deployment targets and hosting modes. Use this to review managed, self-hosted, or bring-your-own-cloud configurations.
-      operationId: listDeployments
+      summary: List calls
+      description: Retrieves a paginated list of voice call records managed by Twilio. Use the limit parameter to control page size.
+      operationId: listCalls
       parameters:
         - name: limit
           in: query
@@ -90,7 +90,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of deployments
+          description: An paged array of calls
           headers:
             x-next:
               description: A link to the next page of responses
@@ -99,17 +99,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Deployments'
+                $ref: '#/components/schemas/Calls'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /schema-changes:
     post:
-      summary: Create schema change
-      operationId: createSchemaChange
+      summary: Create call
+      operationId: createCall
       responses:
         201:
           description: Null response
@@ -119,9 +118,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /calls/{callId}:
+    get:
+      summary: Get call details
+      description: Retrieves detailed information about a specific voice call by its unique identifier. Use this to review status, duration, and recipient information.
+      operationId: showCallById
+      parameters:
+        - name: callId
+          in: path
+          required: true
+          description: The id of the call to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Call'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Database:
+    Message:
       required:
         - id
         - name
@@ -131,15 +155,13 @@ components:
           format: int64
         name:
           type: string
-        engine:
+        tag:
           type: string
-        sharding:
-          type: string
-    Databases:
+    Messages:
       type: array
       items:
-        $ref: '#/components/schemas/Database'
-    Deployment:
+        $ref: '#/components/schemas/Message'
+    Call:
       required:
         - id
         - name
@@ -149,14 +171,12 @@ components:
           format: int64
         name:
           type: string
-        mode:
+        tag:
           type: string
-        region:
-          type: string
-    Deployments:
+    Calls:
       type: array
       items:
-        $ref: '#/components/schemas/Deployment'
+        $ref: '#/components/schemas/Call'
     Error:
       required:
         - code

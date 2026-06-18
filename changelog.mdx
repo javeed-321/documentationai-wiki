@@ -1,33 +1,37 @@
 ---
 title: Changelog
-description: Release notes for PlanetScale platform updates, Vitess enhancements, and new Postgres features.
+description: Recent updates to Twilio APIs including new messaging channels, voice features, and platform enhancements.
 ---
 
-## Recent releases
+## Recent Updates
 
-<Update label="2024-11-12" description="v0.148.0" tags={["feature"]}>
+<Update label="2024-10-15" description="v3.2.0" tags={["feature"]}>
 
-## New engine releases
+## AI and Orchestration
 
-- Released Neki engine preview for sharded Postgres with automated horizontal scaling.
-- Added support for non-blocking schema changes on Vitess MySQL clusters.
-
-</Update>
-
-<Update label="2024-10-28" description="v0.147.2" tags={["improvement", "bugfix"]}>
-
-## Performance and sharding improvements
-
-- Increased NVMe IOPS limits by 40 percent on all managed clusters.
-- Fixed an issue where large shard rebalances could temporarily reduce query throughput.
+- Added Conversation Orchestrator for dynamic AI-driven routing across channels.
+- Introduced persistent Conversation Memory to retain context in multi-turn interactions.
 
 </Update>
 
-<Update label="2024-10-05" description="v0.146.0" tags={["feature"]}>
+<Update label="2024-09-20" description="v3.1.0" tags={["feature", "bugfix"]}>
 
-## Console and CLI changes
+## Messaging and Conversations
 
-- Added Database Traffic Control resource budgets in the web console.
-- Introduced new `pscale db traffic` CLI commands for setting query limits.
+- Launched support for new WhatsApp template approvals with faster validation.
+- Fixed delivery receipt delays for SMS in high-volume regions.
+
+## Voice and SIP
+
+- Enabled SIP trunking enhancements for improved call quality metrics.
+
+</Update>
+
+<Update label="2024-08-10" description="v3.0.0" tags={["feature"]}>
+
+## Platform Enhancements
+
+- Expanded voice API with new real-time transcription endpoints.
+- Added email integration hooks for unified customer engagement workflows.
 
 </Update>
