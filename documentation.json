@@ -1,5 +1,6 @@
 {
   "name": "Zendesk",
+  "show-sidebar": false,
   "colors": {
     "light": {
       "brand": "#03363D",
