@@ -1,54 +1,101 @@
 ---
 title: Quickstart
-description: Steps to sign up, create your first design, and explore Canva's editor on any device.
+description: Spin up a PlanetScale database and connect your application in minutes.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-You need only a modern web browser and an internet connection. No downloads or installations are required.
+
+Create a free account at the PlanetScale dashboard and install the CLI before you begin.
+
 </Callout>
 
-## Create your account
+## Create a database
+
+<Tabs>
+  <Tab title="Vitess" icon="database">
+    <Steps>
+      <Step title="Log in to the dashboard">
+        Open the dashboard and click Create database.
+
+      </Step>
+      <Step title="Choose Vitess">
+        Select Vitess, name the database, and pick a region.
+
+      </Step>
+      <Step title="Create the database">
+        Click Create. PlanetScale provisions the cluster in under a minute.
+
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Postgres" icon="database">
+    <Steps>
+      <Step title="Log in to the dashboard">
+        Open the dashboard and click Create database.
+
+      </Step>
+      <Step title="Choose Postgres">
+        Select Postgres with the Neki engine and name the database.
+
+      </Step>
+      <Step title="Create the database">
+        Click Create. The sharded Postgres instance is ready shortly.
+
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Connect your application
+
+<CodeGroup tabs="Node.js,Python">
+```javascript
+const mysql = require('mysql2');
+const connection = mysql.createConnection({
+  host: 'host.example.com',
+  user: 'user',
+  password: 'YOUR_PASSWORD',
+  database: 'your_database',
+});
+connection.connect();
+```
+```python
+import psycopg
+conn = psycopg.connect(
+    host="host.example.com",
+    user="user",
+    password="YOUR_PASSWORD",
+    dbname="your_database"
+)
+```
+</CodeGroup>
+
+## Import a schema
 
 <Steps>
-<Step title="Sign up">
-Open your browser and go to the Canva homepage. Click the sign-up button, then create an account with your email address or a connected Google or Facebook profile.
-</Step>
+  <Step title="Prepare your schema file">
+    Save your CREATE TABLE statements to schema.sql.
 
-<Step title="Complete onboarding">
-Answer the short prompts about your role and design goals. Canva uses this information to suggest relevant templates and features.
-</Step>
-</Steps>
+  </Step>
+  <Step title="Apply with the CLI">
+    Run the following command from your project directory.
 
-## Start your first project
+```bash
+pscale database import-schema your_database schema.sql
+```
 
-<Steps>
-<Step title="Choose a template">
-From the home screen, browse categories or search for a template such as a social media graphic, presentation, or poster. Click Use this template to open it.
-</Step>
-
-<Step title="Edit your design">
-Drag elements on the canvas to reposition them. Replace placeholder text and images with your own content using the toolbar on the left.
-</Step>
-
-<Step title="Export the finished design">
-Click the Share button in the top right, select Download, and choose a format such as PNG, JPG, or PDF. Your file saves directly to your device.
-</Step>
+  </Step>
 </Steps>
 
 ## Next steps
 
-<Columns cols={3}>
-<Card title="Templates" icon="layout" href="#">
-Browse hundreds of ready-to-use designs for any project type.
-</Card>
-
-<Card title="Editor tools" icon="edit" href="#">
-Learn advanced features such as background removal and brand kits.
-</Card>
-
-<Card title="Sharing options" icon="share-2" href="#">
-Discover collaboration and publishing workflows.
-</Card>
+<Columns cols={2}>
+  <Card title="Dashboard guide" icon="layout-dashboard" href="#">
+    Explore branches, insights, and traffic controls.
+  </Card>
+  <Card title="CLI reference" icon="terminal" href="#">
+    Learn every command for daily operations.
+  </Card>
 </Columns>

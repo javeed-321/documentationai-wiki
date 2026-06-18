@@ -1,0 +1,100 @@
+---
+title: Error Codes
+description: Common PlanetScale API error responses and how to resolve them.
+---
+
+## Authentication and Permission Errors
+
+<Expandable title="401 Unauthorized: Invalid API key" default-open="false">
+  **Problem**
+
+  Requests return HTTP 401 with the message `{"error":"invalid_api_key","message":"The provided API key is invalid or has been revoked."}`.
+
+  **Cause**
+
+  The `Authorization: Bearer` header contains a key that does not exist, has been deleted, or belongs to a different organization.
+
+  **Fix**
+
+  Generate a new key in the PlanetScale dashboard under Settings → API and replace the value in your client configuration. Verify the key has the required scopes for the endpoint you are calling.
+
+</Expandable>
+
+<Expandable title="403 Forbidden: Insufficient permissions" default-open="false">
+  **Problem**
+
+  Requests return HTTP 403 with the message `{"error":"forbidden","message":"Your API key lacks the required permission: databases:write."}`.
+
+  **Cause**
+
+  The API key was created with read-only scopes or the service token does not have access to the target database or branch.
+
+  **Fix**
+
+  Create a new key or service token with the necessary scopes. Assign the token to the correct database and grant the required role in the Access Control settings.
+
+</Expandable>
+
+## Sharding and Schema Migration Failures
+
+<Expandable title="422 Unprocessable Entity: Schema change blocked by shard" default-open="false">
+  **Problem**
+
+  A `POST /v1/databases/{database}/branches/{branch}/schema` request returns `{"error":"shard_migration_blocked","message":"Schema change cannot proceed: shard 'us-east-1a' is currently under rebalance."}`.
+
+  **Cause**
+
+  A horizontal shard rebalance is in progress on the target branch, preventing concurrent DDL operations.
+
+  **Fix**
+
+  Wait for the rebalance to complete, then retry the migration. Use the `GET /v1/databases/{database}/branches/{branch}/shards` endpoint to monitor shard status before submitting new schema changes.
+
+</Expandable>
+
+<Expandable title="409 Conflict: Non-blocking migration already running" default-open="false">
+  **Problem**
+
+  Requests return HTTP 409 with `{"error":"migration_in_progress","message":"A non-blocking schema migration is already active on this branch."}`.
+
+  **Cause**
+
+  Another schema migration is queued or executing on the same branch.
+
+  **Fix**
+
+  Cancel the existing migration via `DELETE /v1/databases/{database}/branches/{branch}/migrations/{migration_id}` or wait for it to finish before starting a new one.
+
+</Expandable>
+
+## Rate Limiting and Quota Errors
+
+<Expandable title="429 Too Many Requests" default-open="false">
+  **Problem**
+
+  Requests return HTTP 429 with headers `X-RateLimit-Remaining: 0` and body `{"error":"rate_limit_exceeded","message":"You have exceeded the allowed request rate."}`.
+
+  **Cause**
+
+  The client exceeded the per-minute or per-hour quota for the authenticated key.
+
+  **Fix**
+
+  Implement exponential backoff and respect the `Retry-After` header. Consider upgrading your plan or requesting a higher quota through the PlanetScale support portal.
+
+</Expandable>
+
+<Expandable title="402 Payment Required: Quota exceeded" default-open="false">
+  **Problem**
+
+  Requests return HTTP 402 with `{"error":"quota_exceeded","message":"Database storage or connection quota has been reached."}`.
+
+  **Cause**
+
+  The organization has consumed its provisioned storage, row, or connection limit for the current billing period.
+
+  **Fix**
+
+  Increase the database size or connection limit in the dashboard under Database Settings → Resources, or contact billing to adjust your plan limits.
+
+</Expandable>

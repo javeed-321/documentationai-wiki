@@ -1,34 +1,31 @@
 ---
 title: Roadmap
-description: Upcoming Canva developments in AI design tools, new media formats, and enterprise features.
+description: Planned features for PlanetScale including expanded Postgres support and additional deployment options.
 ---
 <Board>
   <BoardColumn title="Backlog">
-    <BoardCard title="AI Video Sequence Generator" description="Generate complete video clips from text prompts using expanded AI models." />
-    <BoardCard title="Enterprise SSO Support" description="Enable single sign-on for large teams and organizations." />
-    <BoardCard title="3D Model Integration" description="Add support for importing and editing 3D elements in designs." />
-    <BoardCard title="Automated Print Shipping" description="Launch direct print and fulfillment service for custom products." />
-    <BoardCard title="AI Audio Mixing Tools" description="Introduce automated audio enhancement and mixing for video projects." />
+    <BoardCard title="Neki engine horizontal sharding" description="Enable automatic sharding for Postgres workloads using the Neki engine." />
+    <BoardCard title="Database Traffic Control budgets" description="Add resource budgets that limit query traffic per database." />
+    <BoardCard title="BYOC compliance regions" description="Support bring-your-own-cloud deployments in additional regulated regions." />
+    <BoardCard title="Non-blocking schema changes for Postgres" description="Extend Vitess-style online DDL to the Neki Postgres engine." />
+    <BoardCard title="NVMe IOPS dashboards" description="Expose per-shard IOPS metrics from NVMe-backed instances." />
   </BoardColumn>
   <BoardColumn title="Next Up">
-    <BoardCard title="Real-Time Cross-Device Sync" description="Deliver seamless collaboration between mobile, tablet, and desktop apps." />
-    <BoardCard title="Advanced AI Photo Enhancer" description="Roll out improved AI tools for background replacement and lighting fixes." />
-    <BoardCard title="Creator Marketplace Launch" description="Open a marketplace where users can sell and buy custom templates." />
-    <BoardCard title="PDF Real-Time Collaboration" description="Add live co-editing features to the PDF editor." />
-    <BoardCard title="Expanded Social Scheduling" description="Integrate direct scheduling for additional social media platforms." />
+    <BoardCard title="Neki engine beta release" description="Launch the first public beta of the Neki sharded Postgres engine." />
+    <BoardCard title="Advanced traffic control alerts" description="Send notifications when query traffic approaches defined budgets." />
+    <BoardCard title="SOC 2 Type II certification" description="Complete additional compliance controls for enterprise customers." />
+    <BoardCard title="Self-hosted deployment templates" description="Provide Helm charts for self-hosted PlanetScale clusters." />
   </BoardColumn>
   <BoardColumn title="In Progress">
-    <BoardCard title="AI Art Style Expansion" description="Update the AI art generator with new artistic styles and controls." />
-    <BoardCard title="Smart Video Trimmer" description="Develop AI-powered trimming that detects key moments automatically." />
-    <BoardCard title="Print Product Range Growth" description="Add more apparel and merchandise options to the print service." />
-    <BoardCard title="Whiteboard AI Assistant" description="Build AI suggestion features inside the online whiteboard." />
-    <BoardCard title="Website Builder Accessibility" description="Improve accessibility tools and templates in the website builder." />
+    <BoardCard title="Neki engine alpha testing" description="Run internal alpha tests of the Neki engine on production workloads." />
+    <BoardCard title="Query-level traffic controls" description="Implement fine-grained controls for individual query patterns." />
+    <BoardCard title="HIPAA-ready deployment options" description="Add configuration templates that satisfy HIPAA requirements." />
+    <BoardCard title="Unlimited IOPS monitoring" description="Surface real-time NVMe performance metrics in the dashboard." />
   </BoardColumn>
   <BoardColumn title="Done">
-    <BoardCard title="Background Remover Release" description="Shipped the AI background remover for photos and graphics." />
-    <BoardCard title="Image Enhancer Launch" description="Released AI-powered image upscaling and quality enhancement." />
-    <BoardCard title="New Presentation Templates" description="Added hundreds of professional presentation templates to the library." />
-    <BoardCard title="Website Builder Updates" description="Improved drag-and-drop functionality for the website builder." />
-    <BoardCard title="Video Editor Mobile App" description="Delivered a fully featured video editor for mobile devices." />
+    <BoardCard title="Database Traffic Control introduction" description="Release the initial Database Traffic Control feature for Postgres." />
+    <BoardCard title="Vitess NVMe storage rollout" description="Migrate all Vitess clusters to NVMe-backed instances." />
+    <BoardCard title="Managed deployment GA" description="Generally release PlanetScale Managed for bring-your-own-cloud customers." />
+    <BoardCard title="Horizontal sharding automation" description="Ship automatic shard splitting and rebalancing for Vitess." />
   </BoardColumn>
 </Board>

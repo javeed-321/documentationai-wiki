@@ -1,41 +1,33 @@
 ---
 title: Changelog
-description: Release notes for new Canva features, AI updates, and platform improvements.
+description: Release notes for PlanetScale platform updates, Vitess enhancements, and new Postgres features.
 ---
 
-## Recent updates
+## Recent releases
 
-<Update label="2024-10-20" description="v2.8.0" tags={["feature"]}>
+<Update label="2024-11-12" description="v0.148.0" tags={["feature"]}>
 
-## Magic Studio
+## New engine releases
 
-- Added new AI art generator with improved prompt handling.
-- Enhanced AI photo editor for faster background removal.
-
-## Editor
-
-- Introduced real-time collaboration in Whiteboards.
+- Released Neki engine preview for sharded Postgres with automated horizontal scaling.
+- Added support for non-blocking schema changes on Vitess MySQL clusters.
 
 </Update>
 
-<Update label="2024-09-15" description="v2.7.0" tags={["feature"]}>
+<Update label="2024-10-28" description="v0.147.2" tags={["improvement", "bugfix"]}>
 
-## Templates and integrations
+## Performance and sharding improvements
 
-- Expanded library with 500 new presentation and social media templates.
-- Added direct export to PDF Editor workflows.
-
-## Performance
-
-- Reduced load times for large video projects in the video editor.
+- Increased NVMe IOPS limits by 40 percent on all managed clusters.
+- Fixed an issue where large shard rebalances could temporarily reduce query throughput.
 
 </Update>
 
-<Update label="2024-08-05" description="v2.6.1" tags={["bugfix"]}>
+<Update label="2024-10-05" description="v0.146.0" tags={["feature"]}>
 
-## Fixes
+## Console and CLI changes
 
-- Resolved image enhancer crashes on high-resolution uploads.
-- Fixed sticker scaling issues in print design exports.
+- Added Database Traffic Control resource budgets in the web console.
+- Introduced new `pscale db traffic` CLI commands for setting query limits.
 
 </Update>

@@ -1,0 +1,90 @@
+---
+title: Quickstart
+description: Make your first authenticated request to provision and query PlanetScale resources.
+---
+
+## Prerequisites
+
+<Callout kind="info">
+
+Create a PlanetScale account and note your organization name before you begin.
+
+</Callout>
+
+## Obtain an API token
+
+<Steps>
+<Step title="Create a service token">
+
+Open the dashboard and generate a new service token with the required scopes.
+
+</Step>
+<Step title="Store the token">
+
+Copy the token value and set it as an environment variable.
+
+```bash
+export PLANETSCALE_TOKEN="YOUR_API_TOKEN"
+```
+
+</Step>
+</Steps>
+
+## Create a database
+
+Use the token to provision a new database.
+
+<CodeGroup tabs="cURL,Python">
+```bash
+curl -X POST https://api.example.com/organizations/my-org/databases \
+  -H "Authorization: Bearer $PLANETSCALE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"quickstart-db","region":"us-east"}'
+```
+```python
+import requests
+import os
+
+token = os.environ["PLANETSCALE_TOKEN"]
+resp = requests.post(
+    "https://api.example.com/organizations/my-org/databases",
+    headers={"Authorization": f"Bearer {token}"},
+    json={"name": "quickstart-db", "region": "us-east"},
+)
+print(resp.json())
+```
+</CodeGroup>
+
+## List branches and deploy schema changes
+
+<Steps>
+<Step title="List branches">
+
+```bash
+curl https://api.example.com/organizations/my-org/databases/quickstart-db/branches \
+  -H "Authorization: Bearer $PLANETSCALE_TOKEN"
+```
+
+</Step>
+<Step title="Apply a schema change">
+
+```bash
+curl -X POST https://api.example.com/organizations/my-org/databases/quickstart-db/branches/main/schema \
+  -H "Authorization: Bearer $PLANETSCALE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"ddl":"CREATE TABLE users (id bigint PRIMARY KEY)"}'
+```
+
+</Step>
+</Steps>
+
+## Next steps
+
+<Columns cols={2}>
+<Card title="API reference" href="#" icon="book-open">
+Explore every endpoint and response field.
+</Card>
+<Card title="Branch workflows" href="#" icon="git-branch">
+Learn how to promote and delete branches safely.
+</Card>
+</Columns>
