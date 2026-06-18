@@ -1,6 +1,5 @@
 {
   "name": "Zendesk",
-  "show-sidebar": false,
   "colors": {
     "light": {
       "brand": "#03363D",
@@ -16,6 +15,8 @@
   "navigation": {
     "tabs": [
       {
+        "show-sidebar": false,
+        "show-toc": false,
         "tab": "Help Center",
         "icon": "help-circle",
         "groups": [
