@@ -1,81 +1,114 @@
 ---
 title: Feature Overview
-description: Explore core Shopify capabilities including checkout conversion, POS, marketing automation, and inventory.
+description: Explore core capabilities including scheduled tasks, realtime, concurrency controls, and full observability.
 ---
 
 ## Overview
 
-ShopifyMax provides a complete commerce platform that helps you launch, manage, and scale retail operations with confidence. Every tool is designed to improve conversion, streamline operations, and deliver reliable results across channels.
+Trigger.dev lets you build and run long-running background jobs in TypeScript. You define tasks that handle API calls, webhooks, scheduled work, and AI workloads. The platform manages retries, queues, and visibility so you can focus on business logic.
 
-You can start selling quickly, switch existing stores without friction, and rely on enterprise-grade features regardless of business size.
+Core capabilities include durable scheduled tasks, fine-grained concurrency controls, realtime connections from your frontend, and complete tracing across every run.
 
-## World-Class Checkout
+## Scheduled Tasks
 
-The checkout experience converts better than any other platform. Built-in optimizations reduce friction and increase completed orders.
+Scheduled tasks run on durable cron schedules that survive restarts and timeouts. You register a schedule once and Trigger.dev keeps it active.
 
-<Callout kind="tip">
-  Enable one-click payments to reduce cart abandonment by up to 30 percent.
+```typescript
+import { schedules } from "@trigger.dev/sdk/v3";
+
+export const dailyReport = schedules.task({
+  id: "daily-report",
+  cron: "0 9 * * *",
+  run: async (payload) => {
+    // fetch data and send report
+  },
+});
+```
+
+Use scheduled tasks for nightly syncs, weekly summaries, or any recurring workflow that must complete reliably.
+
+## Concurrency and Queues
+
+Control how many tasks run at the same time with concurrency limits and named queues. This prevents rate-limit errors and keeps resource usage predictable.
+
+<Callout kind="info">
+Set per-task and per-queue limits to match external API quotas.
 </Callout>
 
-## Point of Sale
+## Trigger.dev Realtime
 
-Sell in physical locations with the same inventory and customer data used online.
+Trigger.dev Realtime streams task status and custom events directly to your frontend. Connect once and receive updates without polling.
 
 <Tabs>
-  <Tab title="Mobile" icon="smartphone">
-    Process sales on any device with offline support and instant sync.
+  <Tab title="React" icon="code">
+    Subscribe to runs from any React component.
+
+    ```tsx
+    import { useRun } from "@trigger.dev/react";
+
+    function JobStatus({ runId }) {
+      const { run } = useRun(runId);
+      return <div>Status: {run?.status}</div>;
+    }
+    ```
   </Tab>
-  <Tab title="Desktop" icon="monitor">
-    Use full-featured terminals for high-volume locations.
+  <Tab title="Vanilla" icon="terminal">
+    Use the lightweight client in any browser environment.
+
+    ```ts
+    import { runs } from "@trigger.dev/realtime";
+
+    const subscription = runs.subscribe(runId, {
+      onUpdate: (run) => console.log(run.status),
+    });
+    ```
   </Tab>
 </Tabs>
 
-## Marketing and Analytics
+## Observability and Tracing
 
-Built-in marketing tools and detailed analytics help you reach customers and measure performance.
+Every task run records inputs, outputs, logs, and spans. The dashboard shows a full trace so you can debug failures quickly.
 
-<Columns cols={2}>
-  <Card title="Campaign Builder" icon="megaphone" href="#">
-    Create targeted promotions without third-party tools.
-  </Card>
-  <Card title="Real-Time Reports" icon="bar-chart" href="#">
-    Track sales, traffic, and conversion from one dashboard.
-  </Card>
-</Columns>
+<Expandable title="What data is captured?" default-open="false">
+- Full input and output payloads  
+- Console logs and errors  
+- External HTTP calls with timing  
+- Child task invocations  
 
-## Orders and Shipping
-
-Manage orders and fulfillment from a single view.
-
-<Expandable title="Shipping rate configuration" default-open="false">
-  Define custom rates by region, weight, or order value. Rates update automatically when inventory changes.
 </Expandable>
 
-## Configuration Example
+## Examples
 
-Use the following snippet to connect your store to external logistics providers.
+<CodeGroup tabs="TypeScript,Python">
+```typescript
+import { task } from "@trigger.dev/sdk/v3";
 
-````jsx
-<CodeGroup tabs="JavaScript,Python">
-```javascript
-const response = await fetch('https://api.example.com/orders', {
-  method: 'POST',
-  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }
+export const processOrder = task({
+  id: "process-order",
+  run: async (payload) => {
+    await chargeCustomer(payload.userId);
+    await sendConfirmation(payload.email);
+  },
 });
 ```
+
 ```python
-import requests
-response = requests.post(
-  'https://api.example.com/orders',
-  headers={'Authorization': 'Bearer YOUR_API_KEY'}
-)
+from triggerdev import task
+
+@task(id="process-order")
+def process_order(payload):
+    charge_customer(payload["userId"])
+    send_confirmation(payload["email"])
 ```
 </CodeGroup>
-````
 
 ## Best Practices
 
-- Test checkout flows on mobile devices before launch.
-- Keep inventory counts accurate across online and physical channels.
-- Review analytics weekly to adjust marketing spend.
-- Use automated shipping rules to reduce manual order processing.
+- Keep task payloads small and store large data in object storage.  
+- Set explicit concurrency limits on any task that calls third-party APIs.  
+- Use Realtime subscriptions only for runs the current user should see.  
+- Review traces regularly to spot slow external calls.
+
+<Card title="Next steps" icon="arrow-right" href="#">
+  Read the scheduled tasks guide to start building your first cron job.
+</Card>

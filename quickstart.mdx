@@ -1,73 +1,86 @@
 ---
 title: Quickstart
-description: Launch your first Shopify store and start selling within a day using built-in themes and checkout.
+description: Install the Trigger.dev SDK, create your first task, and run it locally in under five minutes.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-  You need only an email address. No credit card is required to start your trial.
+  You need Node.js 18 or later and a Trigger.dev account. Sign up at example.com if you have not already.
 </Callout>
 
-## Create your store
+## Install the SDK
 
 <Steps>
-  <Step title="Sign up for ShopifyMax" icon="user-plus">
-    Visit the ShopifyMax homepage and enter your email. Confirm the address to receive your store URL.
+  <Step title="Create a project" icon="folder-plus">
+    Run the following command to scaffold a new Trigger.dev project:
+
+    ```bash
+    npx create-trigger@latest my-project
+    cd my-project
+    ```
   </Step>
-  <Step title="Choose your plan" icon="credit-card">
-    Select the free trial. ShopifyMax activates your store immediately so you can begin setup.
-  </Step>
-  <Step title="Complete store details" icon="settings">
-    Provide your store name and address. ShopifyMax uses this information to configure your checkout automatically.
+  <Step title="Install dependencies" icon="download">
+    Add the Trigger.dev SDK to your project:
+
+    ```bash
+    npm install @trigger.dev/sdk
+    ```
   </Step>
 </Steps>
 
-## Select and apply a theme
+## Define your first task
 
-<Steps>
-  <Step title="Browse built-in themes" icon="layout">
-    Open the theme library from your ShopifyMax dashboard. Filter by industry to find a starting design.
-  </Step>
-  <Step title="Preview and publish" icon="eye">
-    Click any theme to preview it with your store data. When satisfied, click Publish to make it live.
-  </Step>
-</Steps>
+<CodeGroup tabs="TypeScript">
+```typescript
+import { task } from "@trigger.dev/sdk/v3";
 
-## Add your first product
-
-```mermaid
-graph LR
-    A[Dashboard] --> B[Products]
-    B --> C[Add product]
-    C --> D[Publish]
-```
-
-<CodeGroup tabs="JSON,CLI">
-```json
-{
-  "product": {
-    "title": "Sample T-Shirt",
-    "body_html": "<p>Comfortable cotton tee.</p>",
-    "variants": [{ "price": "29.00", "inventory_quantity": 100 }]
-  }
-}
-```
-```bash
-shopifymax product create --title "Sample T-Shirt" --price 29.00
+export const helloWorld = task({
+  id: "hello-world",
+  run: async (payload: { name: string }) => {
+    return `Hello, ${payload.name}!`;
+  },
+});
 ```
 </CodeGroup>
+
+## Run locally
+
+<Steps>
+  <Step title="Start the dev server" icon="play">
+    Launch the Trigger.dev development server:
+
+    ```bash
+    npx trigger dev
+    ```
+  </Step>
+  <Step title="Trigger the task" icon="send">
+    Use the dashboard or CLI to run your task with a payload. The task executes and streams logs in real time.
+  </Step>
+</Steps>
+
+## Deploy to Trigger.dev
+
+<Steps>
+  <Step title="Deploy your tasks" icon="rocket">
+    Push your tasks to the Trigger.dev platform:
+
+    ```bash
+    npx trigger deploy
+    ```
+  </Step>
+</Steps>
 
 ## Next steps
 
 <Columns cols={3}>
-  <Card title="Customize checkout" icon="shopping-cart" href="#">
-    Learn how to add upsells and payment options.
+  <Card title="AI Agents" icon="bot" href="#">
+    Build and deploy invincible AI agents.
   </Card>
-  <Card title="Connect a domain" icon="globe" href="#">
-    Point your own domain to your new store.
+  <Card title="Scheduled tasks" icon="clock" href="#">
+    Durable cron schedules without timeouts.
   </Card>
-  <Card title="Launch marketing" icon="megaphone" href="#">
-    Set up email campaigns and social channels.
+  <Card title="Observability" icon="bar-chart" href="#">
+    Real-time monitoring and tracing of tasks.
   </Card>
 </Columns>

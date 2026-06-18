@@ -1,16 +1,17 @@
 openapi: '3.0.0'
 info:
   version: 1.0.0
-  title: ShopifyMax API
+  title: Trigger.dev API
   license:
     name: MIT
 servers:
-  - url: https://api.shopifymax.com/v1
+  - url: https://api.trigger.dev/v1
 paths:
-  /stores:
+  /jobs:
     get:
-      summary: List stores
-      operationId: listStores
+      summary: List jobs
+      description: Retrieves a paginated list of workflow jobs in your workspace. Use the limit parameter to control page size and monitor recent executions.
+      operationId: listJobs
       parameters:
         - name: limit
           in: query
@@ -21,7 +22,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of stores
+          description: An paged array of jobs
           headers:
             x-next:
               description: A link to the next page of responses
@@ -30,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Stores'
+                $ref: '#/components/schemas/Jobs'
         default:
           description: unexpected error
           content:
@@ -38,8 +39,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      summary: Create store
-      operationId: createStores
+      summary: Create a job
+      operationId: createJobs
       responses:
         201:
           description: Null response
@@ -49,15 +50,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /stores/{storeId}:
+  /jobs/{jobId}:
     get:
-      summary: Store details
-      operationId: showStoreById
+      summary: Get job details
+      description: Retrieves detailed information about a specific job by its unique identifier. Use this to inspect job state, retries, and execution metadata.
+      operationId: showJobById
       parameters:
-        - name: storeId
+        - name: jobId
           in: path
           required: true
-          description: The id of the store to retrieve
+          description: The id of the job to retrieve
           schema:
             type: string
       responses:
@@ -66,17 +68,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Stores'
+                $ref: '#/components/schemas/Jobs'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /orders:
+  /workflows:
     get:
-      summary: List orders
-      operationId: listOrders
+      summary: List workflows
+      description: Retrieves a paginated list of workflows configured in your Trigger.dev workspace. Use this to review automations, integrations, and schedule definitions.
+      operationId: listWorkflows
       parameters:
         - name: limit
           in: query
@@ -87,7 +90,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of orders
+          description: An paged array of workflows
           headers:
             x-next:
               description: A link to the next page of responses
@@ -96,34 +99,23 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Orders'
+                $ref: '#/components/schemas/Workflows'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    post:
-      summary: Create order
-      operationId: createOrders
-      responses:
-        201:
-          description: Null response
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /orders/{orderId}:
+  /webhooks/{webhookId}:
     get:
-      summary: Order details
-      operationId: showOrderById
+      summary: Get webhook info
+      description: Retrieves detailed information about a specific webhook endpoint by its unique identifier. Use this to inspect delivery settings and recent activity.
+      operationId: showWebhookById
       parameters:
-        - name: orderId
+        - name: webhookId
           in: path
           required: true
-          description: The id of the order to retrieve
+          description: The id of the webhook to retrieve
           schema:
             type: string
       responses:
@@ -132,7 +124,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Orders'
+                $ref: '#/components/schemas/Webhooks'
         default:
           description: unexpected error
           content:
@@ -141,7 +133,7 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Store:
+    Job:
       required:
         - id
         - name
@@ -151,13 +143,13 @@ components:
           format: int64
         name:
           type: string
-        domain:
+        tag:
           type: string
-    Stores:
+    Jobs:
       type: array
       items:
-        $ref: '#/components/schemas/Store'
-    Order:
+        $ref: '#/components/schemas/Job'
+    Workflow:
       required:
         - id
         - name
@@ -167,12 +159,28 @@ components:
           format: int64
         name:
           type: string
-        status:
+        tag:
           type: string
-    Orders:
+    Workflows:
       type: array
       items:
-        $ref: '#/components/schemas/Order'
+        $ref: '#/components/schemas/Workflow'
+    Webhook:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        tag:
+          type: string
+    Webhooks:
+      type: array
+      items:
+        $ref: '#/components/schemas/Webhook'
     Error:
       required:
         - code

@@ -1,77 +1,71 @@
 ---
 title: Authentication
-description: Authenticate API requests using OAuth, API keys, and access scopes for Shopify stores and apps.
+description: Authenticate API requests using personal access tokens or project API keys.
 ---
 
 ## Overview
 
-All requests to the ShopifyMax API require authentication. You send credentials with every request so the platform can verify your identity and enforce the correct access scopes.
-
-ShopifyMax supports two primary authentication methods: OAuth for public apps and API keys for private apps. Both return an access token that you include in subsequent calls.
+Trigger.dev API requests require authentication using either a personal access token or a project API key. Include the credential in the Authorization header of every request. Unauthenticated requests return a 401 status.
 
 ## Authentication methods
 
 <Tabs>
-  <Tab title="OAuth" icon="key">
+  <Tab title="Personal access tokens" icon="key">
 
-  OAuth is the recommended flow for public apps that merchants install from the ShopifyMax App Store.
+    Personal access tokens authenticate requests on behalf of a user account. Generate tokens in the dashboard under Account settings. Tokens support scopes that limit access to specific resources.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Use the format `Bearer YOUR_PERSONAL_ACCESS_TOKEN`.
+    </ParamField>
 
   </Tab>
-  <Tab title="Private apps" icon="lock">
+  <Tab title="Project API keys" icon="lock">
 
-  Private apps use a static API key and secret generated inside a single store.
+    Project API keys authenticate requests scoped to a single project. Create keys in the project settings. Keys inherit the permissions of the project owner.
+
+    <ParamField header="Authorization" param-type="string" required="true">
+      Use the format `Bearer YOUR_PROJECT_API_KEY`.
+    </ParamField>
 
   </Tab>
 </Tabs>
 
-## OAuth flow
+## Sending authenticated requests
 
-1. Redirect the merchant to the ShopifyMax authorization URL.
-2. The merchant grants the requested scopes.
-3. ShopifyMax redirects back with a temporary code.
-4. Exchange the code for a permanent access token.
-
-<ParamField query="client_id" param-type="string" required="true">
-  Your app's client identifier.
-</ParamField>
-
-<ParamField query="scope" param-type="string" required="true">
-  Space-separated list of requested access scopes.
-</ParamField>
-
-<ParamField query="redirect_uri" param-type="string" required="true">
-  URL that receives the authorization code.
-</ParamField>
-
-## Implementation
+Use the Authorization header with every request. The examples below show the header in three languages.
 
 <CodeGroup tabs="JavaScript,Python,cURL">
-```javascript
-const token = await exchangeCodeForToken({
-  clientId: "YOUR_CLIENT_ID",
-  clientSecret: "YOUR_CLIENT_SECRET",
-  code: req.query.code,
+````javascript
+const response = await fetch("https://api.example.com/v1/tasks", {
+  method: "GET",
+  headers: {
+    Authorization: "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json",
+  },
 });
-```
-```python
-token = exchange_code_for_token(
-    client_id="YOUR_CLIENT_ID",
-    client_secret="YOUR_CLIENT_SECRET",
-    code=request.args.get("code"),
+````
+````python
+import requests
+
+response = requests.get(
+    "https://api.example.com/v1/tasks",
+    headers={
+        "Authorization": "Bearer YOUR_API_KEY",
+        "Content-Type": "application/json",
+    },
 )
-```
-```bash
-curl -X POST https://api.example.com/oauth/token \
-  -d client_id=YOUR_CLIENT_ID \
-  -d client_secret=YOUR_CLIENT_SECRET \
-  -d code=AUTH_CODE
-```
+````
+````bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     https://api.example.com/v1/tasks
+````
 </CodeGroup>
 
-Include the resulting access token in the Authorization header of every API call.
-
-## Security recommendations
+## Security best practices
 
 <Callout kind="alert">
-Store access tokens securely. Never expose them in client-side code or commit them to version control. Rotate tokens when a merchant uninstalls your app.
+
+Store tokens and keys in environment variables. Never commit credentials to source control. Rotate keys regularly and revoke tokens immediately after suspected compromise. Limit token scopes to the minimum required permissions.
+
 </Callout>
