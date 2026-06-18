@@ -1,86 +1,54 @@
 ---
 title: Quickstart
-description: Install the Trigger.dev SDK, create your first task, and run it locally in under five minutes.
+description: Steps to sign up, create your first design, and explore Canva's editor on any device.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-  You need Node.js 18 or later and a Trigger.dev account. Sign up at example.com if you have not already.
+You need only a modern web browser and an internet connection. No downloads or installations are required.
 </Callout>
 
-## Install the SDK
+## Create your account
 
 <Steps>
-  <Step title="Create a project" icon="folder-plus">
-    Run the following command to scaffold a new Trigger.dev project:
+<Step title="Sign up">
+Open your browser and go to the Canva homepage. Click the sign-up button, then create an account with your email address or a connected Google or Facebook profile.
+</Step>
 
-    ```bash
-    npx create-trigger@latest my-project
-    cd my-project
-    ```
-  </Step>
-  <Step title="Install dependencies" icon="download">
-    Add the Trigger.dev SDK to your project:
-
-    ```bash
-    npm install @trigger.dev/sdk
-    ```
-  </Step>
+<Step title="Complete onboarding">
+Answer the short prompts about your role and design goals. Canva uses this information to suggest relevant templates and features.
+</Step>
 </Steps>
 
-## Define your first task
-
-<CodeGroup tabs="TypeScript">
-```typescript
-import { task } from "@trigger.dev/sdk/v3";
-
-export const helloWorld = task({
-  id: "hello-world",
-  run: async (payload: { name: string }) => {
-    return `Hello, ${payload.name}!`;
-  },
-});
-```
-</CodeGroup>
-
-## Run locally
+## Start your first project
 
 <Steps>
-  <Step title="Start the dev server" icon="play">
-    Launch the Trigger.dev development server:
+<Step title="Choose a template">
+From the home screen, browse categories or search for a template such as a social media graphic, presentation, or poster. Click Use this template to open it.
+</Step>
 
-    ```bash
-    npx trigger dev
-    ```
-  </Step>
-  <Step title="Trigger the task" icon="send">
-    Use the dashboard or CLI to run your task with a payload. The task executes and streams logs in real time.
-  </Step>
-</Steps>
+<Step title="Edit your design">
+Drag elements on the canvas to reposition them. Replace placeholder text and images with your own content using the toolbar on the left.
+</Step>
 
-## Deploy to Trigger.dev
-
-<Steps>
-  <Step title="Deploy your tasks" icon="rocket">
-    Push your tasks to the Trigger.dev platform:
-
-    ```bash
-    npx trigger deploy
-    ```
-  </Step>
+<Step title="Export the finished design">
+Click the Share button in the top right, select Download, and choose a format such as PNG, JPG, or PDF. Your file saves directly to your device.
+</Step>
 </Steps>
 
 ## Next steps
 
 <Columns cols={3}>
-  <Card title="AI Agents" icon="bot" href="#">
-    Build and deploy invincible AI agents.
-  </Card>
-  <Card title="Scheduled tasks" icon="clock" href="#">
-    Durable cron schedules without timeouts.
-  </Card>
-  <Card title="Observability" icon="bar-chart" href="#">
-    Real-time monitoring and tracing of tasks.
-  </Card>
+<Card title="Templates" icon="layout" href="#">
+Browse hundreds of ready-to-use designs for any project type.
+</Card>
+
+<Card title="Editor tools" icon="edit" href="#">
+Learn advanced features such as background removal and brand kits.
+</Card>
+
+<Card title="Sharing options" icon="share-2" href="#">
+Discover collaboration and publishing workflows.
+</Card>
 </Columns>

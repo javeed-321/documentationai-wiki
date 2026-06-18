@@ -1,114 +1,78 @@
 ---
 title: Feature Overview
-description: Explore core capabilities including scheduled tasks, realtime, concurrency controls, and full observability.
+description: Key capabilities across Canva's Visual Suite including AI tools, brand kits, and multi-format design workflows.
 ---
 
 ## Overview
 
-Trigger.dev lets you build and run long-running background jobs in TypeScript. You define tasks that handle API calls, webhooks, scheduled work, and AI workloads. The platform manages retries, queues, and visibility so you can focus on business logic.
+Canva provides an integrated Visual Suite that supports design across digital, print, and video formats. The platform centers on Magic Studio for AI-assisted creation, Brand Kit for consistent identity management, and flexible workflows that move seamlessly between presentations, social graphics, websites, and physical products.
 
-Core capabilities include durable scheduled tasks, fine-grained concurrency controls, realtime connections from your frontend, and complete tracing across every run.
+## Magic Studio AI Features and Generators
 
-## Scheduled Tasks
+Magic Studio brings generative tools directly into the editor. You can generate images, edit photos, remove backgrounds, and create entire layouts from text prompts.
 
-Scheduled tasks run on durable cron schedules that survive restarts and timeouts. You register a schedule once and Trigger.dev keeps it active.
-
-```typescript
-import { schedules } from "@trigger.dev/sdk/v3";
-
-export const dailyReport = schedules.task({
-  id: "daily-report",
-  cron: "0 9 * * *",
-  run: async (payload) => {
-    // fetch data and send report
-  },
-});
-```
-
-Use scheduled tasks for nightly syncs, weekly summaries, or any recurring workflow that must complete reliably.
-
-## Concurrency and Queues
-
-Control how many tasks run at the same time with concurrency limits and named queues. This prevents rate-limit errors and keeps resource usage predictable.
-
-<Callout kind="info">
-Set per-task and per-queue limits to match external API quotas.
+<Callout kind="tip">
+  Start prompts with clear style references such as "minimal flat illustration" to guide results quickly.
 </Callout>
 
-## Trigger.dev Realtime
+<Columns cols={3}>
+  <Card title="Magic Design" icon="sparkles" href="#">
+    Generate full slides or social posts from a short description.
+  </Card>
+  <Card title="Magic Edit" icon="wand" href="#">
+    Replace objects or adjust lighting with natural language.
+  </Card>
+  <Card title="Magic Media" icon="image" href="#">
+    Create stock-style photos, illustrations, or video clips on demand.
+  </Card>
+</Columns>
 
-Trigger.dev Realtime streams task status and custom events directly to your frontend. Connect once and receive updates without polling.
+## Brand Management and Collaboration Tools
+
+Brand Kit stores logos, colors, fonts, and templates so every team member produces on-brand assets automatically. Collaboration features include real-time commenting, version history, and shareable folders.
 
 <Tabs>
-  <Tab title="React" icon="code">
-    Subscribe to runs from any React component.
-
-    ```tsx
-    import { useRun } from "@trigger.dev/react";
-
-    function JobStatus({ runId }) {
-      const { run } = useRun(runId);
-      return <div>Status: {run?.status}</div>;
-    }
-    ```
+  <Tab title="Brand Kit" icon="shield">
+    Upload assets once and apply them across any design with a single click.
   </Tab>
-  <Tab title="Vanilla" icon="terminal">
-    Use the lightweight client in any browser environment.
-
-    ```ts
-    import { runs } from "@trigger.dev/realtime";
-
-    const subscription = runs.subscribe(runId, {
-      onUpdate: (run) => console.log(run.status),
-    });
-    ```
+  <Tab title="Folders" icon="folder">
+    Organize projects by team or campaign and control edit permissions.
+  </Tab>
+  <Tab title="Comments" icon="message-circle">
+    Leave feedback directly on elements without leaving the canvas.
   </Tab>
 </Tabs>
 
-## Observability and Tracing
+## Print, Video, and Website Design Workflows
 
-Every task run records inputs, outputs, logs, and spans. The dashboard shows a full trace so you can debug failures quickly.
+Design once and export to multiple formats. The same project can become a printed poster, a social video, or a live website.
 
-<Expandable title="What data is captured?" default-open="false">
-- Full input and output payloads  
-- Console logs and errors  
-- External HTTP calls with timing  
-- Child task invocations  
-
-</Expandable>
+<Steps>
+  <Step title="Create">
+    Start with a template or blank canvas and add content using Magic Studio.
+  </Step>
+  <Step title="Refine">
+    Apply Brand Kit styles and collaborate with teammates in real time.
+  </Step>
+  <Step title="Export">
+    Choose print-ready PDFs, MP4 video, or publish a responsive website.
+  </Step>
+</Steps>
 
 ## Examples
 
-<CodeGroup tabs="TypeScript,Python">
-```typescript
-import { task } from "@trigger.dev/sdk/v3";
-
-export const processOrder = task({
-  id: "process-order",
-  run: async (payload) => {
-    await chargeCustomer(payload.userId);
-    await sendConfirmation(payload.email);
-  },
-});
-```
-
-```python
-from triggerdev import task
-
-@task(id="process-order")
-def process_order(payload):
-    charge_customer(payload["userId"])
-    send_confirmation(payload["email"])
-```
-</CodeGroup>
+<ExpandableGroup>
+  <Expandable title="Social media campaign" default-open="false">
+    A marketing team generates ten platform-specific posts from one Magic Design prompt, then applies Brand Kit colors before scheduling.
+  </Expandable>
+  <Expandable title="Product launch video" default-open="false">
+    Record footage inside Canva, trim clips with the built-in editor, and add AI-generated background music.
+  </Expandable>
+</ExpandableGroup>
 
 ## Best Practices
 
-- Keep task payloads small and store large data in object storage.  
-- Set explicit concurrency limits on any task that calls third-party APIs.  
-- Use Realtime subscriptions only for runs the current user should see.  
-- Review traces regularly to spot slow external calls.
-
-<Card title="Next steps" icon="arrow-right" href="#">
-  Read the scheduled tasks guide to start building your first cron job.
-</Card>
+- Keep Brand Kit assets up to date so new team members inherit correct styles immediately.
+- Use short, descriptive prompts in Magic Studio to reduce iteration time.
+- Test print workflows with a small run before ordering large quantities.
+- Share folders with view-only links when collecting external feedback.
