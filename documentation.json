@@ -1,1 +1,134 @@
-{"name":"Twilio","colors":{"light":{"brand":"#f32d45","heading":"#1B1F24","text":"#1B1F24"},"dark":{"brand":"#F37988","heading":"#FFFFFF","text":"#E5E7EB"}},"navigation":{"tabs":[{"tab":"Docs","icon":"book-open","groups":[{"group":"Getting started","icon":"rocket","expandable":false,"pages":[{"title":"Introduction","path":"api-docs/introduction","icon":"book"},{"title":"Quickstart","path":"api-docs/quickstart","icon":"zap"},{"title":"Authentication","path":"api-docs/authentication","icon":"key"}]},{"group":"Troubleshooting","icon":"alert-triangle","expandable":false,"pages":[{"title":"Error Codes","path":"api-docs/errors","icon":"alert-circle"}]}]},{"tab":"API Reference","icon":"code","groups":[{"group":"API Reference","icon":"code","openapi":"api-reference/openapi.yaml"}]},{"tab":"Changelog","icon":"clock","groups":[{"group":"Changelog","icon":"list","expandable":false,"pages":[{"title":"Changelog","path":"changelog","icon":"clock","show-sidebar":false}]}]},{"tab":"Roadmap","icon":"map","groups":[{"group":"Roadmap","icon":"map","expandable":false,"pages":[{"title":"Roadmap","path":"roadmap","icon":"flag","show-sidebar":false,"show-toc":false,"content-width":"wide"}]}]}]}}
+{
+  "name": "Zendesk",
+  "colors": {
+    "light": {
+      "brand": "#03363D",
+      "heading": "#1B1F24",
+      "text": "#1B1F24"
+    },
+    "dark": {
+      "brand": "#59E0F2",
+      "heading": "#FFFFFF",
+      "text": "#E5E7EB"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Help Center",
+        "icon": "help-circle",
+        "groups": [
+          {
+            "group": "Overview",
+            "icon": "folder",
+            "expandable": false,
+            "pages": [
+              {
+                "title": "Help Center",
+                "path": "help-center"
+              }
+            ]
+          },
+          {
+            "group": "Getting Started",
+            "icon": "rocket",
+            "pages": [
+              {
+                "title": "Quickstart",
+                "path": "help-center/getting-started/quickstart"
+              },
+              {
+                "group": "Account Setup",
+                "icon": "user-plus",
+                "pages": [
+                  {
+                    "title": "Create your account",
+                    "path": "help-center/getting-started/create-account"
+                  },
+                  {
+                    "title": "Invite your team",
+                    "path": "help-center/getting-started/invite-team"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Using the Product",
+            "icon": "book-open",
+            "pages": [
+              {
+                "group": "Workspace",
+                "icon": "layout-grid",
+                "pages": [
+                  {
+                    "title": "Managing members",
+                    "path": "help-center/product/managing-members"
+                  },
+                  {
+                    "group": "Channels",
+                    "icon": "message-square",
+                    "pages": [
+                      {
+                        "title": "Email channel",
+                        "path": "help-center/product/channels/email"
+                      },
+                      {
+                        "title": "Chat channel",
+                        "path": "help-center/product/channels/chat"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Automation",
+                "icon": "zap",
+                "pages": [
+                  {
+                    "title": "Workflows",
+                    "path": "help-center/product/automation/workflows"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Billing & Plans",
+            "icon": "credit-card",
+            "pages": [
+              {
+                "title": "Plans overview",
+                "path": "help-center/billing/plans"
+              },
+              {
+                "title": "Invoices",
+                "path": "help-center/billing/invoices"
+              }
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "icon": "alert-triangle",
+            "pages": [
+              {
+                "title": "Common issues",
+                "path": "help-center/troubleshooting/common-issues"
+              }
+            ]
+          },
+          {
+            "group": "Support",
+            "icon": "life-buoy",
+            "pages": [
+              {
+                "title": "Contact & Support",
+                "path": "help-center/contact"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
