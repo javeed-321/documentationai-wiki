@@ -1,93 +1,73 @@
 ---
 title: Quickstart
-description: Get up and running with Stripe by creating an account, obtaining API keys, and accepting your first payment.
+description: Launch your first Shopify store and start selling within a day using built-in themes and checkout.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-Create a Stripe account and switch to test mode before you begin. All examples below run safely against test data.
+  You need only an email address. No credit card is required to start your trial.
 </Callout>
 
-## Create your account and obtain API keys
+## Create your store
 
 <Steps>
-  <Step title="Sign up" icon="user">
-    Visit the Stripe dashboard and create your account. After verification you land in test mode by default.
+  <Step title="Sign up for ShopifyMax" icon="user-plus">
+    Visit the ShopifyMax homepage and enter your email. Confirm the address to receive your store URL.
   </Step>
-  <Step title="Retrieve API keys" icon="key">
-    Navigate to Developers > API keys. Copy the publishable key and secret key shown there. Keep the secret key private.
-
-    ```bash
-    # Example keys (replace with your own)
-    PUBLISHABLE_KEY=pk_test_your_key_here
-    SECRET_KEY=sk_test_your_key_here
-    ```
+  <Step title="Choose your plan" icon="credit-card">
+    Select the free trial. ShopifyMax activates your store immediately so you can begin setup.
+  </Step>
+  <Step title="Complete store details" icon="settings">
+    Provide your store name and address. ShopifyMax uses this information to configure your checkout automatically.
   </Step>
 </Steps>
 
-## Accept your first test payment
+## Select and apply a theme
 
-Use the API directly to create a PaymentIntent and confirm it with a test card.
+<Steps>
+  <Step title="Browse built-in themes" icon="layout">
+    Open the theme library from your ShopifyMax dashboard. Filter by industry to find a starting design.
+  </Step>
+  <Step title="Preview and publish" icon="eye">
+    Click any theme to preview it with your store data. When satisfied, click Publish to make it live.
+  </Step>
+</Steps>
 
-<CodeGroup tabs="cURL,JavaScript">
-```bash
-curl https://api.stripe.com/v1/payment_intents \
-  -u sk_test_your_key_here: \
-  -d amount=2000 \
-  -d currency=usd \
-  -d "payment_method_data[card][number]"=4242424242424242 \
-  -d "payment_method_data[card][exp_month]"=12 \
-  -d "payment_method_data[card][exp_year]"=2025 \
-  -d "payment_method_data[card][cvc]"=123 \
-  -d "payment_method_data[type]"=card \
-  -d confirm=true
+## Add your first product
+
+```mermaid
+graph LR
+    A[Dashboard] --> B[Products]
+    B --> C[Add product]
+    C --> D[Publish]
 ```
 
-```javascript
-const response = await fetch("https://api.stripe.com/v1/payment_intents", {
-  method: "POST",
-  headers: {
-    Authorization: "Bearer sk_test_your_key_here",
-    "Content-Type": "application/x-www-form-urlencoded",
-  },
-  body: new URLSearchParams({
-    amount: 2000,
-    currency: "usd",
-    "payment_method_data[card][number]": "4242424242424242",
-    "payment_method_data[card][exp_month]": "12",
-    "payment_method_data[card][exp_year]": "2025",
-    "payment_method_data[card][cvc]": "123",
-    "payment_method_data[type]": "card",
-    confirm: "true",
-  }),
-});
-const paymentIntent = await response.json();
-console.log(paymentIntent.status);
+<CodeGroup tabs="JSON,CLI">
+```json
+{
+  "product": {
+    "title": "Sample T-Shirt",
+    "body_html": "<p>Comfortable cotton tee.</p>",
+    "variants": [{ "price": "29.00", "inventory_quantity": 100 }]
+  }
+}
+```
+```bash
+shopifymax product create --title "Sample T-Shirt" --price 29.00
 ```
 </CodeGroup>
 
-## Configure a webhook endpoint
-
-<Steps>
-  <Step title="Expose an endpoint" icon="webhook">
-    Create a POST route in your application that Stripe can reach, for example `/webhook`.
-  </Step>
-  <Step title="Register the endpoint" icon="link">
-    In the Stripe dashboard go to Developers > Webhooks and add your endpoint URL. Subscribe to the `payment_intent.succeeded` event.
-  </Step>
-  <Step title="Verify signatures" icon="shield">
-    Retrieve your webhook signing secret from the dashboard and use it to validate incoming requests.
-  </Step>
-</Steps>
-
 ## Next steps
 
-<Columns cols={2}>
-  <Card title="Payments" icon="credit-card" href="#">
-    Learn how to accept more payment methods and handle refunds.
+<Columns cols={3}>
+  <Card title="Customize checkout" icon="shopping-cart" href="#">
+    Learn how to add upsells and payment options.
   </Card>
-  <Card title="Billing" icon="file-text" href="#">
-    Set up subscriptions and recurring invoices.
+  <Card title="Connect a domain" icon="globe" href="#">
+    Point your own domain to your new store.
+  </Card>
+  <Card title="Launch marketing" icon="megaphone" href="#">
+    Set up email campaigns and social channels.
   </Card>
 </Columns>

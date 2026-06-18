@@ -1,109 +1,92 @@
 ---
 title: Error Codes
-description: Understand Stripe API error codes including declines, authentication failures, and rate limiting responses.
+description: Common Shopify API error responses, rate limits, and how to handle failed checkout or inventory updates.
 ---
 
-## Overview
+## HTTP Status Codes
 
-Stripe returns machine-readable error codes in JSON responses. Inspect the `type` and `code` fields to determine the exact failure and apply the correct remediation.
+ShopifyMax returns standard HTTP status codes for API requests. Inspect the response body for a JSON object containing an `errors` array with precise messages.
 
-## Card Decline Errors
+<Callout kind="info">
+Inspect the `X-Request-Id` header on every response when opening a support ticket.
+</Callout>
 
-<Expandable title="card_declined with insufficient_funds">
-Problem:  
-A charge request returns HTTP 402 with `"code": "card_declined"` and `"decline_code": "insufficient_funds"`.
+## Rate Limiting
 
-Cause:  
-The customer's card has insufficient available balance for the attempted amount.
+ShopifyMax enforces a limit of 2 requests per second per shop. Exceeding the limit returns a 429 response.
 
-Fix:  
-Advise the customer to use a different card or reduce the charge amount. You can surface the `decline_code` value directly to the customer.
+<Expandable title="429 Too Many Requests">
+Problem: API calls return HTTP 429 with the message `Rate limit exceeded. Retry after 1s`.
 
-```json
-{
-  "error": {
-    "type": "card_error",
-    "code": "card_declined",
-    "decline_code": "insufficient_funds",
-    "message": "Your card has insufficient funds."
+Cause: Your client issued more than two requests in the same second to the same shop.
+
+Fix: Implement exponential backoff. The example below shows a minimal retry loop.
+
+```javascript
+async function callWithBackoff(url, options, retries = 3) {
+  const res = await fetch(url, options);
+  if (res.status === 429 && retries > 0) {
+    await new Promise(r => setTimeout(r, 1000));
+    return callWithBackoff(url, options, retries - 1);
   }
+  return res;
 }
 ```
 
 </Expandable>
 
-<Expandable title="card_declined with do_not_honor">
-Problem:  
-Charge fails with `"decline_code": "do_not_honor"`.
+## Webhook Failures
 
-Cause:  
-The issuing bank declined the transaction without providing a more specific reason.
+Webhooks for order and inventory events must return a 2xx status within five seconds. Failures are logged under the shop's webhook history.
 
-Fix:  
-Ask the customer to contact their bank or try another card. Do not retry the same card immediately.
+<Expandable title="Webhook delivery failed with 5xx">
+Problem: The webhook endpoint returns 500 and ShopifyMax stops delivering subsequent events.
 
-</Expandable>
+Cause: Your handler threw an uncaught exception while processing the payload.
 
-## API Authentication Errors
+Fix: Wrap your handler in a try/catch and always respond with 200 before performing long-running work.
 
-<Expandable title="Invalid API key">
-Problem:  
-Requests return HTTP 401 with `"type": "invalid_request_error"` and message containing `"Invalid API Key"`.
-
-Cause:  
-The `Authorization` header contains an unknown or revoked secret key.
-
-Fix:  
-Verify that you are using the correct secret key from the Developers section of the Stripe dashboard and that the key has not been deleted.
-
-```bash
-curl https://api.stripe.com/v1/charges \
-  -u sk_test_your_key_here:
+```javascript
+app.post('/webhooks/orders', (req, res) => {
+  res.status(200).send('OK');
+  processOrderAsync(req.body).catch(console.error);
+});
 ```
 
 </Expandable>
 
-## Idempotency Errors
+## Checkout and Inventory Errors
 
-<Expandable title="idempotency_key_in_use">
-Problem:  
-A POST returns HTTP 409 with `"code": "idempotency_key_in_use"`.
+Checkout and inventory endpoints return 422 when the requested change cannot be applied.
 
-Cause:  
-The same idempotency key is already attached to an in-progress request.
+<Expandable title="422 Unprocessable Entity on checkout">
+Problem: `PUT /checkouts/{token}` returns 422 with `inventory_item out of stock`.
 
-Fix:  
-Wait for the original request to complete, then retry with the same key or generate a new key for a new operation.
+Cause: The variant quantity in the cart exceeds available inventory at the moment of update.
 
-</Expandable>
+Fix: Re-fetch current inventory levels before submitting the final checkout and surface the error to the customer.
 
-## Rate Limiting and Retries
-
-<Expandable title="Rate limit exceeded">
-Problem:  
-HTTP 429 response with `"type": "rate_limit_error"`.
-
-Cause:  
-Too many requests were sent in a short time window.
-
-Fix:  
-Implement exponential backoff. Respect the `Retry-After` header when present.
-
-```python
-import time
-import requests
-
-def retry_request(url, headers, data, max_retries=5):
-    for attempt in range(max_retries):
-        response = requests.post(url, headers=headers, json=data)
-        if response.status_code != 429:
-            return response
-        time.sleep(2 ** attempt)
-    raise Exception("Max retries exceeded")
+```javascript
+const inv = await fetch('https://api.example.com/inventory_levels.json');
+const stock = await inv.json();
+if (stock.available < cartQty) {
+  throw new Error('Selected quantity exceeds stock');
+}
 ```
 
 </Expandable>
 
-<Callout kind="info">
-Always log the full error object returned by Stripe. The combination of `type`, `code`, and `decline_code` provides the precise information needed for automated handling.
-</Callout>
+<Expandable title="Inventory adjustment rejected">
+Problem: `POST /inventory_levels/adjust` returns 422 with `adjustment would result in negative quantity`.
+
+Cause: The adjustment value would bring the location below zero.
+
+Fix: Query the current quantity first, then calculate a safe delta.
+
+```javascript
+const current = await getCurrentQuantity(locationId, itemId);
+const safeDelta = Math.max(delta, -current);
+await adjustInventory(locationId, itemId, safeDelta);
+```
+
+</Expandable>

@@ -1,85 +1,77 @@
 ---
 title: Authentication
-description: Authenticate Stripe API requests using secret and publishable API keys with proper security practices.
+description: Authenticate API requests using OAuth, API keys, and access scopes for Shopify stores and apps.
 ---
 
 ## Overview
 
-Stripe authenticates every API request using API keys. Include the appropriate key in the Authorization header of each request. Keep secret keys confidential and never expose them in client-side code.
+All requests to the ShopifyMax API require authentication. You send credentials with every request so the platform can verify your identity and enforce the correct access scopes.
 
-## API key types
+ShopifyMax supports two primary authentication methods: OAuth for public apps and API keys for private apps. Both return an access token that you include in subsequent calls.
+
+## Authentication methods
 
 <Tabs>
-  <Tab title="Secret keys" icon="key">
-    Use secret keys for server-side requests. They grant full access to your Stripe account.
+  <Tab title="OAuth" icon="key">
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Bearer token using your secret key in the format `Bearer sk_live_...`.
-    </ParamField>
+  OAuth is the recommended flow for public apps that merchants install from the ShopifyMax App Store.
+
   </Tab>
-  <Tab title="Publishable keys" icon="key">
-    Use publishable keys in client-side code. They are safe to expose publicly and identify your account.
+  <Tab title="Private apps" icon="lock">
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Bearer token using your publishable key in the format `Bearer pk_live_...`.
-    </ParamField>
-  </Tab>
-  <Tab title="Restricted keys" icon="lock">
-    Restricted keys limit access to specific permissions. Generate them in the Dashboard for least-privilege access.
+  Private apps use a static API key and secret generated inside a single store.
 
-    <ParamField header="Authorization" param-type="string" required="true">
-      Bearer token using your restricted key in the format `Bearer rk_live_...`.
-    </ParamField>
   </Tab>
 </Tabs>
 
-## Authenticated requests
+## OAuth flow
 
-Include the key in every request. The examples below demonstrate usage across languages.
+1. Redirect the merchant to the ShopifyMax authorization URL.
+2. The merchant grants the requested scopes.
+3. ShopifyMax redirects back with a temporary code.
+4. Exchange the code for a permanent access token.
 
-<CodeGroup tabs="cURL,Python,Node.js">
-```bash
-curl https://api.stripe.com/v1/charges \
-  -u sk_test_your_key_here: \
-  -d amount=2000 \
-  -d currency=usd \
-  -d source=tok_visa
+<ParamField query="client_id" param-type="string" required="true">
+  Your app's client identifier.
+</ParamField>
+
+<ParamField query="scope" param-type="string" required="true">
+  Space-separated list of requested access scopes.
+</ParamField>
+
+<ParamField query="redirect_uri" param-type="string" required="true">
+  URL that receives the authorization code.
+</ParamField>
+
+## Implementation
+
+<CodeGroup tabs="JavaScript,Python,cURL">
+```javascript
+const token = await exchangeCodeForToken({
+  clientId: "YOUR_CLIENT_ID",
+  clientSecret: "YOUR_CLIENT_SECRET",
+  code: req.query.code,
+});
 ```
-
 ```python
-import stripe
-stripe.api_key = "sk_test_your_key_here"
-
-charge = stripe.Charge.create(
-  amount=2000,
-  currency="usd",
-  source="tok_visa",
+token = exchange_code_for_token(
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
+    code=request.args.get("code"),
 )
 ```
-
-```javascript
-const stripe = require("stripe")("sk_test_your_key_here");
-
-const charge = await stripe.charges.create({
-  amount: 2000,
-  currency: "usd",
-  source: "tok_visa",
-});
+```bash
+curl -X POST https://api.example.com/oauth/token \
+  -d client_id=YOUR_CLIENT_ID \
+  -d client_secret=YOUR_CLIENT_SECRET \
+  -d code=AUTH_CODE
 ```
 </CodeGroup>
 
-## Webhook signatures
+Include the resulting access token in the Authorization header of every API call.
 
-Verify webhook signatures to confirm events originate from Stripe.
-
-<ParamField header="Stripe-Signature" param-type="string" required="true">
-  Signature header containing timestamp and HMAC signature.
-</ParamField>
-
-Use your webhook endpoint secret to validate the payload before processing.
-
-## Security practices
+## Security recommendations
 
 <Callout kind="alert">
-  Never commit secret keys to source control. Rotate keys regularly and restrict permissions with limited keys when possible. Ensure all card data handling meets PCI compliance requirements.
+Store access tokens securely. Never expose them in client-side code or commit them to version control. Rotate tokens when a merchant uninstalls your app.
 </Callout>

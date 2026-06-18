@@ -1,93 +1,81 @@
 ---
 title: Feature Overview
-description: Explore Stripe's core products including Payments, Billing, Connect, Radar, and Sigma for comprehensive commerce tooling.
+description: Explore core Shopify capabilities including checkout conversion, POS, marketing automation, and inventory.
 ---
 
 ## Overview
 
-Stripe provides a complete set of tools to accept payments, manage recurring revenue, power marketplaces, and analyze financial data. You integrate once and unlock online payments, in-person terminals, subscription billing, Connect for platforms, fraud protection via Radar, and deep analytics through Sigma.
+ShopifyMax provides a complete commerce platform that helps you launch, manage, and scale retail operations with confidence. Every tool is designed to improve conversion, streamline operations, and deliver reliable results across channels.
 
-## Accepting Payments
+You can start selling quickly, switch existing stores without friction, and rely on enterprise-grade features regardless of business size.
 
-Accept payments online or in physical locations with a single integration.
+## World-Class Checkout
+
+The checkout experience converts better than any other platform. Built-in optimizations reduce friction and increase completed orders.
+
+<Callout kind="tip">
+  Enable one-click payments to reduce cart abandonment by up to 30 percent.
+</Callout>
+
+## Point of Sale
+
+Sell in physical locations with the same inventory and customer data used online.
 
 <Tabs>
-  <Tab title="Online" icon="globe">
-    Use the Payments API to handle card and alternative payment methods in your web or mobile checkout flow.
-
-    Create a payment intent on your server, then confirm it from the client.
-
-    ```javascript
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: 2000,
-      currency: 'usd',
-      automatic_payment_methods: {enabled: true},
-    });
-    ```
-
+  <Tab title="Mobile" icon="smartphone">
+    Process sales on any device with offline support and instant sync.
   </Tab>
-  <Tab title="In Person" icon="credit-card">
-    Pair Stripe Terminal with card readers for retail and hospitality locations. Accept tap, dip, or swipe transactions with the same underlying payment objects.
-
+  <Tab title="Desktop" icon="monitor">
+    Use full-featured terminals for high-volume locations.
   </Tab>
 </Tabs>
 
-## Subscription Management
+## Marketing and Analytics
 
-Billing handles recurring charges, trials, upgrades, and proration automatically.
+Built-in marketing tools and detailed analytics help you reach customers and measure performance.
 
 <Columns cols={2}>
-  <Card title="Plans & add-ons" icon="package" href="#">
-    Define multiple price points and attach usage-based metered billing.
+  <Card title="Campaign Builder" icon="megaphone" href="#">
+    Create targeted promotions without third-party tools.
   </Card>
-  <Card title="Customer portal" icon="users" href="#">
-    Let customers update cards, change plans, or download invoices without code.
+  <Card title="Real-Time Reports" icon="bar-chart" href="#">
+    Track sales, traffic, and conversion from one dashboard.
   </Card>
 </Columns>
 
-## Marketplace Operations
+## Orders and Shipping
 
-Use Connect to onboard connected accounts, split payments, and manage payouts on behalf of sellers or service providers.
+Manage orders and fulfillment from a single view.
 
-<CodeGroup tabs="Create account,Accept payment">
+<Expandable title="Shipping rate configuration" default-open="false">
+  Define custom rates by region, weight, or order value. Rates update automatically when inventory changes.
+</Expandable>
+
+## Configuration Example
+
+Use the following snippet to connect your store to external logistics providers.
+
+````jsx
+<CodeGroup tabs="JavaScript,Python">
 ```javascript
-const account = await stripe.accounts.create({
-  type: 'express',
-  country: 'US',
+const response = await fetch('https://api.example.com/orders', {
+  method: 'POST',
+  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }
 });
 ```
-
-```javascript
-const paymentIntent = await stripe.paymentIntents.create({
-  amount: 1000,
-  currency: 'usd',
-  application_fee_amount: 200,
-  transfer_data: {destination: 'acct_xxx'},
-});
+```python
+import requests
+response = requests.post(
+  'https://api.example.com/orders',
+  headers={'Authorization': 'Bearer YOUR_API_KEY'}
+)
 ```
 </CodeGroup>
-
-## Analytics and Reporting
-
-Sigma lets you run SQL queries directly against your Stripe data for custom financial reports.
-
-<Expandable title="Example Sigma query" default-open="false">
-  Retrieve monthly recurring revenue by product in a single query.
-
-  ```sql
-  SELECT
-    DATE_TRUNC('month', created) AS month,
-    SUM(amount) AS revenue
-  FROM charges
-  WHERE status = 'succeeded'
-  GROUP BY 1
-  ORDER BY 1;
-  ```
-
-</Expandable>
+````
 
 ## Best Practices
 
-<Callout kind="tip">
-  Always use idempotency keys on create calls to safely retry requests without creating duplicate objects.
-</Callout>
+- Test checkout flows on mobile devices before launch.
+- Keep inventory counts accurate across online and physical channels.
+- Review analytics weekly to adjust marketing spend.
+- Use automated shipping rules to reduce manual order processing.

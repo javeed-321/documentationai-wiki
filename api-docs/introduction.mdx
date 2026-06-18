@@ -1,41 +1,37 @@
 ---
 title: Introduction
-description: Introduction to the Stripe API for integrating payments, billing, and financial services into your application.
+description: Introduction to the Shopify API for extending stores, managing products, and integrating third-party apps.
 ---
 
-<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416392648-tsntejft5od-Image-9.png?q=85&fm=auto&auto=compress%2Cformat" alt="Stripe documentation" width="800" height="400" />
+<Image src="https://blob-cdn.documentation.ai/org-2ebb2ef5-dd91-493f-9938-283fbdb14c81/doc-d2a73d2e-4391-4446-a5c8-2d0b41b7c4c1/1774416350161-ay106tw0elt-Image-3.png?q=85&fm=auto&auto=compress%2Cformat" alt="ShopifyMax documentation" width="800" height="400" />
 
 ## Welcome
 
-The Stripe API provides a REST interface for accepting payments, managing billing, and accessing financial services. You send HTTPS requests to endpoints that support JSON request and response bodies.
-
-## Core capabilities
+The ShopifyMax API lets you extend stores, manage products, and integrate third-party apps through REST and GraphQL endpoints. Use it to build custom solutions that interact directly with store data and workflows.
 
 <Columns cols={2}>
-  <Card title="REST API" icon="code" href="#">
-    Standard HTTP methods and resource-oriented URLs handle all operations for payments, customers, and subscriptions.
+  <Card title="Product management" icon="package" href="#">
+    Create, update, and query products, variants, and inventory levels.
   </Card>
-  <Card title="Payment methods" icon="credit-card" href="#">
-    Support for cards, bank transfers, wallets, and local payment options across more than 135 currencies.
+  <Card title="Order processing" icon="shopping-cart" href="#">
+    Retrieve orders, update fulfillment status, and handle refunds.
   </Card>
-  <Card title="Idempotency" icon="refresh-cw" href="#">
-    Supply an Idempotency-Key header to safely retry requests without duplicating side effects.
+  <Card title="App integration" icon="plug" href="#">
+    Register webhooks and authenticate apps with OAuth flows.
   </Card>
-  <Card title="Rate limits" icon="gauge" href="#">
-    Default limits of 100 read and 100 write requests per second per account with clear retry guidance.
+  <Card title="Store customization" icon="settings" href="#">
+    Modify themes, manage metafields, and extend checkout logic.
   </Card>
 </Columns>
 
-## Explore further
-
-<Card title="Authentication" icon="key" href="#">
-  Learn how to authenticate requests using API keys and manage them securely in the Dashboard.
+<Card title="Authentication guide" icon="key" href="#" horizontal={true}>
+  Configure API credentials and scopes for secure access.
 </Card>
 
-<Card title="Errors" icon="alert-triangle" href="#">
-  Review error codes, handling strategies, and best practices for robust integrations.
+<Card title="Rate limits reference" icon="bar-chart" href="#" horizontal={true}>
+  Review request quotas and retry strategies for production use.
 </Card>
 
 <Callout kind="tip">
-  Start with the REST reference to understand resource models before building your first integration.
+  Start with the authentication guide before making your first API call.
 </Callout>

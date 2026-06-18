@@ -1,101 +1,88 @@
 ---
 title: Quickstart
-description: Quickly integrate Stripe by installing a client library and creating your first charge or subscription.
+description: Make your first authenticated calls to the Shopify Admin API to retrieve products and orders.
 ---
 
 ## Prerequisites
 
 <Callout kind="info">
-Create a Stripe account and obtain your secret and publishable API keys from the dashboard before you begin.
+  You need a ShopifyMax store and an Admin API access token with read permissions for products and orders.
 </Callout>
 
-## Install a client library
+## Set up the API client
 
 <Steps>
-  <Step title="Choose and install a library">
-    Select a language and run the matching install command.
+  <Step title="Install the client library">
+    Choose your language and install the official library.
 
-    <CodeGroup tabs="Node.js,Python,Ruby">
-```bash
-npm install stripe
-```
-```bash
-pip install stripe
-```
-```bash
-gem install stripe
-```
-    </CodeGroup>
+  </Step>
+  <Step title="Configure credentials">
+    Store your access token in an environment variable named `SHOPIFY_ACCESS_TOKEN`.
 
   </Step>
 </Steps>
 
-## Create your first charge
+## Make your first request
 
-Use your secret key to create a charge in test mode.
-
-<CodeGroup tabs="Node.js,Python,Ruby">
+<CodeGroup tabs="JavaScript,Python,cURL">
 ```javascript
-const stripe = require("stripe")("sk_test_your_key_here");
-
-const charge = await stripe.charges.create({
-  amount: 2000,
-  currency: "usd",
-  source: "tok_visa",
-  description: "Test charge",
-});
+const response = await fetch(
+  "https://api.example.com/admin/api/2024-01/graphql.json",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Shopify-Access-Token": process.env.SHOPIFY_ACCESS_TOKEN,
+    },
+    body: JSON.stringify({
+      query: "{ products(first: 5) { edges { node { id title } } } }",
+    }),
+  }
+);
+const data = await response.json();
+console.log(data);
 ```
+
 ```python
-import stripe
-stripe.api_key = "sk_test_your_key_here"
+import requests
+import os
 
-charge = stripe.Charge.create(
-    amount=2000,
-    currency="usd",
-    source="tok_visa",
-    description="Test charge",
+query = "{ products(first: 5) { edges { node { id title } } } }"
+headers = {"X-Shopify-Access-Token": os.environ["SHOPIFY_ACCESS_TOKEN"]}
+response = requests.post(
+    "https://api.example.com/admin/api/2024-01/graphql.json",
+    json={"query": query},
+    headers=headers,
 )
+print(response.json())
 ```
-```ruby
-require "stripe"
-Stripe.api_key = "sk_test_your_key_here"
 
-charge = Stripe::Charge.create({
-  amount: 2000,
-  currency: "usd",
-  source: "tok_visa",
-  description: "Test charge",
-})
+```bash
+curl -X POST \
+  https://api.example.com/admin/api/2024-01/graphql.json \
+  -H "Content-Type: application/json" \
+  -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
+  -d '{"query":"{ products(first: 5) { edges { node { id title } } } }"}'
 ```
 </CodeGroup>
 
-## Handle webhooks
-
-Register an endpoint that receives event notifications such as `charge.succeeded`.
+## Register a webhook
 
 ```bash
-curl -X POST https://api.example.com/webhook \
-  -H "Stripe-Signature: t=123456,v1=abc123" \
-  -d '{"type":"charge.succeeded"}'
+curl -X POST \
+  https://api.example.com/admin/api/2024-01/webhooks.json \
+  -H "Content-Type: application/json" \
+  -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
+  -d '{"webhook":{"topic":"orders/create","address":"https://example.com/webhooks/orders"}}'
 ```
-
-## Use test cards
-
-Test different outcomes with these card numbers.
-
-| Number           | Description          |
-|------------------|----------------------|
-| 4242 4242 4242 4242 | Succeeds             |
-| 4000 0000 0000 0002 | Declined             |
-| 4000 0000 0000 9995 | Insufficient funds   |
 
 ## Next steps
 
 <Columns cols={2}>
-  <Card title="Webhooks guide" icon="book-open" href="#">
-    Learn how to validate and process webhook events securely.
+  <Card title="GraphQL reference" icon="book-open" href="#">
+    Explore all available queries and mutations.
   </Card>
-  <Card title="Test card reference" icon="credit-card" href="#">
-    Explore the full catalog of test cards and bank accounts.
+  <Card title="Webhook topics" icon="bell" href="#">
+    View the complete list of supported events.
   </Card>
 </Columns>
